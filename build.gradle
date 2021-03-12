@@ -60,6 +60,8 @@ lombok {
     sha256 = ""
 }
 
+println "Building ${name} version: ${version}"
+
 dependencies {
     // Spring
     api("org.springframework.boot:spring-boot-starter-data-rest")
