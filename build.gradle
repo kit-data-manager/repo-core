@@ -1,0 +1,199 @@
+buildscript {
+    repositories { 
+        mavenLocal()
+        jcenter()
+        mavenCentral()
+    }
+    
+	 repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.2.2.RELEASE")
+        classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.9.2'
+        classpath 'net.researchgate:gradle-release:2.6.0'
+    }
+}
+
+plugins { 
+    id 'io.franzbecker.gradle-lombok' version '1.14'
+    id "io.spring.dependency-management" version "1.0.8.RELEASE" 
+    id "com.github.kt3k.coveralls" version "2.8.1" 
+    id "org.owasp.dependencycheck" version "3.1.2"
+    id "org.asciidoctor.convert" version "1.5.3"
+    id "org.ajoberstar.grgit" version "2.0.1"
+    id "com.jfrog.bintray" version "1.7.3"
+}
+ext { springBootVersion = '2.2.2.RELEASE' }
+
+apply plugin: 'java-library'
+apply plugin: 'eclipse'
+apply plugin: 'maven'
+apply plugin: 'jacoco'
+
+description = "Core module for data repositories based on metadata model of datacite."
+
+group = 'edu.kit.datamanager'
+
+jar {
+    baseName = 'repo-core'
+    version = System.getenv('version')
+}
+
+repositories {
+    mavenLocal() 
+    jcenter()
+    mavenCentral()
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+ 
+configurations {
+    all*.exclude module : 'spring-boot-starter-logging'
+}
+
+lombok {
+    version = '1.18.10'
+    sha256 = ""
+}
+
+dependencies {
+    // Spring
+    api("org.springframework.boot:spring-boot-starter-data-rest")
+    api("org.springframework.boot:spring-boot-starter-amqp")
+    api("org.springframework.boot:spring-boot-starter-web")
+    api("org.springframework.boot:spring-boot-starter-security")
+    api("org.springframework.boot:spring-boot-starter-actuator")
+    api("org.springframework.boot:spring-boot-starter-data-jpa")
+    
+    api("org.springframework.cloud:spring-cloud-dependencies:Greenwich.SR3")
+    api("org.springframework.cloud:spring-cloud-starter:2.2.3.RELEASE")
+    // springdoc
+    api("org.springdoc:springdoc-openapi-ui:1.2.31")
+    api("org.springdoc:springdoc-openapi-data-rest:1.2.31")
+    api("org.springdoc:springdoc-openapi-webmvc-core:1.2.31")
+    // apache
+    api('commons-codec:commons-codec:1.7')
+    api("commons-configuration:commons-configuration:1.10")
+    api("commons-io:commons-io:2.5")
+    api("commons-validator:commons-validator:1.6")
+    api("org.apache.commons:commons-collections4:4.1")
+    api("org.apache.commons:commons-lang3:3.6")
+    api("org.apache.commons:commons-text:1.8")
+    api('org.apache.httpcomponents:httpclient:4.5.6')
+    api("org.apache.tika:tika-core:1.18") 
+  //  api("org.javers:javers-core:5.8.7")
+    api('org.javers:javers-spring-boot-starter-sql:5.8.8')
+    // Database
+    api("com.h2database:h2:1.4.194")
+    api("org.postgresql:postgresql:42.2.1")
+    // XML
+    api("com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.9.1")
+    api("com.fasterxml.jackson.module:jackson-module-afterburner:2.7.1")
+    api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.6.5")
+    api("com.fasterxml.jackson.datatype:jackson-datatype-joda:2.4.0")
+
+    api("com.monitorjbl:spring-json-view:1.0.1")
+
+    api("de.codecentric:spring-boot-admin-starter-client:2.1.6")
+
+    //Java 11 Support 
+    api("javax.xml.bind:jaxb-api:2.3.1")
+    api("com.sun.xml.bind:jaxb-core:2.3.0.1")
+    api("com.sun.xml.bind:jaxb-impl:2.3.0.1")
+    api("javax.activation:activation:1.1.1")
+    api("org.javassist:javassist:3.23.1-GA")
+    
+    implementation("edu.kit.datamanager:service-base:0.3.0-SNAPSHOT")
+//    api("edu.kit.datamanager:generic-message-consumer:0.2.0")
+
+    api("com.github.fge:json-patch:1.9")
+    api("net.sf.dozer:dozer:5.5.1")
+
+    api("io.jsonwebtoken:jjwt:0.9.1")
+
+    api("org.slf4j:slf4j-api:1.7.25")
+    // Logging
+    api("ch.qos.logback:logback-classic:1.2.3")
+    api("com.github.fge:json-patch:1.9")
+
+    testImplementation("com.h2database:h2:1.4.194") 
+    testImplementation("junit:junit:4.12")
+    //testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation('org.springframework.restdocs:spring-restdocs-mockmvc:2.0.4.RELEASE')
+    testImplementation("org.springframework:spring-test")
+    testImplementation("org.springframework.security:spring-security-test")
+   
+    //Java 11 Support 
+    testImplementation("org.mockito:mockito-core:2.23.4")
+    testImplementation("org.powermock:powermock-module-junit4:2.0.2")
+    testImplementation("org.powermock:powermock-api-mockito2:2.0.2")
+
+    testImplementation('org.asciidoctor:asciidoctor-gradle-plugin:1.5.9.2')
+    asciidoctor('org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.4.RELEASE')
+    asciidoctor('com.github.allati.asciidoctor.monotree:asciidoctor-extension-monotree:0.0.1')
+}
+
+test {
+    testLogging {
+        outputs.upToDateWhen {false}
+        showStandardStreams = true
+    }
+}
+
+jacoco {
+    toolVersion = "0.8.5"
+}
+
+tasks.withType(Test) {
+    testLogging {
+        events 'started', 'passed'
+    }
+}
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled true
+    }
+    
+    afterEvaluate {
+        //exclude some classes/package from code coverage report
+        classDirectories.setFrom(files(classDirectories.files.collect {
+                    fileTree(dir: it, exclude: [\
+                                //pure entity package currently not needed
+            'org/datacite/**', \
+                   'org/purl/**', \
+                            //performance tests
+            'edu/kit/datamanager/perf/**', \
+                            //remove AuthenticationHelper tests due to mocking -> code coverage cannot be determined
+                            //'edu/kit/datamanager/util/AuthenticationHelper*',
+                            //deprecated stuff
+            'edu/kit/datamanager/util/DCTransformationHelper*',
+                  'edu/kit/datamanager/dao/ByExampleSpecification*',
+                  'edu/kit/datamanager/controller/hateoas/**',
+                            //exceptions 
+            'edu/kit/datamanager/exceptions/**',
+                  'edu/kit/datamanager/service/impl/RabbitMQMessagingService*',
+                  'edu/kit/datamanager/configuration/**',
+                  'edu/kit/datamanager/service/IGenericService*'
+                        ])
+                }))
+    }
+}
+
+dependencyManagement {
+    imports { mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}") }
+}
+
+if (JavaVersion.current().isJava8Compatible()) {
+    allprojects {
+        tasks.withType(Javadoc) {
+            options.addStringOption('Xdoclint:none', '-quiet')
+        }
+    }
+}
+
