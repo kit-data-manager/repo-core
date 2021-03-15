@@ -144,6 +144,7 @@ public class DataResourceControllerTest{
 
   @Before
   public void setUp() throws JsonProcessingException{
+    contentInformationAuditService = repositoryConfig.getContentInformationAuditService();
     contentInformationDao.deleteAll();
     dataResourceDao.deleteAll();
     allIdentifiersDao.deleteAll();
@@ -738,13 +739,25 @@ public class DataResourceControllerTest{
    * DELETE TESTS*
    */
   @Test
+  public void testDeleteResourceAnonymousWithoutETag() throws Exception{
+    this.mockMvc.perform(delete("/api/v1/dataresources/" + sampleResource.getId())
+            .contentType("application/json")).andExpect(status().isPreconditionRequired());
+  }
+  @Test
   public void testDeleteResourceAnonymous() throws Exception{
-    this.mockMvc.perform(delete("/api/v1/dataresources/" + sampleResource.getId()).contentType("application/json")).andExpect(status().isUnauthorized());
+    this.mockMvc.perform(delete("/api/v1/dataresources/" + sampleResource.getId())
+            .header("If-Match", "anyEtag").contentType("application/json")).andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  public void testDeleteInvalidResourceWithoutETag() throws Exception{
+    this.mockMvc.perform(delete("/api/v1/dataresources/0").header(HttpHeaders.AUTHORIZATION,
+            "Bearer " + userToken).contentType("application/json")).andExpect(status().isPreconditionRequired());
   }
 
   @Test
   public void testDeleteInvalidResource() throws Exception{
-    this.mockMvc.perform(delete("/api/v1/dataresources/0").header(HttpHeaders.AUTHORIZATION,
+    this.mockMvc.perform(delete("/api/v1/dataresources/0").header("If-Match", "anyEtag").header(HttpHeaders.AUTHORIZATION,
             "Bearer " + userToken).contentType("application/json")).andExpect(status().isNoContent());
   }
 
@@ -1082,11 +1095,15 @@ public class DataResourceControllerTest{
     Path temp = Files.createTempFile("testUploadExistingWithoutForce", "test");
     MockMultipartFile fstmp = new MockMultipartFile("file", "bibtex1.txt", "multipart/form-data", Files.newInputStream(temp));
 
-    this.mockMvc.perform(multipart("/api/v1/dataresources/" + sampleResource.getId() + "/data/bibtex1.txt").file(fstmp).header(HttpHeaders.AUTHORIZATION,
-            "Bearer " + userToken)).andDo(print()).andExpect(status().isCreated());
+    MockHttpServletResponse responseV1 = this.mockMvc.perform(multipart("/api/v1/dataresources/" + sampleResource.getId() + "/data/bibtex1.txt").file(fstmp).header(HttpHeaders.AUTHORIZATION,
+            "Bearer " + userToken)).andDo(print()).andExpect(status().isCreated()).andReturn().getResponse();
 
-    this.mockMvc.perform(multipart("/api/v1/dataresources/" + sampleResource.getId() + "/data/bibtex1.txt").file(fstmp).header(HttpHeaders.AUTHORIZATION,
-            "Bearer " + userToken)).andDo(print()).andExpect(status().isConflict());
+    MockHttpServletResponse responseV2 = this.mockMvc.perform(multipart("/api/v1/dataresources/" + sampleResource.getId() + "/data/bibtex1.txt").file(fstmp).header(HttpHeaders.AUTHORIZATION,
+            "Bearer " + userToken)).andDo(print()).andExpect(status().isCreated()).andReturn().getResponse();
+    // As the content not changed the locationUrl should be the same.
+    Assert.assertEquals("1", responseV1.getHeader("Resource-Version"));
+    Assert.assertEquals("2", responseV2.getHeader("Resource-Version"));
+    Assert.assertEquals(responseV1.getHeader("Location"), responseV2.getHeader("Location"));
   }
 
   @Test
