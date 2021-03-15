@@ -349,7 +349,12 @@ public class DataResourceUtils {
 
     return applicationProperties.getDataResourceService().getAuditInformationAsJson(resourceIdentifier, pgbl);
   }
-
+  /** 
+   * Remove ACLs from data resource.
+   * 
+   * @param resource data resource.
+   * @return data resource without acls.
+   */
   public static DataResource filterResource(DataResource resource) {
     if (!AuthenticationHelper.isAuthenticatedAsService() && !DataResourceUtils.hasPermission(resource, PERMISSION.ADMINISTRATE) && !AuthenticationHelper.hasAuthority(RepoUserRole.ADMINISTRATOR.toString())) {
       LOGGER.debug("Removing ACL information from resources due to non-administrator access.");
@@ -362,6 +367,12 @@ public class DataResourceUtils {
     return resource;
   }
 
+  /** 
+   * Remove ACLs from a list of data resources.
+   * 
+   * @param resources list of data resources.
+   * @return list of data resources without acls.
+   */
   public static List<DataResource> filterResources(List<DataResource> resources) {
 
     if (!AuthenticationHelper.isAuthenticatedAsService() && !AuthenticationHelper.hasAuthority(RepoUserRole.ADMINISTRATOR.toString())) {
