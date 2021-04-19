@@ -635,5 +635,22 @@ public class DataResourceUtils {
     }
     return returnValue;
   }
+  /** 
+   * Make a copy of the resource to avoid updating database.
+   * 
+   * @param dataresource resource linked with the database.
+   * @return unlinked data resource.
+   */
+  public static edu.kit.datamanager.entities.repo.DataResource migrateToDataResource(DataResource dataresource) {
+    edu.kit.datamanager.entities.repo.DataResource returnValue = null;
+    try {
+      String jsonString = mapper.writeValueAsString(dataresource);
+      LOGGER.trace("dataresource: {}", jsonString);
+      returnValue = mapper.readValue(jsonString, edu.kit.datamanager.entities.repo.DataResource.class);
+    } catch (JsonProcessingException ex) {
+      LOGGER.error("Error mapping dataresource!");
+    }
+    return returnValue;
+  }
 
 }
