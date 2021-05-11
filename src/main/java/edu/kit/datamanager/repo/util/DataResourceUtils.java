@@ -126,6 +126,23 @@ public class DataResourceUtils {
   }
 
   /**
+   * Read all versions of an existing resource.
+   * If versioning is disabled only the current state is available.
+   * If any error occurs an exception is thrown.
+   *
+   * @param applicationProperties
+   * @param identifier resource ID of the resource.
+   * @param pgbl
+   * @return Page instance holding all versions or current state if version is disabled.
+   */
+  public static Page<DataResource> readAllVersionsOfResource(RepoBaseConfiguration applicationProperties,
+          String identifier,
+          Pageable pgbl) {
+    Page<DataResource> page = applicationProperties.getDataResourceService().findAllVersions(identifier, pgbl);
+    return page;
+  }
+
+  /**
    * Read an existing resource.
    *
    * @param applicationProperties
@@ -349,9 +366,10 @@ public class DataResourceUtils {
 
     return applicationProperties.getDataResourceService().getAuditInformationAsJson(resourceIdentifier, pgbl);
   }
-  /** 
+
+  /**
    * Remove ACLs from data resource.
-   * 
+   *
    * @param resource data resource.
    * @return data resource without acls.
    */
@@ -367,9 +385,9 @@ public class DataResourceUtils {
     return resource;
   }
 
-  /** 
+  /**
    * Remove ACLs from a list of data resources.
-   * 
+   *
    * @param resources list of data resources.
    * @return list of data resources without acls.
    */
@@ -617,9 +635,10 @@ public class DataResourceUtils {
     LOGGER.trace("Resource for identifier {} found. Returning resource #{}.", decodedIdentifier, resource.getId());
     return resource;
   }
-  /** 
+
+  /**
    * Make a copy of the resource to avoid updating database.
-   * 
+   *
    * @param dataresource resource linked with the database.
    * @return unlinked data resource.
    */
@@ -635,9 +654,10 @@ public class DataResourceUtils {
     }
     return returnValue;
   }
-  /** 
+
+  /**
    * Make a copy of the resource to avoid updating database.
-   * 
+   *
    * @param dataresource resource linked with the database.
    * @return unlinked data resource.
    */

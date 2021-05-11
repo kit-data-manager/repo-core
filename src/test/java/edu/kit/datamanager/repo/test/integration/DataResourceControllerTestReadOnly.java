@@ -116,6 +116,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
   WithSecurityContextTestExecutionListener.class})
 @ActiveProfiles("test")
 @TestPropertySource(properties = {"repo.readonly=true"})
+@TestPropertySource(properties = {"spring.datasource.url=jdbc:h2:mem:db_readonly;DB_CLOSE_DELAY=-1"})
 public class DataResourceControllerTestReadOnly{
 
   @Autowired
@@ -1552,6 +1553,86 @@ public class DataResourceControllerTestReadOnly{
 
     this.mockMvc.perform(get("/api/v1/dataresources/" + sampleResource.getId() + "/data/validFile").header(HttpHeaders.AUTHORIZATION,
             "Bearer " + adminToken).header(HttpHeaders.ACCEPT, "application/vnd.datamanager.content-information+json")).andDo(print()).andExpect(status().isOk());
+  }
+
+
+  @Test
+  public void testGetAllVersionsOfResourceAsAdmin() throws Exception {
+    DataResource     testVersioning=  DataResource.factoryNewDataResource("testVersioning");
+    testVersioning.setState(DataResource.State.VOLATILE);
+    testVersioning.getDescriptions().add(Description.factoryDescription("This is a description", Description.TYPE.OTHER, "en"));
+    testVersioning.getTitles().add(Title.factoryTitle("Title", Title.TYPE.OTHER));
+    testVersioning.getCreators().add(Agent.factoryAgent("John", "Doe", new String[]{"KIT"}));
+    testVersioning.getCreators().add(Agent.factoryAgent("Johanna", "Doe", new String[]{"FZJ"}));
+    testVersioning.getContributors().add(Contributor.factoryContributor(Agent.factoryAgent("Jane", "Doe", new String[]{"KIT"}), Contributor.TYPE.DATA_MANAGER));
+    testVersioning.getDates().add(Date.factoryDate(Instant.now().truncatedTo(ChronoUnit.MILLIS), Date.DATE_TYPE.CREATED));
+    testVersioning.setEmbargoDate(Instant.now().truncatedTo(ChronoUnit.MILLIS).plus(Duration.ofDays(365)));
+    testVersioning.setResourceType(ResourceType.createResourceType("photo", ResourceType.TYPE_GENERAL.IMAGE));
+    testVersioning.setLanguage("en");
+    testVersioning.setPublisher("me");
+    testVersioning.setPublicationYear("2018");
+    testVersioning.getFormats().add("plain/text");
+    testVersioning.getSizes().add("100");
+    testVersioning.getFundingReferences().add(FundingReference.factoryFundingReference("BMBF", FunderIdentifier.factoryIdentifier("BMBF-01", FunderIdentifier.FUNDER_TYPE.ISNI), Scheme.factoryScheme("BMBF_AWARD", "https://www.bmbf.de/"), "https://www.bmbf.de/01", "Award 01"));
+    testVersioning.getAcls().add(new AclEntry("admin", PERMISSION.ADMINISTRATE));
+    testVersioning.getAcls().add(new AclEntry("otheruser", PERMISSION.READ));
+    testVersioning.getAcls().add(new AclEntry("user", PERMISSION.WRITE));
+    testVersioning.getRelatedIdentifiers().add(RelatedIdentifier.factoryRelatedIdentifier(RelatedIdentifier.RELATION_TYPES.IS_DOCUMENTED_BY, "document_location", Scheme.factoryScheme("id", "uri"), "metadata_scheme"));
+    testVersioning.getSubjects().add(Subject.factorySubject("testing", "uri", "en", Scheme.factoryScheme("id", "uri")));
+
+    testVersioning = dataResourceDao.save(testVersioning);
+    ((DataResourceService)dataResourceService).saveIdentifiers(testVersioning);
+
+    javers.commit("admin", testVersioning);
+    // Read all versions (only 1 version available)
+    this.mockMvc.perform(get("/api/v1/dataresources/" + testVersioning.getId()).header(HttpHeaders.AUTHORIZATION,
+            "Bearer " + adminToken).header(HttpHeaders.ACCEPT, "application/json")).andDo(print()).andExpect(status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(1)));
+
+    String etag = this.mockMvc.perform(get("/api/v1/dataresources/" + testVersioning.getId()).header(HttpHeaders.AUTHORIZATION,
+            "Bearer " + adminToken)).andDo(print()).andExpect(status().isOk()).andReturn().getResponse().getHeader("ETag");
+    // first patch
+    String patch = "[{\"op\": \"replace\",\"path\": \"/publicationYear\",\"value\": \"2017\"}]";
+    this.mockMvc.perform(patch("/api/v1/dataresources/" + testVersioning.getId()).header(HttpHeaders.AUTHORIZATION,
+            "Bearer " + adminToken).header("If-Match", etag).contentType("application/json-patch+json").content(patch)).andDo(print()).andExpect(status().isNoContent());
+    // Check for new content
+    this.mockMvc.perform(get("/api/v1/dataresources/" + testVersioning.getId()).header(HttpHeaders.AUTHORIZATION,
+            "Bearer " + adminToken)).andDo(print()).andExpect(status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$.publicationYear").value("2017"));
+    // Get all versions (2?)
+    this.mockMvc.perform(get("/api/v1/dataresources/" + testVersioning.getId()).header(HttpHeaders.AUTHORIZATION,
+            "Bearer " + adminToken).header(HttpHeaders.ACCEPT, "application/json")).andDo(print()).andExpect(status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(2)));
+    // ETag for new version
+    etag = this.mockMvc.perform(get("/api/v1/dataresources/" + testVersioning.getId()).header(HttpHeaders.AUTHORIZATION,
+            "Bearer " + adminToken)).andDo(print()).andExpect(status().isOk()).andReturn().getResponse().getHeader("ETag");
+    // Another patch
+    patch = "[{\"op\": \"replace\",\"path\": \"/publicationYear\",\"value\": \"2016\"}]";
+    this.mockMvc.perform(patch("/api/v1/dataresources/" + testVersioning.getId()).header(HttpHeaders.AUTHORIZATION,
+            "Bearer " + adminToken).header("If-Match", etag).contentType("application/json-patch+json").content(patch)).andDo(print()).andExpect(status().isNoContent());
+    // Check for new content
+    this.mockMvc.perform(get("/api/v1/dataresources/" + testVersioning.getId()).header(HttpHeaders.AUTHORIZATION,
+            "Bearer " + adminToken)).andDo(print()).andExpect(status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$.publicationYear").value("2016"));
+    // Get all versions (3?)
+    this.mockMvc.perform(get("/api/v1/dataresources/" + testVersioning.getId()).header(HttpHeaders.AUTHORIZATION,
+            "Bearer " + adminToken).header(HttpHeaders.ACCEPT, "application/json")).andDo(print()).andExpect(status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(3)));
+  }
+
+  @Test
+  public void testGetAllVersionsOfResourceWithOtherUsers() throws Exception {
+    javers.commit("admin", fixedResource);
+   // Read all versions (only 1 version available)
+    this.mockMvc.perform(get("/api/v1/dataresources/" + fixedResource.getId()).header(HttpHeaders.AUTHORIZATION,
+            "Bearer " + adminToken).header(HttpHeaders.ACCEPT, "application/json")).andDo(print()).andExpect(status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(1)));
+    this.mockMvc.perform(get("/api/v1/dataresources/" + fixedResource.getId()).header(HttpHeaders.AUTHORIZATION,
+            "Bearer " + userToken).header(HttpHeaders.ACCEPT, "application/json")).andDo(print()).andExpect(status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(1)));
+    this.mockMvc.perform(get("/api/v1/dataresources/" + fixedResource.getId()).header(HttpHeaders.AUTHORIZATION,
+            "Bearer " + otherUserToken).header(HttpHeaders.ACCEPT, "application/json")).andDo(print()).andExpect(status().isForbidden());
+    this.mockMvc.perform(get("/api/v1/dataresources/" + fixedResource.getId()).header(HttpHeaders.AUTHORIZATION,
+            "Bearer " + guestToken).header(HttpHeaders.ACCEPT, "application/json")).andDo(print()).andExpect(status().isForbidden());
+  }
+
+  @Test
+  public void testGetAllVersionsOfResourceWithoutAuthentication() throws Exception {
+    // Read all versions (only 1 version available)
+    this.mockMvc.perform(get("/api/v1/dataresources/" + sampleResource.getId()).header(HttpHeaders.ACCEPT, "application/json")).andDo(print()).andExpect(status().isForbidden());
   }
 
   private ObjectMapper createObjectMapper(){

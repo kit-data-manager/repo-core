@@ -155,4 +155,15 @@ public interface IDataResourceController extends IGenericResourceController<Data
           final HttpServletResponse response,
           final UriComponentsBuilder uriBuilder);
 
+  @Operation(summary = "Get all versions of a record.", description = "List all versions of a record in a paginated and/or sorted form."
+          + "If versioning is disabled, only the most recent version is listed.")
+  @RequestMapping(value = {"/{id}"}, method = {RequestMethod.GET}, produces = {"application/json"})
+  @PageableAsQueryParam
+  @ResponseBody
+  public ResponseEntity<List<DataResource>> getAllVersions(
+          @Parameter(description = "The resource identifier.", required = true) @PathVariable(value = "id") final String id,
+          @Parameter(hidden = true) final Pageable pgbl,
+          final WebRequest request,
+          final HttpServletResponse response,
+          final UriComponentsBuilder uriBuilder);
 }

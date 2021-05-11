@@ -94,6 +94,21 @@ public interface IDataResourceService extends IGenericService<DataResource>, ISe
    */
   DataResource create(DataResource resource, String callerPrincipal) throws BadArgumentException, ResourceAlreadyExistException;
 
+
+  /**
+   * Get all versions of a single resource. If versioning is not enabled only
+   * the current status is returned. If no identifier matches, the
+   * implementation should throw an exception mapping to HTTP 404.
+   *
+   * @param identifier The identifier used to query for a single resource.
+   * @param pgbl The pageable object containing pagination information.
+   *
+   * @return A list of versions if at least one was found. This method should never return
+   * null. If no resource could be found or in case of any other fault, an 
+   * exception is expected to be thrown.
+   */
+  public Page<DataResource> findAllVersions(final String identifier, Pageable pgbl);
+  
   /**
    * Enhanced find method to obtain a single resource having the provided value
    * as any of its identifiers. The implementation should check the internal

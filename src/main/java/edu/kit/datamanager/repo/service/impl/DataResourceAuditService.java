@@ -56,7 +56,7 @@ public class DataResourceAuditService implements IAuditService<DataResource> {
     } else {
       LOGGER.trace("Capturing audit information for resource {} modified by principal {}.", resource, principal);
       javers.commit(principal, resource);
-      LOGGER.trace("Successfully committed audit information for resource with id {}.", resource.getId());
+      LOGGER.trace("Successfully committed audit information for resource with id '{}'.", resource.getId());
     }
   }
 
@@ -86,12 +86,12 @@ public class DataResourceAuditService implements IAuditService<DataResource> {
         List<Shadow<DataResource>> shadows = javers.findShadows(query);
 
         if (!CollectionUtils.isEmpty(shadows)) {
-          LOGGER.trace("Shadow for resource id {} and version {} found. Returning result.", resourceId, version);
+          LOGGER.trace("Shadow for resource id '{}' and version {} found. Returning result.", resourceId, version);
           Shadow<DataResource> versionShadow = shadows.get(0);
           LOGGER.trace("Returning shadow at index 0 with commit metadata {}.", versionShadow.getCommitMetadata());
           result = Optional.of(versionShadow.get());
         } else {
-          LOGGER.warn("No version information found for resource id {}. Returning empty result.", resourceId);
+          LOGGER.warn("No version information found for resource id '{}'. Returning empty result.", resourceId);
         }
       } else {
         LOGGER.trace("Audit is disabled. Returning empty result.");
@@ -112,12 +112,12 @@ public class DataResourceAuditService implements IAuditService<DataResource> {
       List<CdoSnapshot> snapshots = javers.findSnapshots(query);
 
       if (CollectionUtils.isEmpty(snapshots)) {
-        LOGGER.warn("No version information found for resource id {}. Returning 0.", resourceId);
+        LOGGER.warn("No version information found for resource id '{}'. Returning 0.", resourceId);
         return 0;
       }
 
       long version = snapshots.get(0).getVersion();
-      LOGGER.trace("Snapshot for resource id {} found. Returning version {}.", resourceId, version);
+      LOGGER.trace("Snapshot for resource id '{}' found. Returning version {}.", resourceId, version);
       return version;
     }
   }
@@ -128,7 +128,7 @@ public class DataResourceAuditService implements IAuditService<DataResource> {
     if (!applicationProperties.isAuditEnabled()) {
       LOGGER.trace("Audit is disabled. Returning without doing anything.");
     } else {
-      LOGGER.trace("Performing shallow delete of resource with id {}.", resourceId);
+      LOGGER.trace("Performing shallow delete of resource with id '{}'.", resourceId);
       javers.commitShallowDelete(resourceId, resource);
       LOGGER.trace("Shallow delete executed.");
     }
