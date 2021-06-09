@@ -1593,26 +1593,26 @@ public class DataResourceControllerTestReadOnly{
     // first patch
     String patch = "[{\"op\": \"replace\",\"path\": \"/publicationYear\",\"value\": \"2017\"}]";
     this.mockMvc.perform(patch("/api/v1/dataresources/" + testVersioning.getId()).header(HttpHeaders.AUTHORIZATION,
-            "Bearer " + adminToken).header("If-Match", etag).contentType("application/json-patch+json").content(patch)).andDo(print()).andExpect(status().isNoContent());
-    // Check for new content
+            "Bearer " + adminToken).header("If-Match", etag).contentType("application/json-patch+json").content(patch)).andDo(print()).andExpect(status().isServiceUnavailable());
+    // Check for OLD content (patch was rejected)
     this.mockMvc.perform(get("/api/v1/dataresources/" + testVersioning.getId()).header(HttpHeaders.AUTHORIZATION,
-            "Bearer " + adminToken)).andDo(print()).andExpect(status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$.publicationYear").value("2017"));
-    // Get all versions (2?)
+            "Bearer " + adminToken)).andDo(print()).andExpect(status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$.publicationYear").value("2018"));
+    // Get all versions (still 1)
     this.mockMvc.perform(get("/api/v1/dataresources/" + testVersioning.getId()).header(HttpHeaders.AUTHORIZATION,
-            "Bearer " + adminToken).header(HttpHeaders.ACCEPT, "application/json")).andDo(print()).andExpect(status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(2)));
+            "Bearer " + adminToken).header(HttpHeaders.ACCEPT, "application/json")).andDo(print()).andExpect(status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(1)));
     // ETag for new version
     etag = this.mockMvc.perform(get("/api/v1/dataresources/" + testVersioning.getId()).header(HttpHeaders.AUTHORIZATION,
             "Bearer " + adminToken)).andDo(print()).andExpect(status().isOk()).andReturn().getResponse().getHeader("ETag");
     // Another patch
     patch = "[{\"op\": \"replace\",\"path\": \"/publicationYear\",\"value\": \"2016\"}]";
     this.mockMvc.perform(patch("/api/v1/dataresources/" + testVersioning.getId()).header(HttpHeaders.AUTHORIZATION,
-            "Bearer " + adminToken).header("If-Match", etag).contentType("application/json-patch+json").content(patch)).andDo(print()).andExpect(status().isNoContent());
-    // Check for new content
+            "Bearer " + adminToken).header("If-Match", etag).contentType("application/json-patch+json").content(patch)).andDo(print()).andExpect(status().isServiceUnavailable());
+    // Check for OLD content
     this.mockMvc.perform(get("/api/v1/dataresources/" + testVersioning.getId()).header(HttpHeaders.AUTHORIZATION,
-            "Bearer " + adminToken)).andDo(print()).andExpect(status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$.publicationYear").value("2016"));
-    // Get all versions (3?)
+            "Bearer " + adminToken)).andDo(print()).andExpect(status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$.publicationYear").value("2018"));
+    // Get all versions (still 1)
     this.mockMvc.perform(get("/api/v1/dataresources/" + testVersioning.getId()).header(HttpHeaders.AUTHORIZATION,
-            "Bearer " + adminToken).header(HttpHeaders.ACCEPT, "application/json")).andDo(print()).andExpect(status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(3)));
+            "Bearer " + adminToken).header(HttpHeaders.ACCEPT, "application/json")).andDo(print()).andExpect(status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(1)));
   }
 
   @Test
