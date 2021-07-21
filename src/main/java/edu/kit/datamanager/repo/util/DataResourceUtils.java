@@ -219,11 +219,11 @@ public class DataResourceUtils {
   /**
    * Updata an existing resource.
    *
-   * @param applicationProperties
-   * @param identifier
-   * @param newResource
-   * @param request
-   * @param supplier
+   * @param applicationProperties Configuration holding all services.
+   * @param identifier Identifier of the resource
+   * @param newResource New resource
+   * @param eTag Expected E-Tag of the 'old' resource
+   * @param supplier Method for determining URL in case of an error.
    * @return
    */
   public static DataResource updateResource(RepoBaseConfiguration applicationProperties,
