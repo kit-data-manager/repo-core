@@ -142,6 +142,7 @@ public class DataResource implements EtagSupport, Serializable{
 
   @Schema(description = "One or more description entries providing additional information, e.g. abstract or technical information (recommended).", required = false)
   @OneToMany(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
+  @JoinColumn(name = "resource_id")
   private Set<Description> descriptions = new HashSet<>();
 
   @Schema(description = "One or more geolocation entries providing information about the location of the resource, e.g. storage or aquisition location (recommended).", required = false)
