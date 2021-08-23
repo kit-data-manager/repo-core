@@ -92,7 +92,7 @@ dependencies {
     // javers
     implementation "org.javers:javers-spring-boot-starter-sql:${javersVersion}"
     // Database
-    implementation "com.h2database:h2:1.4.194"
+    implementation "com.h2database:h2:1.4.200"
     implementation "org.postgresql:postgresql:42.2.1"
     // XML
     implementation "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.9.1"
@@ -124,18 +124,16 @@ dependencies {
     implementation "ch.qos.logback:logback-classic:1.2.3"
     implementation "com.github.fge:json-patch:1.9"
 
-    testImplementation "com.h2database:h2:1.4.194"
-    testImplementation "junit:junit:4.12"
-    //testImplementation "org.springframework.restdocs:spring-restdocs-mockmvc"
+    testImplementation "junit:junit:4.13.2"
+    testImplementation "org.springframework:spring-test"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:2.0.4.RELEASE'
-    testImplementation "org.springframework:spring-test"
     testImplementation "org.springframework.security:spring-security-test"
    
     //Java 11 Support 
-    testImplementation "org.mockito:mockito-core:2.23.4"
-    testImplementation "org.powermock:powermock-module-junit4:2.0.2"
-    testImplementation "org.powermock:powermock-api-mockito2:2.0.2"
+    testImplementation "org.mockito:mockito-core:3.12.0"
+    testImplementation "org.powermock:powermock-module-junit4:2.0.9"
+    testImplementation "org.powermock:powermock-api-mockito2:2.0.9"
 
     testImplementation 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.9.2'
     asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.4.RELEASE'
