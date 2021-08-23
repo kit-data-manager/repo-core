@@ -109,7 +109,7 @@ dependencies {
     implementation "com.sun.xml.bind:jaxb-core:2.3.0.1"
     implementation "com.sun.xml.bind:jaxb-impl:2.3.0.1"
     implementation "javax.activation:activation:1.1.1"
-    implementation "org.javassist:javassist:3.23.1-GA"
+    implementation "org.javassist:javassist:3.28.0-GA"
     
     implementation "edu.kit.datamanager:service-base:0.3.0-SNAPSHOT"
 //    implementation "edu.kit.datamanager:generic-message-consumer:0.2.0"
@@ -119,9 +119,10 @@ dependencies {
 
     implementation "io.jsonwebtoken:jjwt:0.9.1"
 
-    implementation "org.slf4j:slf4j-api:1.7.25"
     // Logging
-    implementation "ch.qos.logback:logback-classic:1.2.3"
+    implementation "org.slf4j:slf4j-api:1.7.32"
+    implementation "ch.qos.logback:logback-classic:1.2.5"
+
     implementation "com.github.fge:json-patch:1.9"
 
     testImplementation "junit:junit:4.13.2"
