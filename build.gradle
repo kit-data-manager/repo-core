@@ -32,9 +32,9 @@ ext {
     javersVersion     = '6.2.3'
 }
 
-apply plugin: 'java-library'
+apply plugin: 'java'
 apply plugin: 'eclipse'
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 apply plugin: 'jacoco'
 
 description = "Core module for data repositories based on metadata model of datacite."
@@ -42,8 +42,8 @@ description = "Core module for data repositories based on metadata model of data
 group = 'edu.kit.datamanager'
 
 jar {
-    baseName = 'repo-core'
-    version = System.getenv('version')
+    archiveBaseName = 'repo-core'
+    archiveVersion = System.getenv('version')
 }
 
 repositories {
@@ -68,80 +68,80 @@ println "Building ${name} version: ${version}"
 
 dependencies {
     // Spring
-    api("org.springframework.boot:spring-boot-starter-data-rest")
-    api("org.springframework.boot:spring-boot-starter-amqp")
-    api("org.springframework.boot:spring-boot-starter-web")
-    api("org.springframework.boot:spring-boot-starter-security")
-    api("org.springframework.boot:spring-boot-starter-actuator")
-    api("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation "org.springframework.boot:spring-boot-starter-data-rest"
+    implementation "org.springframework.boot:spring-boot-starter-amqp"
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
     
-    api("org.springframework.cloud:spring-cloud-dependencies:Greenwich.SR3")
-    api("org.springframework.cloud:spring-cloud-starter:2.2.3.RELEASE")
+    implementation "org.springframework.cloud:spring-cloud-dependencies:Greenwich.SR3"
+    implementation "org.springframework.cloud:spring-cloud-starter:2.2.3.RELEASE"
     // springdoc
-    api("org.springdoc:springdoc-openapi-ui:${springDocVersion}")
-    api("org.springdoc:springdoc-openapi-data-rest:${springDocVersion}")
-    api("org.springdoc:springdoc-openapi-webmvc-core:${springDocVersion}")
+    implementation "org.springdoc:springdoc-openapi-ui:${springDocVersion}"
+    implementation "org.springdoc:springdoc-openapi-data-rest:${springDocVersion}"
+    implementation "org.springdoc:springdoc-openapi-webmvc-core:${springDocVersion}"
     // apache
-    api('commons-codec:commons-codec:1.7')
-    api("commons-configuration:commons-configuration:1.10")
-    api("commons-io:commons-io:2.5")
-    api("commons-validator:commons-validator:1.6")
-    api("org.apache.commons:commons-collections4:4.1")
-    api("org.apache.commons:commons-lang3:3.6")
-    api("org.apache.commons:commons-text:1.8")
-    api('org.apache.httpcomponents:httpclient:4.5.6')
-    api("org.apache.tika:tika-core:1.18") 
+    implementation 'commons-codec:commons-codec:1.7'
+    implementation "commons-configuration:commons-configuration:1.10"
+    implementation "commons-io:commons-io:2.5"
+    implementation "commons-validator:commons-validator:1.6"
+    implementation "org.apache.commons:commons-collections4:4.1"
+    implementation "org.apache.commons:commons-lang3:3.6"
+    implementation "org.apache.commons:commons-text:1.8"
+    implementation 'org.apache.httpcomponents:httpclient:4.5.6'
+    implementation "org.apache.tika:tika-core:1.18"
     // javers
     implementation "org.javers:javers-spring-boot-starter-sql:${javersVersion}"
     // Database
-    api("com.h2database:h2:1.4.194")
-    api("org.postgresql:postgresql:42.2.1")
+    implementation "com.h2database:h2:1.4.194"
+    implementation "org.postgresql:postgresql:42.2.1"
     // XML
-    api("com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.9.1")
-    api("com.fasterxml.jackson.module:jackson-module-afterburner:2.7.1")
-    api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.6.5")
-    api("com.fasterxml.jackson.datatype:jackson-datatype-joda:2.4.0")
+    implementation "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.9.1"
+    implementation "com.fasterxml.jackson.module:jackson-module-afterburner:2.7.1"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.6.5"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-joda:2.4.0"
 
-    api("com.monitorjbl:spring-json-view:1.0.1")
+    implementation "com.monitorjbl:spring-json-view:1.0.1"
 
-    api("de.codecentric:spring-boot-admin-starter-client:2.1.6")
+    implementation "de.codecentric:spring-boot-admin-starter-client:2.1.6"
 
     //Java 11 Support 
-    api("javax.xml.bind:jaxb-api:2.3.1")
-    api("com.sun.xml.bind:jaxb-core:2.3.0.1")
-    api("com.sun.xml.bind:jaxb-impl:2.3.0.1")
-    api("javax.activation:activation:1.1.1")
-    api("org.javassist:javassist:3.23.1-GA")
+    implementation "javax.xml.bind:jaxb-api:2.3.1"
+    implementation "com.sun.xml.bind:jaxb-core:2.3.0.1"
+    implementation "com.sun.xml.bind:jaxb-impl:2.3.0.1"
+    implementation "javax.activation:activation:1.1.1"
+    implementation "org.javassist:javassist:3.23.1-GA"
     
-    api("edu.kit.datamanager:service-base:0.3.0-SNAPSHOT")
-//    api("edu.kit.datamanager:generic-message-consumer:0.2.0")
+    implementation "edu.kit.datamanager:service-base:0.3.0-SNAPSHOT"
+//    implementation "edu.kit.datamanager:generic-message-consumer:0.2.0"
 
-    api("com.github.fge:json-patch:1.9")
-    api("net.sf.dozer:dozer:5.5.1")
+    implementation "com.github.fge:json-patch:1.9"
+    implementation "net.sf.dozer:dozer:5.5.1"
 
-    api("io.jsonwebtoken:jjwt:0.9.1")
+    implementation "io.jsonwebtoken:jjwt:0.9.1"
 
-    api("org.slf4j:slf4j-api:1.7.25")
+    implementation "org.slf4j:slf4j-api:1.7.25"
     // Logging
-    api("ch.qos.logback:logback-classic:1.2.3")
-    api("com.github.fge:json-patch:1.9")
+    implementation "ch.qos.logback:logback-classic:1.2.3"
+    implementation "com.github.fge:json-patch:1.9"
 
-    testImplementation("com.h2database:h2:1.4.194") 
-    testImplementation("junit:junit:4.12")
-    //testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation('org.springframework.restdocs:spring-restdocs-mockmvc:2.0.4.RELEASE')
-    testImplementation("org.springframework:spring-test")
-    testImplementation("org.springframework.security:spring-security-test")
+    testImplementation "com.h2database:h2:1.4.194"
+    testImplementation "junit:junit:4.12"
+    //testImplementation "org.springframework.restdocs:spring-restdocs-mockmvc"
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:2.0.4.RELEASE'
+    testImplementation "org.springframework:spring-test"
+    testImplementation "org.springframework.security:spring-security-test"
    
     //Java 11 Support 
-    testImplementation("org.mockito:mockito-core:2.23.4")
-    testImplementation("org.powermock:powermock-module-junit4:2.0.2")
-    testImplementation("org.powermock:powermock-api-mockito2:2.0.2")
+    testImplementation "org.mockito:mockito-core:2.23.4"
+    testImplementation "org.powermock:powermock-module-junit4:2.0.2"
+    testImplementation "org.powermock:powermock-api-mockito2:2.0.2"
 
-    testImplementation('org.asciidoctor:asciidoctor-gradle-plugin:1.5.9.2')
-    asciidoctor('org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.4.RELEASE')
-    asciidoctor('com.github.allati.asciidoctor.monotree:asciidoctor-extension-monotree:0.0.1')
+    testImplementation 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.9.2'
+    asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.4.RELEASE'
+    asciidoctor 'com.github.allati.asciidoctor.monotree:asciidoctor-extension-monotree:0.0.1'
 }
 
 test {
