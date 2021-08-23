@@ -1,25 +1,6 @@
-buildscript {
-    repositories { 
-        mavenLocal()
-        jcenter()
-        mavenCentral()
-    }
-    
-	 repositories {
-    maven {
-      url "https://plugins.gradle.org/m2/"
-    }
-  }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.2.2.RELEASE")
-        classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.9.2'
-        classpath 'net.researchgate:gradle-release:2.6.0'
-    }
-}
-
 plugins { 
-    id "io.freefair.lombok" version "5.3.3.3"
-    id "io.freefair.maven-publish-java" version "5.3.3.3"
+    id "io.freefair.lombok" version "6.1.0"
+    id "io.freefair.maven-publish-java" version "6.1.0"
 //    id 'io.franzbecker.gradle-lombok' version '1.14'
     id "io.spring.dependency-management" version "1.0.8.RELEASE" 
     id "com.github.kt3k.coveralls" version "2.8.1" 
@@ -35,8 +16,6 @@ ext {
 }
 
 apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
 apply plugin: 'jacoco'
 
 description = "Core module for data repositories based on metadata model of datacite."
@@ -50,7 +29,6 @@ jar {
 
 repositories {
     mavenLocal() 
-    jcenter()
     mavenCentral()
 }
 
@@ -120,8 +98,6 @@ dependencies {
     implementation "org.slf4j:slf4j-api:1.7.32"
     implementation "ch.qos.logback:logback-classic:1.2.5"
 
-    implementation "com.github.fge:json-patch:1.9"
-
     testImplementation "junit:junit:4.13.2"
     testImplementation "org.springframework:spring-test"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
@@ -156,8 +132,8 @@ tasks.withType(Test) {
 }
 jacocoTestReport {
     reports {
-        xml.enabled true
-        html.enabled true
+        xml.required = true
+        html.required = true
     }
     
     afterEvaluate {
