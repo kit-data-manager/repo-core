@@ -42,13 +42,15 @@ println "Building ${name} version: ${version}"
 
 dependencies {
     // Spring
+    implementation 'org.springframework:spring-messaging:5.3.9'
+    // Spring Boot
     implementation "org.springframework.boot:spring-boot-starter-data-rest"
     implementation "org.springframework.boot:spring-boot-starter-amqp"
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.boot:spring-boot-starter-actuator"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
-    
+   
 //    implementation "org.springframework.cloud:spring-cloud-dependencies:Greenwich.SR3"
 //    implementation "org.springframework.cloud:spring-cloud-starter:2.2.3.RELEASE"
     // springdoc

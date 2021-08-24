@@ -783,7 +783,7 @@ public class DataResourceService implements IDataResourceService {
 
   private String getResourceIdFromAnyId(String resourceIdentifier) {
     Optional<AllIdentifiers> helperResource = allIdentifiersDao.findById(resourceIdentifier);
-    if (helperResource.isEmpty()) {
+    if (!helperResource.isPresent()) {
       String message = "Data resource with identifier " + resourceIdentifier + " was not found.";
       logger.info(message);
       throw new ResourceNotFoundException(message);
