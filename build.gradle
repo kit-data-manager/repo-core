@@ -37,8 +37,10 @@ targetCompatibility = 1.8
 configurations {
     all*.exclude module : 'spring-boot-starter-logging'
 }
+def currentJvm = org.gradle.internal.jvm.Jvm.current()
 
 println "Building ${name} version: ${version}"
+println "JDK version: ${currentJvm}"
 
 dependencies {
     // Spring
@@ -118,6 +120,10 @@ dependencies {
 }
 
 test {
+    // Allow access to internal methods used by powerMockito
+    // Will fail with Java17
+    jvmArgs '--illegal-access=permit'
+    
     testLogging {
         outputs.upToDateWhen {false}
         showStandardStreams = true
