@@ -49,6 +49,8 @@ import edu.kit.datamanager.repo.domain.acl.AclEntry;
 import edu.kit.datamanager.repo.service.IDataResourceService;
 import edu.kit.datamanager.repo.service.impl.DataResourceService;
 import edu.kit.datamanager.service.IAuditService;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -60,9 +62,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import org.apache.commons.io.FileUtils;
 import org.hamcrest.Matchers;
 import static org.hamcrest.Matchers.equalTo;
 import org.javers.core.Javers;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -144,6 +148,8 @@ public class DataResourceControllerTestWithoutVersioning {
   private DataResource otherResource;
   private DataResource revokedResource;
   private DataResource fixedResource;
+
+  private static Set<Path> allTempFiles = new HashSet<>();
 
   @Before
   public void setUp() throws JsonProcessingException {
@@ -255,6 +261,11 @@ public class DataResourceControllerTestWithoutVersioning {
 
     fixedResource = dataResourceDao.save(fixedResource);
     ((DataResourceService) dataResourceService).saveIdentifiers(fixedResource);
+  }
+
+  @AfterClass
+  public static void tearDownClass() {
+    DataResourceControllerTestWithoutVersioning.deleteAllTempFiles();
   }
 
   /**
@@ -1043,7 +1054,7 @@ public class DataResourceControllerTestWithoutVersioning {
    */
   @Test
   public void testUploadFile() throws Exception {
-    Path temp = Files.createTempFile("testUploadFile", "test");
+    Path temp = createTempFile();
     MockMultipartFile fstmp = new MockMultipartFile("file", "bibtex.txt", "multipart/form-data", Files.newInputStream(temp));
 
     this.mockMvc.perform(multipart("/api/v1/dataresources/" + sampleResource.getId() + "/data/bibtex.txt").file(fstmp).header(HttpHeaders.AUTHORIZATION,
@@ -1058,7 +1069,7 @@ public class DataResourceControllerTestWithoutVersioning {
    */
   @Test
   public void testUploadFileWithDataInPath() throws Exception {
-    Path temp = Files.createTempFile("testUploadFile", "test");
+    Path temp = createTempFile();
     MockMultipartFile fstmp = new MockMultipartFile("file", "bibtex.txt", "multipart/form-data", Files.newInputStream(temp));
 
     this.mockMvc.perform(multipart("/api/v1/dataresources/" + sampleResource.getId() + "/data/test/data/bibtex.txt").file(fstmp).header(HttpHeaders.AUTHORIZATION,
@@ -1072,7 +1083,7 @@ public class DataResourceControllerTestWithoutVersioning {
 
   @Test
   public void testUploadFileWithoutPermissions() throws Exception {
-    Path temp = Files.createTempFile("testUploadFileWithoutPermissions", "test");
+    Path temp = createTempFile();
     MockMultipartFile fstmp = new MockMultipartFile("file", "bibtex.txt", "multipart/form-data", Files.newInputStream(temp));
 
     this.mockMvc.perform(multipart("/api/v1/dataresources/" + sampleResource.getId() + "/data/bibtex.txt").file(fstmp).header(HttpHeaders.AUTHORIZATION,
@@ -1081,14 +1092,14 @@ public class DataResourceControllerTestWithoutVersioning {
 
   @Test
   public void testUploadFileAnonymous() throws Exception {
-    Path temp = Files.createTempFile("testUploadFileAnonymous", "test");
+    Path temp = createTempFile();
     MockMultipartFile fstmp = new MockMultipartFile("file", "bibtex.txt", "multipart/form-data", Files.newInputStream(temp));
     this.mockMvc.perform(multipart("/api/v1/dataresources/" + sampleResource.getId() + "/data/bibtex.txt").file(fstmp)).andDo(print()).andExpect(status().isUnauthorized());
   }
 
   @Test
   public void testUploadFileForInvalidResource() throws Exception {
-    Path temp = Files.createTempFile("testUploadFileForInvalidResource", "test");
+    Path temp = createTempFile();
     MockMultipartFile fstmp = new MockMultipartFile("file", "bibtex.txt", "multipart/form-data", Files.newInputStream(temp));
 
     this.mockMvc.perform(multipart("/api/v1/dataresources/0/data/bibtex.txt").file(fstmp).header(HttpHeaders.AUTHORIZATION,
@@ -1097,7 +1108,7 @@ public class DataResourceControllerTestWithoutVersioning {
 
   @Test
   public void testUploadExistingWithoutForce() throws Exception {
-    Path temp = Files.createTempFile("testUploadExistingWithoutForce", "test");
+    Path temp = createTempFile();
     MockMultipartFile fstmp = new MockMultipartFile("file", "bibtex1.txt", "multipart/form-data", Files.newInputStream(temp));
 
     this.mockMvc.perform(multipart("/api/v1/dataresources/" + sampleResource.getId() + "/data/bibtex1.txt").file(fstmp).header(HttpHeaders.AUTHORIZATION,
@@ -1109,7 +1120,7 @@ public class DataResourceControllerTestWithoutVersioning {
 
   @Test
   public void testUploadExistingWithForce() throws Exception {
-    Path temp = Files.createTempFile("testUploadExistingWithForce", "test");
+    Path temp = createTempFile();
     MockMultipartFile fstmp = new MockMultipartFile("file", "bibtex2.txt", "multipart/form-data", Files.newInputStream(temp));
 
     this.mockMvc.perform(multipart("/api/v1/dataresources/" + sampleResource.getId() + "/data/bibtex2.txt").file(fstmp).header(HttpHeaders.AUTHORIZATION,
@@ -1127,7 +1138,7 @@ public class DataResourceControllerTestWithoutVersioning {
     cinfo.setMetadata(metadata);
     ObjectMapper mapper = createObjectMapper();
 
-    Path temp = Files.createTempFile("testUploadExistingWithForceAndMetadataUpdate", "test");
+    Path temp = createTempFile();
 
     MockMultipartFile fstmp = new MockMultipartFile("file", "bibtex3.txt", "application/json", Files.newInputStream(temp));
     MockMultipartFile secmp = new MockMultipartFile("metadata", "metadata.json", "application/json", mapper.writeValueAsBytes(cinfo));
@@ -1195,7 +1206,7 @@ public class DataResourceControllerTestWithoutVersioning {
     cinfo.setTags(tags);
 
     ObjectMapper mapper = createObjectMapper();
-    Path temp = Files.createTempFile("testQueryByTag", "test");
+    Path temp = createTempFile();
 
     MockMultipartFile fstmp = new MockMultipartFile("file", "bibtex4.txt", "application/json", Files.newInputStream(temp));
     MockMultipartFile secmp = new MockMultipartFile("metadata", "metadata.json", "application/json", mapper.writeValueAsBytes(cinfo));
@@ -1237,7 +1248,7 @@ public class DataResourceControllerTestWithoutVersioning {
 
     ObjectMapper mapper = createObjectMapper();
 
-    Path temp = Files.createTempFile("testUploadExistingWithForceAndMetadataUpdate", "test");
+    Path temp = createTempFile();
     Files.write(temp, "Test file".getBytes());
 
     MockMultipartFile fstmp = new MockMultipartFile("file", "bibtex3.txt", "text/plain", Files.newInputStream(temp));
@@ -1328,7 +1339,7 @@ public class DataResourceControllerTestWithoutVersioning {
   @Test
   public void testRemoveLeadingSlashFromPath() throws Exception {
 
-    Path temp = Files.createTempFile("testRemoveLeadingSlashFromPath", "test");
+    Path temp = createTempFile();
     MockMultipartFile fstmp = new MockMultipartFile("file", "bibtex5.txt", "application/json", Files.newInputStream(temp));
 
     this.mockMvc.perform(multipart("/api/v1/dataresources/" + sampleResource.getId() + "/data/bibtex5.txt").file(fstmp).header(HttpHeaders.AUTHORIZATION,
@@ -1362,7 +1373,7 @@ public class DataResourceControllerTestWithoutVersioning {
     cinfo.setContentUri("/invalidlocation/missingFile");
     contentInformationDao.save(cinfo);
 
-    Path temp = Files.createTempFile("testVariousContentDownload", "test");
+    Path temp = createTempFile();
     cinfo = new ContentInformation();
     cinfo.setParentResource(sampleResource);
     cinfo.setVersioningService("none");
@@ -1382,7 +1393,7 @@ public class DataResourceControllerTestWithoutVersioning {
     cinfo.setVersioningService("none");
     cinfo.setRelativePath("withMediaType");
     cinfo.setMediaType("text/plain");
-    temp = Files.createTempFile("testVariousContentDownload2", "txt");
+    temp = createTempFile();
     cinfo.setContentUri(temp.toUri().toString());
     contentInformationDao.save(cinfo);
 
@@ -1459,7 +1470,7 @@ public class DataResourceControllerTestWithoutVersioning {
     Set<String> tags = new HashSet<>();
     tags.add("testing");
     cinfo.setTags(tags);
-    Path temp = Files.createTempFile("testPatchContentInformation", "txt");
+    Path temp = createTempFile();
     cinfo.setContentUri(temp.toUri().toString());
     contentInformationDao.save(cinfo);
 
@@ -1484,7 +1495,7 @@ public class DataResourceControllerTestWithoutVersioning {
     Set<String> tags = new HashSet<>();
     tags.add("testing");
     cinfo.setTags(tags);
-    Path temp = Files.createTempFile("testPatchInvalidContentInformationField", "txt");
+    Path temp = createTempFile();
     cinfo.setContentUri(temp.toUri().toString());
     contentInformationDao.save(cinfo);
 
@@ -1506,7 +1517,7 @@ public class DataResourceControllerTestWithoutVersioning {
     Set<String> tags = new HashSet<>();
     tags.add("testing");
     cinfo.setTags(tags);
-    Path temp = Files.createTempFile("testPatchWithoutPermissions", "txt");
+    Path temp = createTempFile();
     cinfo.setContentUri(temp.toUri().toString());
     contentInformationDao.save(cinfo);
 
@@ -1546,7 +1557,7 @@ public class DataResourceControllerTestWithoutVersioning {
     Set<String> tags = new HashSet<>();
     tags.add("testing");
     cinfo.setTags(tags);
-    Path temp = Files.createTempFile("testPatchWithInvalidEtag", "txt");
+    Path temp = createTempFile();
     cinfo.setContentUri(temp.toUri().toString());
     contentInformationDao.save(cinfo);
 
@@ -1565,7 +1576,7 @@ public class DataResourceControllerTestWithoutVersioning {
     Set<String> tags = new HashSet<>();
     tags.add("testing");
     cinfo.setTags(tags);
-    Path temp = Files.createTempFile("testPatchWithAdminPermission", "txt");
+    Path temp = createTempFile();
     cinfo.setContentUri(temp.toUri().toString());
     contentInformationDao.save(cinfo);
 
@@ -1590,7 +1601,7 @@ public class DataResourceControllerTestWithoutVersioning {
     Set<String> tags = new HashSet<>();
     tags.add("testing");
     cinfo.setTags(tags);
-    Path temp = Files.createTempFile("testPatchAnonymous", "txt");
+    Path temp = createTempFile();
     cinfo.setContentUri(temp.toUri().toString());
     contentInformationDao.save(cinfo);
 
@@ -1604,7 +1615,7 @@ public class DataResourceControllerTestWithoutVersioning {
 
   @Test
   public void testDeleteContent() throws Exception {
-    Path temp = Files.createTempFile("testDeleteContentAnonymous", "txt");
+    Path temp = createTempFile();
     ContentInformation cinfo = new ContentInformation();
     cinfo.setParentResource(sampleResource);
     cinfo.setRelativePath("validFile");
@@ -1647,7 +1658,7 @@ public class DataResourceControllerTestWithoutVersioning {
 
   @Test
   public void testDeleteContentAnonymous() throws Exception {
-    Path temp = Files.createTempFile("testDeleteContentAnonymous", "txt");
+    Path temp = createTempFile();
     ContentInformation cinfo = new ContentInformation();
     cinfo.setParentResource(sampleResource);
     cinfo.setRelativePath("validFile");
@@ -1670,10 +1681,9 @@ public class DataResourceControllerTestWithoutVersioning {
             "Bearer " + adminToken).header(HttpHeaders.ACCEPT, "application/vnd.datamanager.content-information+json")).andDo(print()).andExpect(status().isOk());
   }
 
-
   @Test
   public void testGetAllVersionsOfResourceAsAdmin() throws Exception {
-    DataResource     testVersioning=  DataResource.factoryNewDataResource("testVersioning");
+    DataResource testVersioning = DataResource.factoryNewDataResource("testVersioning");
     testVersioning.setState(DataResource.State.VOLATILE);
     testVersioning.getDescriptions().add(Description.factoryDescription("This is a description", Description.TYPE.OTHER, "en"));
     testVersioning.getTitles().add(Title.factoryTitle("Title", Title.TYPE.OTHER));
@@ -1696,7 +1706,7 @@ public class DataResourceControllerTestWithoutVersioning {
     testVersioning.getSubjects().add(Subject.factorySubject("testing", "uri", "en", Scheme.factoryScheme("id", "uri")));
 
     testVersioning = dataResourceDao.save(testVersioning);
-    ((DataResourceService)dataResourceService).saveIdentifiers(testVersioning);
+    ((DataResourceService) dataResourceService).saveIdentifiers(testVersioning);
 
     javers.commit("admin", testVersioning);
     // Read all versions (only 1 version available)
@@ -1734,7 +1744,7 @@ public class DataResourceControllerTestWithoutVersioning {
   @Test
   public void testGetAllVersionsOfResourceWithOtherUsers() throws Exception {
     javers.commit("admin", fixedResource);
-   // Read all versions (only 1 version available)
+    // Read all versions (only 1 version available)
     this.mockMvc.perform(get("/api/v1/dataresources/" + fixedResource.getId()).header(HttpHeaders.AUTHORIZATION,
             "Bearer " + adminToken).header(HttpHeaders.ACCEPT, "application/json")).andDo(print()).andExpect(status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(1)));
     this.mockMvc.perform(get("/api/v1/dataresources/" + fixedResource.getId()).header(HttpHeaders.AUTHORIZATION,
@@ -1750,6 +1760,7 @@ public class DataResourceControllerTestWithoutVersioning {
     // Read all versions (only 1 version available)
     this.mockMvc.perform(get("/api/v1/dataresources/" + sampleResource.getId()).header(HttpHeaders.ACCEPT, "application/json")).andDo(print()).andExpect(status().isForbidden());
   }
+
   private ObjectMapper createObjectMapper() {
     return Jackson2ObjectMapperBuilder.json()
             .serializationInclusion(JsonInclude.Include.NON_EMPTY) // Don’t include null values
@@ -1762,4 +1773,17 @@ public class DataResourceControllerTestWithoutVersioning {
    * VERSIONING TESTS**
    */
   // Skip versioning tests due to disabled versioning.
+
+  private Path createTempFile() throws IOException {
+    Path tempFile = Files.createTempFile("dataResourceControllerTestWithoutVersioning", ".txt");
+    allTempFiles.add(tempFile);
+    FileUtils.writeStringToFile(tempFile.toFile(), "This file is only for tests!", Charset.defaultCharset());
+    return tempFile;
+  }
+
+  private static void deleteAllTempFiles() {
+    for (Path tempFile : allTempFiles) {
+      FileUtils.deleteQuietly(tempFile.toFile());
+    }
+  }
 }
