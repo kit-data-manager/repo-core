@@ -6,41 +6,50 @@
 ![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/kitdm/repo-core)
 ![Docker Image Version (latest semver)](https://img.shields.io/docker/v/kitdm/repo-core)
 
-This project contains the core module for the repository microservice for the KIT DM infrastructure. The core module provides
-basic services for data resource management, e.g. register DataCite-oriented metadata and upload/download content to data resources.
+Library for building repos powered by KIT DM 2.0 services. It contains the core module 
+for the repository microservice for the KIT DM infrastructure. The core module provides
+basic services for data resource management, e.g. register DataCite-oriented metadata 
+and upload/download content to data resources. It also provides commonly used dependencies 
+and general purpose implementations, e.g. helpers and exception.
 
 ## How to build
 
-In order to build this microservice you'll need:
+In order to build this module you'll need:
 
-* Java SE Development Kit 8 or higher
+* Java SE Development Kit 11 or higher
 
-After obtaining the sources change to the folder where the sources are located perform the following steps:
+After obtaining the sources change to the folder where the sources are located and call:
 
 ```
-user@localhost:/home/user/repo-core$ ./gradlew clean build
-> Configure project :
-Using release profile for building base-repo
-<-------------> 0% EXECUTING [0s]
-[...]
+user@localhost:/home/user/repo-core$ ./gradlew publishToMavenLocal
+BUILD SUCCESSFUL in 1s
+3 actionable tasks: 3 executed
 user@localhost:/home/user/repo-core$
 ```
 
-The Gradle wrapper will now take care of downloading the configured version of 
-Gradle, checking out all required libraries to build this library.
+The gradle wrapper will download and install gradle, if not already available. Afterwards, the module artifact
+will be built and installed into the local maven repository, from where it can be used by other projects.
 
-## How to start
+## Dependency from Maven Central Repository
 
-### Prerequisites
+Instead of using a local build you may also use the most recent version from the Central Maven Repository directly. 
 
-* PostgreSQL 9.1 or higher
-* RabbitMQ 3.7.3 or higher (in case you want to use the messaging feature, which is recommended)
+### Maven
 
+~~~~
+<dependency>
+    <groupId>edu.kit.datamanager</groupId>
+    <artifactId>repo-core</artifactId>
+    <version>0.9.0</version>
+</dependency>
+~~~~
 
-## More Information
+### Gradle
 
-* [Information about the DataCite metadata schema](https://schema.datacite.org/)
+~~~~
+compile group: 'edu.kit.datamanager', name: 'repo-core', version: '0.9.0'
+~~~~
 
 ## License
 
-The KIT Data Manager is licensed under the Apache License, Version 2.0.
+This library is licensed under the Apache License, Version 2.0.
