@@ -21,12 +21,12 @@ import edu.kit.datamanager.repo.configuration.RepoBaseConfiguration;
 import edu.kit.datamanager.repo.domain.DataResource;
 import edu.kit.datamanager.repo.service.impl.DateBasedStorageService;
 import edu.kit.datamanager.repo.util.PathUtils;
+import java.net.URI;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.Calendar;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -36,53 +36,55 @@ import org.junit.Test;
  */
 public class PathUtilsTest {
 
-    @Test
-    public void testGetDataUri() throws Exception {
-        // get current year
-        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+  @Test
+  public void testGetDataUri() throws Exception {
+    // get current year
+    int currentYear = Calendar.getInstance().get(Calendar.YEAR);
 
-        DataResource resource = DataResource.factoryNewDataResource("test123");
-        RepoBaseConfiguration props = new RepoBaseConfiguration();
-        //test with trailing slash 
-        props.setBasepath(new URL("file:///tmp/"));
-      DateBasedStorageService dateBasedStorageService = new DateBasedStorageService();
-      // configure service
-      DateBasedStorageProperties dbsp = new DateBasedStorageProperties();
-      dbsp.setPathPattern("@{year}");
-      dateBasedStorageService.configure(dbsp);
-      // set storage service.
-      props.setStorageService(dateBasedStorageService);
+    DataResource resource = DataResource.factoryNewDataResource("test123");
+    RepoBaseConfiguration props = new RepoBaseConfiguration();
+    //test with trailing slash 
+    props.setBasepath(new URL("file:///tmp/"));
+    DateBasedStorageService dateBasedStorageService = new DateBasedStorageService();
+    // configure service
+    DateBasedStorageProperties dbsp = new DateBasedStorageProperties();
+    dbsp.setPathPattern("@{year}");
+    dateBasedStorageService.configure(dbsp);
+    // set storage service.
+    props.setStorageService(dateBasedStorageService);
 
-        Assert.assertTrue(PathUtils.getDataUri(resource, "folder/file.txt", props).toString().startsWith("file:/tmp/" + currentYear + "/test123/folder/file.txt_"));
-        //test w/o trailing slash
-        props.setBasepath(new URL("file:///tmp"));
-        Assert.assertTrue(PathUtils.getDataUri(resource, "folder/file.txt", props).toString().startsWith("file:/tmp/" + currentYear + "/test123/folder/file.txt_"));
+    Assert.assertTrue(PathUtils.getDataUri(resource, "folder/file.txt", props).toString().startsWith("file:/tmp/" + currentYear + "/test123/folder/file.txt_"));
+    //test w/o trailing slash
+    props.setBasepath(new URL("file:///tmp"));
+    Assert.assertTrue(PathUtils.getDataUri(resource, "folder/file.txt", props).toString().startsWith("file:/tmp/" + currentYear + "/test123/folder/file.txt_"));
+    String folder = "fôldęr";
+    String folderEncoded = URLEncoder.encode(folder, Charset.forName("UTF-8"));
 
-        //test with URL-escaped chars
-        props.setBasepath(new URL("file:///f%C3%B4ld%C4%99r/"));
+    //test with URL-escaped chars
+    props.setBasepath(new URL("file:///" + folder + "/"));
 
-        Assert.assertTrue(PathUtils.getDataUri(resource, "folder/file.txt", props).toString().startsWith("file:/" + URLEncoder.encode("fôldęr", "UTF-8") + "/" + currentYear + "/test123/folder/file.txt_"));
+    Assert.assertTrue(PathUtils.getDataUri(resource, "folder/file.txt", props).toString() + " <-> file:/" + folderEncoded + "/" + currentYear + "/test123/folder/file.txt_", PathUtils.getDataUri(resource, "folder/file.txt", props).toString().startsWith("file:/" + folderEncoded + "/" + currentYear + "/test123/folder/file.txt_"));
+    //test without URL-escaped chars 
+    props.setBasepath(new URL("file:///" + folder + "/" + folder + "/"));
 
-        //test without URL-escaped chars -> Not working with updated Gradle Version, check test later.
-//    props.setBasepath(new URL("file:///fôldęr/")); 
-//    Assert.assertTrue(PathUtils.getDataUri(resource, "folder/file.txt", props).toString().startsWith("file:/" + new URIBuilder(props.getBasepath().toString()).getPath() + "/" + currentYear + "/test123/folder/file.txt_"));
-    }
+    Assert.assertTrue(props.getBasepath().toString() + " <-> file:/" + folderEncoded + "/" + folderEncoded + "/" + currentYear + "/test123/folder/file.txt_ <-> " + PathUtils.getDataUri(resource, "folder/file.txt", props).toString(), PathUtils.getDataUri(resource, "folder/file.txt", props).toString().startsWith("file:/" + folderEncoded + "/" + folderEncoded + "/" + currentYear + "/test123/folder/file.txt_"));
+  }
 
-    @Test(expected = CustomInternalServerError.class)
-    public void testInvalidBasePath() throws Exception {
-        DataResource resource = DataResource.factoryNewDataResource("test123");
-        RepoBaseConfiguration props = new RepoBaseConfiguration();
-        props.setBasepath(new URL("file:///fold?<>:er/"));
-        Assert.fail("Creating the following path should not work: " + PathUtils.getDataUri(resource, "folder/file.txt", props));
-    }
+  @Test(expected = CustomInternalServerError.class)
+  public void testInvalidBasePath() throws Exception {
+    DataResource resource = DataResource.factoryNewDataResource("test123");
+    RepoBaseConfiguration props = new RepoBaseConfiguration();
+    props.setBasepath(new URL("file:///fold?<>:er/"));
+    Assert.fail("Creating the following path should not work: " + PathUtils.getDataUri(resource, "folder/file.txt", props));
+  }
 
-    @Test(expected = CustomInternalServerError.class)
-    public void testNoInternalIdentifier() throws Exception {
-        DataResource resource = DataResource.factoryNewDataResource("test123");
-        resource.getAlternateIdentifiers().clear();
-        RepoBaseConfiguration props = new RepoBaseConfiguration();
-        props.setBasepath(new URL("file:///folder/"));
-        Assert.fail("Creating the following path should not work: " + PathUtils.getDataUri(resource, "folder/file.txt", props));
-    }
+  @Test(expected = CustomInternalServerError.class)
+  public void testNoInternalIdentifier() throws Exception {
+    DataResource resource = DataResource.factoryNewDataResource("test123");
+    resource.getAlternateIdentifiers().clear();
+    RepoBaseConfiguration props = new RepoBaseConfiguration();
+    props.setBasepath(new URL("file:///folder/"));
+    Assert.fail("Creating the following path should not work: " + PathUtils.getDataUri(resource, "folder/file.txt", props));
+  }
 
 }
