@@ -1,7 +1,7 @@
 # KIT Data Manager - Base Repository Service
 
-![Build Status](https://img.shields.io/travis/kit-data-manager/base-repo.svg)
-![Code Coverage](https://img.shields.io/coveralls/github/kit-data-manager/base-repo.svg)
+[![build with gradle](https://github.com/kit-data-manager/repo-core/actions/workflows/gradle.yml/badge.svg)](https://github.com/kit-data-manager/repo-core/actions/workflows/gradle.yml)
+[![codecov](https://codecov.io/gh/kit-data-manager/repo-core/branch/master/graph/badge.svg)](https://codecov.io/gh/kit-data-manager/repo-core)
 ![License](https://img.shields.io/github/license/kit-data-manager/repo-core.svg)
 ![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/kitdm/repo-core)
 ![Docker Image Version (latest semver)](https://img.shields.io/docker/v/kitdm/repo-core)
