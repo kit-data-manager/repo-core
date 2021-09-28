@@ -58,7 +58,7 @@ public class PathUtilsTest {
     props.setBasepath(new URL("file:///tmp"));
     Assert.assertTrue(PathUtils.getDataUri(resource, "folder/file.txt", props).toString().startsWith("file:/tmp/" + currentYear + "/test123/folder/file.txt_"));
     String folder = "fôldęr";
-    String folderEncoded = URLEncoder.encode(folder, Charset.forName("UTF-8"));
+    String folderEncoded = URLEncoder.encode(folder, "UTF-8");
 
     //test with URL-escaped chars
     props.setBasepath(new URL("file:///" + folder + "/"));

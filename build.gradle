@@ -122,9 +122,9 @@ dependencies {
 test {
     // Allow access to internal methods used by powerMockito
     // Will fail with Java17
-    // Breaks also Java8
-    jvmArgs '--illegal-access=permit'
-    
+    if (!JavaVersion.current().isJava8()) {
+        jvmArgs '--illegal-access=permit'
+    }
     testLogging {
         outputs.upToDateWhen {false}
         showStandardStreams = true
@@ -181,5 +181,5 @@ if (JavaVersion.current().isJava8Compatible()) {
             options.addStringOption('Xdoclint:none', '-quiet')
         }
     }
-}
+} 
 
