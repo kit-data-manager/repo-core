@@ -7,17 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 Extracted from the 'base-repo' project.
 
+### Security
+- none
+
 ### Changed
 - Switch to 'service-base' version 0.3.0.
 
-### Fixed
-
 ### Added
+- Add service to get all versions of a digital object.
 
-### Removed
+### Fixed
+- none
 
 ### Deprecated
+- none
 
-### Fixed
+### Removed
+- none
 
-### Security
+[Unreleased]: https://github.com/kit-data-manager/service-base/compare/v0.9.0...HEAD
+[0.9.0]: https://github.com/kit-data-manager/service-base/releases/tag/v0.9.0
