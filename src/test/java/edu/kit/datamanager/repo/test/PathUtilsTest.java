@@ -17,16 +17,16 @@ package edu.kit.datamanager.repo.test;
 
 import edu.kit.datamanager.exceptions.CustomInternalServerError;
 import edu.kit.datamanager.repo.configuration.DateBasedStorageProperties;
+import edu.kit.datamanager.repo.configuration.IdBasedStorageProperties;
 import edu.kit.datamanager.repo.configuration.RepoBaseConfiguration;
 import edu.kit.datamanager.repo.domain.DataResource;
 import edu.kit.datamanager.repo.service.impl.DateBasedStorageService;
+import edu.kit.datamanager.repo.service.impl.IdBasedStorageService;
 import edu.kit.datamanager.repo.util.PathUtils;
-import java.net.URI;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.util.Calendar;
+import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -68,6 +68,37 @@ public class PathUtilsTest {
     props.setBasepath(new URL("file:///" + folder + "/" + folder + "/"));
 
     Assert.assertTrue(props.getBasepath().toString() + " <-> file:/" + folderEncoded + "/" + folderEncoded + "/" + currentYear + "/test123/folder/file.txt_ <-> " + PathUtils.getDataUri(resource, "folder/file.txt", props).toString(), PathUtils.getDataUri(resource, "folder/file.txt", props).toString().startsWith("file:/" + folderEncoded + "/" + folderEncoded + "/" + currentYear + "/test123/folder/file.txt_"));
+  }
+
+  @Test
+  public void testGetDataUriWithIdBasedStorage() throws Exception {
+    // get current year
+    int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+    int charPerDirectory = 4;
+    int maxDepth = 3;
+
+    DataResource resource = DataResource.factoryNewDataResource(UUID.randomUUID().toString());
+    RepoBaseConfiguration props = new RepoBaseConfiguration();
+    //test with trailing slash 
+    props.setBasepath(new URL("file:///tmp/"));
+    IdBasedStorageService idBasedStorageService = new IdBasedStorageService();
+    // configure service
+    IdBasedStorageProperties dbsp = new IdBasedStorageProperties();
+    dbsp.setCharPerDirectory(charPerDirectory);
+    dbsp.setMaxDepth(maxDepth);
+    idBasedStorageService.configure(dbsp);
+    // set storage service.
+    props.setStorageService(idBasedStorageService);
+    String result = PathUtils.getDataUri(resource, "folder/file.txt", props).toString();
+    Assert.assertTrue(result + "<>file:/tmp/" + resource.getId().substring(0, charPerDirectory) + "/", result.startsWith("file:/tmp/" + resource.getId().substring(0, charPerDirectory) + "/"));
+    Assert.assertTrue(result, result.contains("/" + resource.getId() + "/folder/file.txt_"));
+    //test w/o trailing slash
+     
+    resource = DataResource.factoryNewDataResource(UUID.randomUUID().toString() + "/");
+    result = PathUtils.getDataUri(resource, "folder/file.txt", props).toString();
+    Assert.assertTrue(result, result.startsWith("file:/tmp/" + resource.getId().substring(0, charPerDirectory) + "/"));
+    // Attention only one slash after resource ID
+    Assert.assertTrue(result, result.contains("/" + resource.getId() + "/folder/file.txt_"));
   }
 
   @Test(expected = CustomInternalServerError.class)
