@@ -1,16 +1,14 @@
-# KIT Data Manager - Base Repository Service
+# KIT Data Manager - Repository Service Core
 
 [![build with gradle](https://github.com/kit-data-manager/repo-core/actions/workflows/gradle.yml/badge.svg)](https://github.com/kit-data-manager/repo-core/actions/workflows/gradle.yml)
 [![codecov](https://codecov.io/gh/kit-data-manager/repo-core/branch/master/graph/badge.svg)](https://codecov.io/gh/kit-data-manager/repo-core)
 ![License](https://img.shields.io/github/license/kit-data-manager/repo-core.svg)
-![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/kitdm/repo-core)
-![Docker Image Version (latest semver)](https://img.shields.io/docker/v/kitdm/repo-core)
 
 Library for building repos powered by KIT DM 2.0 services. It contains the core module 
 for the repository microservice for the KIT DM infrastructure. The core module provides
 basic services for data resource management, e.g. register DataCite-oriented metadata 
 and upload/download content to data resources. It also provides commonly used dependencies 
-and general purpose implementations, e.g. helpers and exception.
+and general purpose implementations, e.g. helpers and exceptions.
 
 ## How to build
 
