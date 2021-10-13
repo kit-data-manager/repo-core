@@ -27,7 +27,9 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.UUID;
+import org.apache.commons.lang3.SystemUtils;
 import org.junit.Assert;
+import static org.junit.Assume.assumeTrue;
 import org.junit.Test;
 
 /**
@@ -72,6 +74,8 @@ public class PathUtilsTest {
 
   @Test
   public void testGetDataUriWithIdBasedStorage() throws Exception {
+    // Only execute these tests if OS is not windows.
+    assumeTrue(!SystemUtils.IS_OS_WINDOWS);
     // get current year
     int currentYear = Calendar.getInstance().get(Calendar.YEAR);
     int charPerDirectory = 4;
