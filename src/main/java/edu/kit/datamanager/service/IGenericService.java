@@ -98,7 +98,7 @@ public interface IGenericService<C>{
    * @param example The example user used to build the query for assigned
    * values.
    * @param lastUpdateFrom The first update time of a returned resource.
-   * @param lastUpdateFrom The last update time of a returned resource.
+   * @param lastUpdateUntil The last update time of a returned resource.
    * @param pgbl The pageable object containing pagination information.
    *
    * @return A page object containing all matching users on the current page.

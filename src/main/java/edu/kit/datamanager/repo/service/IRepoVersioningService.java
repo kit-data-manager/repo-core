@@ -6,9 +6,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
 
+/**
+ *  Interface for versioning files.
+ */
 public interface IRepoVersioningService{
   /** 
    * Configure the service.
+   * @param applicationProperties
    */
   void configure(RepoBaseConfiguration applicationProperties);
 
@@ -20,32 +24,29 @@ public interface IRepoVersioningService{
    * @param path path of the file
    * @param data the file
    * @param options contains three keys: finalize, token number and parent.
-   * @return OcflObjectIdentifier : resourceId, versionId, parent version,
-   * finalize, token
    */
   void write(String resourceId, String callerId, String path, InputStream data, Map<String, String> options);
 
   /**
    * returns files of an object's version.
    *
-   * @param resourceId
-   * @param callerId
-   * @param path
-   * @param versionId
-   * @param destination
-   * @param options
-   * @return
+   * @param resourceId identifier of the object
+   * @param callerId name of the user
+   * @param path path of the file
+   * @param versionId Id of the version.
+   * @param destination Outputstream.
+   * @param options contains three keys: finalize, token number and parent.
    */
   void read(String resourceId, String callerId, String path, String versionId, OutputStream destination, Map<String, String> options);
 
   /**
    * returns information for a specific resource
    *
-   * @param resourceId
-   * @param path
-   * @param versionId
-   * @param options
-   * @return
+   * @param resourceId identifier of the object
+   * @param path path of the file
+   * @param versionId Id of the version.
+   * @param options contains three keys: finalize, token number and parent.
+   * @return Instance holding versioning information.
    */
   VersionInfo info(String resourceId, String path, String versionId, Map<String, String> options);
 

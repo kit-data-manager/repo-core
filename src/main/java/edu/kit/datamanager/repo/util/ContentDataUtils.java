@@ -62,7 +62,6 @@ public class ContentDataUtils {
    * @param path
    * @param contentInformation
    * @param force
-   * @param finalizeVersion
    * @param supplier
    * @return
    */
@@ -107,8 +106,11 @@ public class ContentDataUtils {
   /**
    * Read an existing resource.
    *
-   * @param alternateId
+   * @param applicationProperties
    * @param path
+   * @param resource
+   * @param version
+   * @param supplier
    * @return
    */
   public static ContentInformation readFile(RepoBaseConfiguration applicationProperties,
@@ -128,6 +130,7 @@ public class ContentDataUtils {
    * @param path
    * @param tag
    * @param version
+   * @param pgbl
    * @param supplier
    * @return
    */

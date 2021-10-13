@@ -170,10 +170,8 @@ public class DataResourceUtils {
    * @param lastUpdateFrom
    * @param lastUpdateUntil
    * @param pgbl
-   * @param req
    * @param response
    * @param uriBuilder
-   * @param supplier
    * @return
    */
   public static Page<DataResource> readAllResourcesFilteredByExample(RepoBaseConfiguration applicationProperties,
@@ -256,7 +254,6 @@ public class DataResourceUtils {
    * @param patch
    * @param eTag
    * @param patchContentInformation
-   * @return
    */
   public static void patchResource(RepoBaseConfiguration applicationProperties,
           String identifier,

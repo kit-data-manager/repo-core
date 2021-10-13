@@ -241,8 +241,8 @@ public interface IDataResourceService extends IGenericService<DataResource>, ISe
    * If no element is matching the provided example, an empty list should be
    * returned. This method is NOT expected to return 'null'.
    *
-   * This method provides a high level wrapper for {@link #findAll(edu.kit.datamanager.repo.domain.DataResource, org.springframework.data.domain.Pageable, boolean, java.util.function.BiConsumer)
-   * } and {@link #findAllFiltered(edu.kit.datamanager.repo.domain.DataResource, java.util.List, edu.kit.datamanager.entities.PERMISSION, org.springframework.data.domain.Pageable, boolean, java.util.function.BiConsumer)
+   * This method provides a high level wrapper for {@link #findAll(edu.kit.datamanager.repo.domain.DataResource, org.springframework.data.domain.Pageable, boolean)
+   * } and {@link #findAllFiltered(edu.kit.datamanager.repo.domain.DataResource, java.time.Instant, java.time.Instant,java.util.List, edu.kit.datamanager.entities.PERMISSION, org.springframework.data.domain.Pageable, boolean)
    * } and may use them internally. In addition it may perform security checks
    * in order to determine, which of the two findAll implementations should be
    * called, e.g. for privileged or unprivileged access.
