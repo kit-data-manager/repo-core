@@ -433,4 +433,28 @@ public class DataResourceController implements IDataResourceController {
 
     return ResponseEntity.ok().header(VERSION_HEADER, Long.toString(currentVersion)).body(auditInformation.get());
   }
+  
+  @Override
+  public ResponseEntity<List<DataResource>> getAllVersions(
+          @PathVariable("id") String id,
+          Pageable pgbl,
+          WebRequest wr,
+          HttpServletResponse hsr,
+          UriComponentsBuilder ucb
+  ) {
+    LOGGER.trace("Performing getAllVersions({}).", id);
+    // Search for resource type of MetadataSchemaRecord
+
+    //if security is enabled, include principal in query
+    LOGGER.debug("Performing query for records.");
+    Page<DataResource> records = DataResourceUtils.readAllVersionsOfResource(repositoryProperties, id, pgbl);
+    
+
+    List<DataResource> recordList = records.getContent();
+
+    String contentRange = ControllerUtils.getContentRangeHeader(pgbl.getPageNumber(), pgbl.getPageSize(), records.getTotalElements());
+
+    return ResponseEntity.ok().header("Content-Range", contentRange).body(recordList);
+  }
+
 }

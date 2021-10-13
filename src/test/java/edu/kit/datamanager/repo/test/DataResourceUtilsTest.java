@@ -48,7 +48,6 @@ import org.springframework.security.core.Authentication;
  *
  * @author jejkal
  */
-@Ignore("Currently not working with JDK 13")
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(AuthenticationHelper.class)
 @PowerMockIgnore({"javax.crypto.*", "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.dom.*"})

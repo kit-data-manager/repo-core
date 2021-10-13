@@ -17,8 +17,6 @@ public interface IVersioningService{
    * @param path path of the file
    * @param data the file
    * @param options contains three keys: finalize, token number and parent.
-   * @return OcflObjectIdentifier : resourceId, versionId, parent version,
-   * finalize, token
    */
   void write(String resourceId, String callerId, String path, InputStream data, Map<String, String> options);
 
@@ -31,7 +29,6 @@ public interface IVersioningService{
    * @param versionId
    * @param destination
    * @param options
-   * @return
    */
   void read(String resourceId, String callerId, String path, String versionId, OutputStream destination, Map<String, String> options);
 

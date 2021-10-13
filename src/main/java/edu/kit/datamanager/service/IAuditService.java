@@ -29,7 +29,7 @@ public interface IAuditService<C>{
    * Capture audit information for the provided resource and persist it
    * associated to the provided principal who changed the resource.
    *
-   * @param C resource The changed resource, which must not be null.
+   * @param resource The changed resource, which must not be null.
    * @param principal The principal who changed the resource, which must not be
    * null.
    *

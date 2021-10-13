@@ -20,18 +20,14 @@ import edu.kit.datamanager.entities.Identifier;
 import edu.kit.datamanager.entities.PERMISSION;
 import edu.kit.datamanager.entities.messaging.DataResourceMessage;
 import edu.kit.datamanager.exceptions.BadArgumentException;
-import edu.kit.datamanager.exceptions.CustomInternalServerError;
 import edu.kit.datamanager.exceptions.GoneException;
 import edu.kit.datamanager.exceptions.ResourceAlreadyExistException;
 import edu.kit.datamanager.exceptions.ResourceNotFoundException;
 import edu.kit.datamanager.exceptions.UpdateForbiddenException;
 import edu.kit.datamanager.repo.configuration.RepoBaseConfiguration;
 import edu.kit.datamanager.repo.dao.IAllIdentifiersDao;
-import edu.kit.datamanager.repo.dao.spec.dataresource.AlternateIdentifierSpec;
 import edu.kit.datamanager.repo.dao.IDataResourceDao;
-import edu.kit.datamanager.repo.dao.spec.dataresource.InternalIdentifierSpec;
 import edu.kit.datamanager.repo.dao.spec.dataresource.LastUpdateSpecification;
-import edu.kit.datamanager.repo.dao.spec.dataresource.PrimaryIdentifierSpec;
 import edu.kit.datamanager.repo.dao.spec.dataresource.StateSpecification;
 import edu.kit.datamanager.repo.domain.Agent;
 import edu.kit.datamanager.repo.domain.AllIdentifiers;
@@ -40,6 +36,7 @@ import edu.kit.datamanager.repo.domain.PrimaryIdentifier;
 import edu.kit.datamanager.repo.domain.UnknownInformationConstants;
 import edu.kit.datamanager.repo.domain.acl.AclEntry;
 import edu.kit.datamanager.repo.service.IDataResourceService;
+import edu.kit.datamanager.repo.util.DataResourceUtils;
 import edu.kit.datamanager.repo.util.SpecUtils;
 import edu.kit.datamanager.service.IMessagingService;
 import edu.kit.datamanager.util.AuthenticationHelper;
@@ -62,8 +59,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.health.Health;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.GrantedAuthority;
@@ -289,15 +287,66 @@ public class DataResourceService implements IDataResourceService {
   }
 
   @Override
+  public Page<DataResource> findAllVersions(final String id, Pageable pgbl) {
+    logger.trace("Performing findAllVersions({}).", id);
+    printInfo("findById");
+    DataResource result = findById(id);
+    // Check for READ permission
+    DataResourceUtils.performPermissionCheck(result, PERMISSION.READ);
+
+    long lastVersion = applicationProperties.getAuditService().getCurrentVersion(result.getId());
+    boolean versioningEnabled = applicationProperties.isAuditEnabled();
+
+    long startIndex = lastVersion;
+    long noOfElements = startIndex;
+
+    if (pgbl != null) {
+      noOfElements = pgbl.getPageSize();
+      startIndex = startIndex - pgbl.getOffset();
+      if (startIndex < noOfElements) {
+        noOfElements = startIndex;
+      }
+    } else {
+      pgbl = PageRequest.of(0, (int) lastVersion);
+    }
+    List<DataResource> list = new ArrayList<>();
+    if (versioningEnabled) {
+      for (long version = startIndex; version > 0; version--) {
+        Optional<DataResource> resource = applicationProperties.getAuditService().getResourceByVersion(result.getId(), version);
+        if (resource.isPresent()) {
+          list.add(resource.get());
+        }
+      }
+    } else {
+      list.add(result);
+    }
+    Page<DataResource> page = new PageImpl<>(list, pgbl, lastVersion);
+    return page;
+  }
+
+  @Override
   public DataResource findById(final String id) {
     logger.trace("Performing findById({}).", id);
     printInfo("findById");
+    long nano1 = System.nanoTime() / 1000000;
     Optional<DataResource> result = getDao().findById(id);
 
+    long nano2 = System.nanoTime() / 1000000;
+    long nano3 = nano2;
     if (!result.isPresent()) {
-      logger.error("No data resource found for identifier {}. Throwing ResourceNotFoundException.", id);
-      throw new ResourceNotFoundException("Data resource with id " + id + " was not found.");
+      String resourceId = getResourceIdFromAnyId(id);
+      logger.trace("Resource ID: {} -> {}", id, resourceId);
+      nano3 = System.nanoTime() / 1000000;
+      result = getDao().findById(resourceId);
+      if (!result.isPresent()) {
+        logger.error("No data resource found for identifier {}. Throwing ResourceNotFoundException.", id);
+        throw new ResourceNotFoundException("Data resource with id " + id + " was not found.");
+      } else {
+        logger.info("Please use '{}' instead of '{}' for faster access!", resourceId, id);
+      }
     }
+    long nano4 = System.nanoTime() / 1000000;
+    logger.trace("Find by id, {}, {}, {}, {}", nano1, nano2 - nano1, nano3 - nano1, nano4 - nano1);
     return result.get();
   }
 
@@ -313,18 +362,9 @@ public class DataResourceService implements IDataResourceService {
     logger.trace("Performing findByAnyIdentifier({}, {}).", resourceIdentifier, version);
     // first of all try to get resourceID
     long nano1 = System.nanoTime() / 1000000;
-    Optional<AllIdentifiers> helperResource = allIdentifiersDao.findById(resourceIdentifier);
-      if (helperResource.isEmpty()) {
-        String message = "Data resource with identifier " + resourceIdentifier + " was not found.";
-        logger.info(message);
-        throw new ResourceNotFoundException(message);
-      }
+    DataResource resource = findById(resourceIdentifier);
+    String correctResourceId = resource.getId();
     long nano2 = System.nanoTime() / 1000000;
-      String correctResourceId = helperResource.get().getResourceId();
-    logger.trace("Resource ID: {} -> {}", resourceIdentifier, version);
-    long nano3 = System.nanoTime() / 1000000;
-    DataResource resource = findById(correctResourceId);
-    long nano4 = System.nanoTime() / 1000000;
     if (Objects.nonNull(version)) {
       logger.trace("Obtained resource for identifier {}. Checking for shadow of version {}.", correctResourceId, version);
       Optional<DataResource> optAuditResult = applicationProperties.getAuditService().getResourceByVersion(resource.getId(), version);
@@ -337,39 +377,9 @@ public class DataResourceService implements IDataResourceService {
 
       }
     }
-    long nano5 = System.nanoTime() / 1000000;
-   
-//    Optional<DataResource> result = getDao().findOne(InternalIdentifierSpec.toSpecification(resourceIdentifier));
-//
-//    if (!result.isPresent()) {
-//      logger.error("No data resource found for resource identifier {}. Checking primary and alternate identifiers.", resourceIdentifier);
-//      logger.trace("Performing findOne(primaryIdentifier == '{}' || alternateIdentifier == '{}').", resourceIdentifier, resourceIdentifier);
-//      try {
-//        result = getDao().findOne(AlternateIdentifierSpec.toSpecification(resourceIdentifier).or(PrimaryIdentifierSpec.toSpecification(resourceIdentifier)));
-//      } catch (IncorrectResultSizeDataAccessException ex) {
-//        logger.error("!!!POTENTIAL INCONSISTENCY DETECTED!!! Multiple resources with primary/alternate identifier {} " + resourceIdentifier + " detected.");
-//        throw new CustomInternalServerError("Inconsistent state detected. The provided identifier is mapping to multiple resources.");
-//      }
-//      if (!result.isPresent()) {
-//        String message = "Data resource with identifier " + resourceIdentifier + " was not found.";
-//        logger.info(message);
-//        throw new ResourceNotFoundException(message);
-//      }
-//    }
-//    DataResource resource = result.get();
-//    if (Objects.nonNull(version)) {
-//      logger.trace("Obtained resource for identifier {}. Checking for shadow of version {}.", resourceIdentifier, version);
-//      Optional<DataResource> optAuditResult = applicationProperties.getAuditService().getResourceByVersion(resource.getId(), version);
-//      if (optAuditResult.isPresent()) {
-//        logger.trace("Shadow successfully obtained. Returning version {} of resource with id {}.", version, resourceIdentifier);
-//        return optAuditResult.get();
-//      } else {
-//        logger.info("Version {} of resource {} not found. Returning HTTP 404 (NOT_FOUND).", version, resourceIdentifier);
-//        throw new ResourceNotFoundException("Data resource with identifier " + resourceIdentifier + " is not available in version " + version + ".");
-//
-//      }
-//    }
-//      logger.error("Find by any identifier, {}, {}, {}, {}, {}, {}, {}", nano1, nano2 - nano1, nano3 - nano1, nano4 - nano1, nano4 - nano1, nano5 - nano1);
+    long nano3 = System.nanoTime() / 1000000;
+
+    logger.trace("Find by any identifier, {}, {}, {}", nano1, nano2 - nano1, nano3 - nano1);
 
     return resource;
   }
@@ -636,7 +646,6 @@ public class DataResourceService implements IDataResourceService {
     after.removeAll(before);
     logger.trace("Remaining new or updated resource identifiers: {}", after);
 
-   
     String[] afterList = removePredifinedIdentifiers(after);
     checkForConflicts(afterList);
   }
@@ -659,10 +668,10 @@ public class DataResourceService implements IDataResourceService {
       temporaryValues.add(item.getValue());
     }
     newIdentifiers.removeAll(temporaryValues);
-     identifierArray = newIdentifiers.toArray(new String[newIdentifiers.size()]);
-     
-     return identifierArray;
- }
+    identifierArray = newIdentifiers.toArray(new String[newIdentifiers.size()]);
+
+    return identifierArray;
+  }
 
   @Override
   @Transactional(readOnly = false)
@@ -701,7 +710,7 @@ public class DataResourceService implements IDataResourceService {
 
   public void testForConflictingIdentifiers(DataResource newResource) {
     List<String> uniqueIdentifiers = getUniqueIdentifiers(newResource);
-    
+
     String[] afterList = removePredifinedIdentifiers(uniqueIdentifiers);
     checkForConflicts(afterList);
   }
@@ -770,5 +779,15 @@ public class DataResourceService implements IDataResourceService {
       result.setStatus(state);
       allIdentifiersDao.save(result);
     }
+  }
+
+  private String getResourceIdFromAnyId(String resourceIdentifier) {
+    Optional<AllIdentifiers> helperResource = allIdentifiersDao.findById(resourceIdentifier);
+    if (!helperResource.isPresent()) {
+      String message = "Data resource with identifier " + resourceIdentifier + " was not found.";
+      logger.info(message);
+      throw new ResourceNotFoundException(message);
+    }
+    return helperResource.get().getResourceId();
   }
 }

@@ -6,35 +6,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.1.0] - 2020-12-17
-### Changed
-- Truncating service-assigned times to milliseconds for compatibility reasons
-- Change of messaging property names including documentation
-- Update to service-base 0.2.0
-- Update to generic-message-consumer 0.2.0
-
-### Fixed
-- Fixed wrong HATEOAS links for search endpoint
-
-## [1.0] - 2020-08-18
-### Changed
-- Update dependency service-base to version 0.1.1
-
-## [0.0.1] - 2020-08-11
-### Added
-- First public version
-
-### Changed
+### Security
 - none
 
-### Removed
+### Changed
+- none.
+
+### Added
+- none
+
+### Fixed
 - none
 
 ### Deprecated
 - none
 
-### Fixed
+### Removed
 - none
+
+## [0.9.0] - 2021-10-13
+Extracted from the 'base-repo' project.
 
 ### Security
 - none
+
+### Changed
+- Upgrade to Spring Boot 2.4.10
+- Upgrade to Gradle 7.2
+- Switch to 'service-base' version 0.3.0.
+
+### Added
+- Add service to get all versions of a digital object.
+- Add storage service for hierarchical storage.
+
+### Fixed
+- none
+
+### Deprecated
+- none
+
+### Removed
+- none
+
+[Unreleased]: https://github.com/kit-data-manager/service-base/compare/v0.9.0...HEAD
+[0.9.0]: https://github.com/kit-data-manager/service-base/releases/tag/v0.9.0

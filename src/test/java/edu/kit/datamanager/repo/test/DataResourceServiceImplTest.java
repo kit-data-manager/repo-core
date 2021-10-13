@@ -40,89 +40,95 @@ import org.springframework.security.core.GrantedAuthority;
  *
  * @author jejkal
  */
-public class DataResourceServiceImplTest{
+public class DataResourceServiceImplTest {
 
   @Test
-  public void testDefaultImpl(){
-    IDataResourceService dummyService = new IDataResourceService(){
+  public void testDefaultImpl() {
+    IDataResourceService dummyService = new IDataResourceService() {
       @Override
       public void configure(RepoBaseConfiguration repoBaseConfiguration) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
       }
+
       @Override
-      public DataResource create(DataResource resource, String callerPrincipal, String callerFirstName, String callerLastName) throws BadArgumentException, ResourceAlreadyExistException{
+      public DataResource create(DataResource resource, String callerPrincipal, String callerFirstName, String callerLastName) throws BadArgumentException, ResourceAlreadyExistException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
       }
 
       @Override
-      public DataResource create(DataResource resource, String callerPrincipal) throws BadArgumentException, ResourceAlreadyExistException{
+      public DataResource create(DataResource resource, String callerPrincipal) throws BadArgumentException, ResourceAlreadyExistException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
       }
 
       @Override
-      public DataResource findByAnyIdentifier(String identifier){
+      public DataResource findByAnyIdentifier(String identifier) {
         DataResource result = new DataResource();
         result.setId(identifier);
         return result;
       }
 
       @Override
-      public Page<DataResource> findAll(DataResource example, Pageable pgbl, boolean includeRevoked){
+      public Page<DataResource> findAll(DataResource example, Pageable pgbl, boolean includeRevoked) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
       }
 
       @Override
-      public DataResource findById(String string) throws ResourceNotFoundException{
+      public DataResource findById(String string) throws ResourceNotFoundException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
       }
 
       @Override
-      public Page<DataResource> findAll(DataResource c, Pageable pgbl){
+      public Page<DataResource> findAll(DataResource c, Pageable pgbl) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
       }
 
       @Override
-      public DataResource put(DataResource c, DataResource c1, Collection<? extends GrantedAuthority> clctn) throws UpdateForbiddenException{
+      public DataResource put(DataResource c, DataResource c1, Collection<? extends GrantedAuthority> clctn) throws UpdateForbiddenException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
       }
 
       @Override
-      public void patch(DataResource c, JsonPatch jp, Collection<? extends GrantedAuthority> clctn) throws PatchApplicationException, UpdateForbiddenException{
+      public void patch(DataResource c, JsonPatch jp, Collection<? extends GrantedAuthority> clctn) throws PatchApplicationException, UpdateForbiddenException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
       }
 
       @Override
-      public void delete(DataResource c){
+      public void delete(DataResource c) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
       }
 
       @Override
-      public Optional<String> getAuditInformationAsJson(String string, Pageable pgbl){
+      public Optional<String> getAuditInformationAsJson(String string, Pageable pgbl) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
       }
 
       @Override
-      public Health health(){
+      public Health health() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
       }
 
       @Override
-      public Page<DataResource> findByExample(DataResource example, Instant lastUpdateFrom, Instant lastUpdateUntil, List<String> callerIdentities, boolean callerIsAdministrator, Pageable pgbl){
+      public Page<DataResource> findByExample(DataResource example, Instant lastUpdateFrom, Instant lastUpdateUntil, List<String> callerIdentities, boolean callerIsAdministrator, Pageable pgbl) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
       }
 
       @Override
-      public Page<DataResource> findAll(DataResource c, Instant instnt, Instant instnt1, Pageable pgbl){
+      public Page<DataResource> findAll(DataResource c, Instant instnt, Instant instnt1, Pageable pgbl) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
       }
 
       @Override
-      public Page<DataResource> findAll(DataResource example, Instant lastUpdateFrom, Instant lastUpdateUntil, Pageable pgbl, boolean includeRevoked){
+      public Page<DataResource> findAll(DataResource example, Instant lastUpdateFrom, Instant lastUpdateUntil, Pageable pgbl, boolean includeRevoked) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
       }
 
       @Override
-      public Page<DataResource> findAllFiltered(DataResource example, Instant lastUpdateFrom, Instant lastUpdateUntil, List<String> sids, PERMISSION permission, Pageable pgbl, boolean includeRevoked){
+      public Page<DataResource> findAllFiltered(DataResource example, Instant lastUpdateFrom, Instant lastUpdateUntil, List<String> sids, PERMISSION permission, Pageable pgbl, boolean includeRevoked) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      }
+
+      @Override
+      public Page<DataResource> findAllVersions(final String id, Pageable pgbl) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
       }
     };

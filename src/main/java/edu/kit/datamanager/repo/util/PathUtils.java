@@ -21,7 +21,7 @@ import edu.kit.datamanager.exceptions.CustomInternalServerError;
 import edu.kit.datamanager.repo.service.IRepoStorageService;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
+import java.nio.charset.Charset;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,14 +58,16 @@ public class PathUtils {
     try {
       String internalIdentifier = DataResourceUtils.getInternalIdentifier(parentResource);
       if (internalIdentifier == null) {
-      String message = "Data integrity error. No internal identifier assigned to resource.";
-      LOGGER.info(message);
-      throw new CustomInternalServerError(message);
+        String message = "Data integrity error. No internal identifier assigned to resource.";
+        LOGGER.info(message);
+        throw new CustomInternalServerError(message);
       }
       LOGGER.trace("Getting data URI for resource with id {} and relative path {}.", internalIdentifier, relativeDataPath);
-      URIBuilder uriBuilder = new URIBuilder(properties.getBasepath().toURI());
-      //uriBuilder.setCharset(Charset.forName("UTF-8"));
-      uriBuilder.setPath(uriBuilder.getPath() + (!properties.getBasepath().toString().endsWith("/") ? "/" : "") + substitutePathPattern(parentResource, properties) + "/" + internalIdentifier + "/" + relativeDataPath + "_" + System.currentTimeMillis());
+      // Fetching protocol
+      URIBuilder uriBuilder = new URIBuilder(properties.getBasepath().toURI(), Charset.forName("UTF-8"));
+      // add absolute path 
+      uriBuilder.setPath(properties.getBasepath().getPath() + (!properties.getBasepath().toString().endsWith("/") ? "/" : "") + substitutePathPattern(parentResource, properties) + "/" + internalIdentifier + "/" + relativeDataPath + "_" + System.currentTimeMillis());
+      // encode path
       URI result = uriBuilder.build();
       LOGGER.trace("Returning data URI {}.", result);
       return result;
