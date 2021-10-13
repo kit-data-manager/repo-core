@@ -5,16 +5,39 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+### Security
+- none
+
+### Changed
+- none.
+
+### Added
+- none
+
+### Fixed
+- none
+
+### Deprecated
+- none
+
+### Removed
+- none
+
+## [0.9.0] - 2021-10-13
 Extracted from the 'base-repo' project.
 
 ### Security
 - none
 
 ### Changed
+- Upgrade to Spring Boot 2.4.10
+- Upgrade to Gradle 7.2
 - Switch to 'service-base' version 0.3.0.
 
 ### Added
 - Add service to get all versions of a digital object.
+- Add storage service for hierarchical storage.
 
 ### Fixed
 - none
