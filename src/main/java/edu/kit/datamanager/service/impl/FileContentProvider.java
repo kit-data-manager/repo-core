@@ -53,9 +53,11 @@ public class FileContentProvider implements IContentProvider{
 
     logger.trace("Providing content element {}.", contentElement);
     try{
-      logger.trace("Checking for proper versioning service named {}.", contentElement.getVersioningService());
+      String versioningServiceId = (contentElement.getVersioningService() != null) ? contentElement.getVersioningService() : "none";
+
+      logger.trace("Checking for proper versioning service named {}.", versioningServiceId);
       for(IRepoVersioningService versioningService : versioningServices){
-        if(versioningService.getServiceName().equals(contentElement.getVersioningService())){
+        if(versioningService.getServiceName().equals(versioningServiceId)){
           logger.trace("Versioning service found. Building response.");
           response.setStatus(HttpStatus.OK.value());
           if(mediaType != null){
