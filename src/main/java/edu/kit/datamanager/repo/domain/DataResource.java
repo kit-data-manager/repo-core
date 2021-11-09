@@ -42,9 +42,11 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -62,7 +64,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Schema(description = "Data resource element")
 @Data
-public class DataResource implements EtagSupport, Serializable{
+@Table(indexes = {
+  @Index(name = "lastUpdate", columnList = "lastUpdate DESC")
+})
+public class DataResource implements EtagSupport, Serializable {
 
   @Autowired
   @Getter(AccessLevel.NONE)
@@ -71,14 +76,14 @@ public class DataResource implements EtagSupport, Serializable{
   @JsonIgnore
   private Logger LOGGER;
 
-  public enum State implements BaseEnum{
+  public enum State implements BaseEnum {
     VOLATILE,
     FIXED,
     REVOKED,
     GONE;
 
     @Override
-    public String getValue(){
+    public String getValue() {
       return toString();
     }
   }
@@ -208,7 +213,7 @@ public class DataResource implements EtagSupport, Serializable{
   @JoinColumn(name = "resource_id")
   private Set<AclEntry> acls = new HashSet<>();
 
-  public static DataResource factoryNewDataResource(){
+  public static DataResource factoryNewDataResource() {
     DataResource result = new DataResource();
     result.setIdentifier(PrimaryIdentifier.factoryPrimaryIdentifier());
     Identifier internal = Identifier.factoryInternalIdentifier();
@@ -217,7 +222,7 @@ public class DataResource implements EtagSupport, Serializable{
     return result;
   }
 
-  public static DataResource factoryDataResourceWithDoi(@NonNull String doi){
+  public static DataResource factoryDataResourceWithDoi(@NonNull String doi) {
     DataResource result = new DataResource();
     result.setIdentifier(PrimaryIdentifier.factoryPrimaryIdentifier(doi));
     Identifier internal = Identifier.factoryInternalIdentifier(doi);
@@ -226,7 +231,7 @@ public class DataResource implements EtagSupport, Serializable{
     return result;
   }
 
-  public static DataResource factoryNewDataResource(@NonNull String internalIdentifier){
+  public static DataResource factoryNewDataResource(@NonNull String internalIdentifier) {
     DataResource result = new DataResource();
     result.setIdentifier(PrimaryIdentifier.factoryPrimaryIdentifier());
     result.getAlternateIdentifiers().add(Identifier.factoryInternalIdentifier(internalIdentifier));
@@ -234,8 +239,8 @@ public class DataResource implements EtagSupport, Serializable{
     return result;
   }
 
-  public void setEmbargoDate(Instant embargoDate){
-    if(embargoDate == null){
+  public void setEmbargoDate(Instant embargoDate) {
+    if (embargoDate == null) {
       return;
     }
     this.embargoDate = Objects.requireNonNull(embargoDate).truncatedTo(ChronoUnit.SECONDS);
@@ -243,12 +248,12 @@ public class DataResource implements EtagSupport, Serializable{
 
   @Override
   @JsonIgnore
-  public String getEtag(){
+  public String getEtag() {
     return Integer.toString(hashCode());
   }
 
   @Override
-  public int hashCode(){
+  public int hashCode() {
     int hash = 5;
     hash = 41 * hash + Objects.hashCode(this.id);
     hash = 41 * hash + Objects.hashCode(this.identifier);
@@ -278,85 +283,85 @@ public class DataResource implements EtagSupport, Serializable{
   }
 
   @Override
-  public boolean equals(Object obj){
-    if(this == obj){
+  public boolean equals(Object obj) {
+    if (this == obj) {
       return true;
     }
-    if(obj == null){
+    if (obj == null) {
       return false;
     }
-    if(getClass() != obj.getClass()){
+    if (getClass() != obj.getClass()) {
       return false;
     }
     final DataResource other = (DataResource) obj;
 
-    if(!Objects.equals(this.publisher, other.publisher)){
+    if (!Objects.equals(this.publisher, other.publisher)) {
       return false;
     }
-    if(!Objects.equals(this.publicationYear, other.publicationYear)){
+    if (!Objects.equals(this.publicationYear, other.publicationYear)) {
       return false;
     }
-    if(!Objects.equals(this.language, other.language)){
+    if (!Objects.equals(this.language, other.language)) {
       return false;
     }
-    if(!Objects.equals(this.version, other.version)){
+    if (!Objects.equals(this.version, other.version)) {
       return false;
     }
-    if(!Objects.equals(this.id, other.id)){
+    if (!Objects.equals(this.id, other.id)) {
       return false;
     }
-    if(!Objects.equals(this.identifier, other.identifier)){
+    if (!Objects.equals(this.identifier, other.identifier)) {
       return false;
     }
-    if(!Objects.equals(this.creators, other.creators)){
+    if (!Objects.equals(this.creators, other.creators)) {
       return false;
     }
-    if(!Objects.equals(this.titles, other.titles)){
+    if (!Objects.equals(this.titles, other.titles)) {
       return false;
     }
-    if(!Objects.equals(this.resourceType, other.resourceType)){
+    if (!Objects.equals(this.resourceType, other.resourceType)) {
       return false;
     }
-    if(!Objects.equals(this.subjects, other.subjects)){
+    if (!Objects.equals(this.subjects, other.subjects)) {
       return false;
     }
-    if(!Objects.equals(this.contributors, other.contributors)){
+    if (!Objects.equals(this.contributors, other.contributors)) {
       return false;
     }
-    if(!Objects.equals(this.dates, other.dates)){
+    if (!Objects.equals(this.dates, other.dates)) {
       return false;
     }
-    if(!Objects.equals(this.relatedIdentifiers, other.relatedIdentifiers)){
+    if (!Objects.equals(this.relatedIdentifiers, other.relatedIdentifiers)) {
       return false;
     }
-    if(!Objects.equals(this.descriptions, other.descriptions)){
+    if (!Objects.equals(this.descriptions, other.descriptions)) {
       return false;
     }
-    if(!Objects.equals(this.geoLocations, other.geoLocations)){
+    if (!Objects.equals(this.geoLocations, other.geoLocations)) {
       return false;
     }
-    if(!Objects.equals(this.alternateIdentifiers, other.alternateIdentifiers)){
+    if (!Objects.equals(this.alternateIdentifiers, other.alternateIdentifiers)) {
       return false;
     }
-    if(!Objects.equals(this.sizes, other.sizes)){
+    if (!Objects.equals(this.sizes, other.sizes)) {
       return false;
     }
-    if(!Objects.equals(this.formats, other.formats)){
+    if (!Objects.equals(this.formats, other.formats)) {
       return false;
     }
-    if(!Objects.equals(this.rights, other.rights)){
+    if (!Objects.equals(this.rights, other.rights)) {
       return false;
     }
-    if(!Objects.equals(this.fundingReferences, other.fundingReferences)){
+    if (!Objects.equals(this.fundingReferences, other.fundingReferences)) {
       return false;
     }
-    if(!EnumUtils.equals(this.state, other.state)){
+    if (!EnumUtils.equals(this.state, other.state)) {
       return false;
     }
-    if(!Objects.equals(this.lastUpdate, other.lastUpdate)){
+    if (!Objects.equals(this.lastUpdate, other.lastUpdate)) {
       return false;
     }
-    if(!Objects.equals(this.embargoDate, other.embargoDate)){
+    if (!Objects.equals(this.embargoDate, other.embargoDate)) {
       return false;
     }
     boolean result = Objects.equals(this.acls, other.acls);
