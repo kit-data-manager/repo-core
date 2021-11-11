@@ -6,13 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ValidatorUtil {
@@ -23,11 +19,17 @@ public class ValidatorUtil {
 
     static {
         Map<RelatedIdentifierType, IValidator> validators1 = new HashMap<>();
-        Set<IValidator> availableValidators = new HashSet<>();
-        availableValidators = findAllValidators("edu.kit.datamanager.repo.util.validators.impl");
-        for (IValidator i: availableValidators) {
-            validators1.put(i.supportedType(), i);
-            LOGGER.debug("Found validator class ({}) from type: {}", i.getClass().toString(), i.supportedType());
+        Set<Class> classes = findAllClassesUsingClassLoader("edu.kit.datamanager.repo.validators.impl");
+        for (Class i: classes) {
+            try {
+                IValidator j = (IValidator) i.newInstance();
+                validators1.put(j.supportedType(), j);
+                LOGGER.debug(j.supportedType().toString());
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
         }
         validators = validators1;
     }
@@ -40,7 +42,16 @@ public class ValidatorUtil {
         return soleInstance;
     }
 
-    private static Set<IValidator> findAllValidators(String packageName) {
+    public List<RelatedIdentifierType> getAllAvailableValidatorTypes() {
+        Map<RelatedIdentifierType, IValidator> map = validators;
+        List<RelatedIdentifierType> result = new ArrayList<>();
+        for (Map.Entry entry : map.entrySet()) {
+            result.add((RelatedIdentifierType) entry.getKey());
+        }
+        return result;
+    }
+
+    private static Set<Class> findAllClassesUsingClassLoader(String packageName) {
         InputStream stream = ClassLoader.getSystemClassLoader()
                 .getResourceAsStream(packageName.replaceAll("[.]", "/"));
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
@@ -50,11 +61,10 @@ public class ValidatorUtil {
                 .collect(Collectors.toSet());
     }
 
-    private static IValidator getClass(String className, String packageName) {
+    private static Class getClass(String className, String packageName) {
         try {
-            Class result = Class.forName(packageName + "."
+            return Class.forName(packageName + "."
                     + className.substring(0, className.lastIndexOf('.')));
-            if(result.getInterfaces().equals(IValidator.class)) return (IValidator) result.cast(IValidator.class);
         } catch (ClassNotFoundException e) {
         }
         return null;

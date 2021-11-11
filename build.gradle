@@ -66,6 +66,7 @@ if (project.hasProperty('release')) {
 }
 
 dependencies {
+    implementation 'org.reflections:reflections:0.10.2'
     // Spring
     implementation 'org.springframework:spring-messaging:5.3.9'
     // Spring Boot
@@ -143,6 +144,7 @@ dependencies {
 }
 
 test {
+//    useJUnitPlatform()
     // Allow access to internal methods used by powerMockito
     // Will fail with Java17
     if (!JavaVersion.current().isJava8()) {

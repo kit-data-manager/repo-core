@@ -15,8 +15,6 @@
 
 package edu.kit.datamanager.repo.util.validators;
 
-import edu.kit.datamanager.repo.util.validators.exceptions.ValidationError;
-import edu.kit.datamanager.repo.util.validators.exceptions.ValidationWarning;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
