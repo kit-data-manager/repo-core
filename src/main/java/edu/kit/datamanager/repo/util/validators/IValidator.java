@@ -39,8 +39,6 @@ public interface IValidator {
      *
      * @param input to validate
      * @return true if input is valid for the special type of implementation
-     * @throws ValidationError   if the input is invalid and definitively unusable.
-     * @throws ValidationWarning if there is a chance that the input could be valid. (e.g. Validation server not reachable. Additional information should be provided with logs and the exception message.
      */
     default boolean isValid(String input) {
         return isValid(input, supportedType());
@@ -53,8 +51,6 @@ public interface IValidator {
      * @param input to validate
      * @param type  of the input
      * @return true if input is valid for the special type of implementation.
-     * @throws ValidationError   if the input is invalid and definitively unusable.
-     * @throws ValidationWarning if there is a chance that the input could be valid. (e.g. Validation server not reachable. Additional information should be provided with logs and the exception message.
      */
     boolean isValid(String input, RelatedIdentifierType type);
 

@@ -1,5 +1,6 @@
 package edu.kit.datamanager.repo.util;
 
+import edu.kit.datamanager.exceptions.UnsupportedMediaTypeException;
 import edu.kit.datamanager.repo.util.validators.IValidator;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
 import org.slf4j.Logger;
@@ -19,7 +20,7 @@ public class ValidatorUtil {
 
     static {
         Map<RelatedIdentifierType, IValidator> validators1 = new HashMap<>();
-        Set<Class> classes = findAllClassesUsingClassLoader("edu.kit.datamanager.repo.validators.impl");
+        Set<Class> classes = findAllClassesUsingClassLoader("edu.kit.datamanager.repo.util.validators.impl");
         for (Class i: classes) {
             try {
                 IValidator j = (IValidator) i.newInstance();
@@ -51,9 +52,29 @@ public class ValidatorUtil {
         return result;
     }
 
+    public boolean isValid(String input, RelatedIdentifierType type){
+        if (validators.containsKey(type)) {
+            if (validators.get(type).isValid(input, type)) LOGGER.info("Valid input and valid input type!");
+            return true;
+        } else {
+            LOGGER.warn("No matching validator found. Please check your input and plugins.");
+            throw new UnsupportedMediaTypeException("No matching validator found. Please check your input and plugins.");
+        }
+    }
+
+    public boolean isValid(String input, String type) {
+        for (Map.Entry<RelatedIdentifierType, IValidator> entry : validators.entrySet()) {
+            if (entry.getKey().toString().equals(type)) {
+                if (entry.getValue().isValid(input)) return true;
+            }
+        }
+        throw new UnsupportedMediaTypeException("Invalid Type!");
+    }
+
     private static Set<Class> findAllClassesUsingClassLoader(String packageName) {
         InputStream stream = ClassLoader.getSystemClassLoader()
                 .getResourceAsStream(packageName.replaceAll("[.]", "/"));
+        System.out.println(stream);
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
         return reader.lines()
                 .filter(line -> line.endsWith(".class"))
