@@ -94,7 +94,7 @@ public class ContentDataUtils {
     try {
       ContentInformation result = applicationProperties.getContentInformationService().create(contentInformation, resource, path, (file != null) ? file.getInputStream() : null, force);
           long nano4 = System.nanoTime() / 1000000;
-    LOGGER.error("Add file, {}, {}, {}, {}", nano1, nano2 - nano1, nano3 - nano1, nano4 - nano1);
+    LOGGER.info("Add file, {}, {}, {}, {}", nano1, nano2 - nano1, nano3 - nano1, nano4 - nano1);
 
       return result;
     } catch (IOException ex) {
