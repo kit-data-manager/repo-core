@@ -2,6 +2,7 @@ package edu.kit.datamanager.repo.util;
 
 import edu.kit.datamanager.exceptions.UnsupportedMediaTypeException;
 import edu.kit.datamanager.repo.util.validators.IValidator;
+import lombok.extern.java.Log;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,9 +27,7 @@ public class ValidatorUtil {
                 IValidator j = (IValidator) i.newInstance();
                 validators1.put(j.supportedType(), j);
                 LOGGER.debug(j.supportedType().toString());
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
+            } catch (InstantiationException | IllegalAccessException | ClassCastException e) {
                 e.printStackTrace();
             }
         }

@@ -13,74 +13,65 @@
  * limitations under the License.
  */
 
-package edu.kit.datamanager.repo.util.validators.impl;
+package edu.kit.datamanager.repo.util.validators;
 
+import edu.kit.datamanager.exceptions.BadArgumentException;
+import edu.kit.datamanager.exceptions.ServiceUnavailableException;
+import edu.kit.datamanager.exceptions.UnsupportedMediaTypeException;
+import edu.kit.datamanager.repo.util.validators.IValidator;
+import edu.kit.datamanager.repo.util.validators.impl.URLValidator;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
-import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
+import org.junit.Test;
+import org.springframework.http.InvalidMediaTypeException;
 
-import static org.junit.jupiter.api.Assertions.fail;
+public class URLValidatorTest {
 
-class URLValidatorTest {
-
-    ValidatorInterface validator = new URLValidator();
+    IValidator validator = new URLValidator();
 
     @Test
-    void valid() {
-        try {
-            assertTrue(validator.isValid("http://hdl.handle.net/api/handles/10.1038/nphys1170"));
-        } catch (Exception e) {
-            fail(e);
-        }
+    public void valid() {
+        assertTrue(validator.isValid("http://hdl.handle.net/api/handles/10.1038/nphys1170"));
     }
 
     @Test
-    void invalidURL() {
+    public void invalidURL() {
         try {
             assertFalse(validator.isValid("hdl.handle/10.1038/nphys1170"));
-        } catch (ValidationWarning e) {
-            fail(e);
-        } catch (ValidationError ignored) {
+        } catch (BadArgumentException ignored) {
         }
     }
 
     @Test
-    void invalidType() {
+    public void invalidType() {
         try {
             assertFalse(validator.isValid("hdl.handle/10.1038/nphys1170", RelatedIdentifierType.ARK));
-        } catch (ValidationWarning ignored) {
-        } catch (ValidationError validationError) {
-            fail(validationError);
+        } catch (UnsupportedMediaTypeException ignored) {
         }
     }
 
     @Test
-    void serverNotReachable() {
+    public void serverNotReachable() {
         try {
             assertFalse(validator.isValid("https://hdl.test.example/10.1038/nphys1170"));
-        } catch (ValidationWarning ignored) {
-        } catch (ValidationError validationError) {
-            fail(validationError);
+        } catch (ServiceUnavailableException ignored) {
         }
     }
 
     @Test
-    void invalidPrefixInURL() {
+    public void invalidPrefixInURL() {
         try {
             assertFalse(validator.isValid("http://hdl.handle.net/api/handles/10.10385/nphys1170"));
-        } catch (ValidationError ignored) {
-        } catch (ValidationWarning validationWarning) {
-            fail(validationWarning);
+        } catch (BadArgumentException ignored) {
         }
     }
 
 
     @Test
-    void invalidCharacters() {
+    public void invalidCharacters() {
         try {
             assertFalse(validator.isValid("http://google.com/®¡“¢∂‚/®¡“¢∂‚"));
-        } catch (ValidationWarning e) {
-            fail(e);
-        } catch (ValidationError ignored) {
+        } catch (BadArgumentException ignored) {
         }
     }
 }

@@ -13,30 +13,32 @@
  * limitations under the License.
  */
 
-package edu.kit.datamanager.repo.util.validators.impl;
+package edu.kit.datamanager.repo.util.validators;
 
 import edu.kit.datamanager.exceptions.BadArgumentException;
+import edu.kit.datamanager.exceptions.MessageValidationException;
 import edu.kit.datamanager.exceptions.UnsupportedMediaTypeException;
+import edu.kit.datamanager.repo.util.validators.impl.HandleNetValidator;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 
-class HandleNetValidatorTest {
+public class HandleNetValidatorTest {
 
     HandleNetValidator validator = new HandleNetValidator();
 
     @Test
-    void valid() {
+    public void valid() {
         try {
             assertTrue(validator.isValid("hdl://10.1038/nphys1170"));
         } catch (Exception e) {
-            fail(e);
+            fail();
         }
     }
 
     @Test
-    void invalidType() {
+    public void invalidType() {
         try {
             assertFalse(validator.isValid("hdl://10.1038/nphys1170", RelatedIdentifierType.AR_XIV));
         } catch (UnsupportedMediaTypeException ignored) {
@@ -44,15 +46,15 @@ class HandleNetValidatorTest {
     }
 
     @Test
-    void invalid() {
+    public void invalid() {
         try {
-            assertFalse(validator.isValid("10.1038/auifz8zhunjkad"));
+            assertFalse(validator.isValid("test/auifz8zhunjkad"));
         } catch (BadArgumentException ignored) {
         }
     }
 
     @Test
-    void invalidPrefix() {
+    public void invalidPrefix() {
         try {
             assertFalse(validator.isValid("testdgsdfg/auifz8zhunjkad"));
         } catch (BadArgumentException ignored) {
@@ -60,17 +62,17 @@ class HandleNetValidatorTest {
     }
 
     @Test
-    void validHTTP() {
+    public void validHTTP() {
         assertTrue(validator.isValid("http://hdl.handle.net/api/handles/10.1038/nphys1170"));
     }
 
     @Test
-    void validHTTPS() {
+    public void validHTTPS() {
         assertTrue(validator.isValid("https://hdl.handle.net/api/handles/10.1038/nphys1170"));
     }
 
     @Test
-    void invalidHTTPS() {
+    public void invalidHTTPS() {
         try {
             assertFalse(validator.isValid("https://google.com"));
         } catch (BadArgumentException ignored) {
@@ -78,12 +80,12 @@ class HandleNetValidatorTest {
     }
 
     @Test
-    void validHandle() {
+    public void validHandle() {
         assertTrue(validator.isValid("10.1038/nphys1170"));
     }
 
     @Test
-    void invalidHandleScheme() {
+    public void invalidHandleScheme() {
         try {
             assertFalse(validator.isValid("test"));
         } catch (BadArgumentException ignored) {
@@ -91,7 +93,7 @@ class HandleNetValidatorTest {
     }
 
     @Test
-    void invalidURL() {
+    public void invalidURL() {
         try {
             assertFalse(validator.isValid("hdl.handle/10.1038/nphys1170"));
         } catch (BadArgumentException ignored) {
@@ -99,15 +101,15 @@ class HandleNetValidatorTest {
     }
 
     @Test
-    void serverNotReachable() {
+    public void serverNotReachable() {
         try {
             assertFalse(validator.isValid("https://hdl.test.example/10.1038/nphys1170"));
-        } catch (BadArgumentException ignored) {
+        } catch (MessageValidationException ignored) {
         }
     }
 
     @Test
-    void invalidPrefixInURL() {
+    public void invalidPrefixInURL() {
         try {
             assertFalse(validator.isValid("http://hdl.handle.net/api/handles/10.10385/nphys1170"));
         } catch (BadArgumentException ignored) {
@@ -115,15 +117,15 @@ class HandleNetValidatorTest {
     }
 
     @Test
-    void invalidSuffix() {
+    public void invalidSuffix() {
         try {
             assertFalse(validator.isValid("10.1038/nphys1170.345678"));
-        } catch (BadArgumentException ignored) {
+        } catch (MessageValidationException ignored) {
         }
     }
 
     @Test
-    void invalidCharacters() {
+    public void invalidCharacters() {
         try {
             assertFalse(validator.isValid("http://google.com/®¡“¢∂‚/®¡“¢∂‚"));
         } catch (BadArgumentException ignored) {

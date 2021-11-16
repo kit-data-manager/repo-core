@@ -7,7 +7,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.fail;
 
 public class ValidatorUtilTest {
 
@@ -18,11 +17,12 @@ public class ValidatorUtilTest {
 
     @Test
     public void valid() {
-        try {
-            assertTrue(ValidatorUtil.soleInstance().isValid("https://kit.edu", RelatedIdentifierType.URL));
-        } catch (Exception e) {
-            fail(e);
-        }
+        assertTrue(ValidatorUtil.soleInstance().isValid("https://kit.edu", RelatedIdentifierType.URL));
+    }
+
+    @Test
+    public void validTypeString() {
+        assertTrue(ValidatorUtil.soleInstance().isValid("https://kit.edu", "URL"));
     }
 
     @Test
@@ -30,17 +30,22 @@ public class ValidatorUtilTest {
         try{
             assertFalse(ValidatorUtil.soleInstance().isValid("https://kit.example", RelatedIdentifierType.URL));
         } catch(ServiceUnavailableException ignored){
-
         }
     }
 
+    @Test
+    public void invalidTypeString() {
+        try{
+            assertTrue(ValidatorUtil.soleInstance().isValid("https://kit.edu", "INVALID"));
+        } catch (UnsupportedMediaTypeException ignored) {
+        }
+    }
 
     @Test
     public void unimplementedType() {
         try{
             assertFalse(ValidatorUtil.soleInstance().isValid("https://kit.edu", RelatedIdentifierType.ARK));
         } catch(UnsupportedMediaTypeException ignored){
-
         }
     }
 }
