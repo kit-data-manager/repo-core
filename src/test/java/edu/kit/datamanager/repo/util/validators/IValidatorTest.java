@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 
 class IValidatorTest {
 
-    IValidator validatorInterface = new HandleNetValidator();
+    IIdentifierValidator validatorInterface = new HandleNetValidator();
 
     @Test
     void valid_isValid() {

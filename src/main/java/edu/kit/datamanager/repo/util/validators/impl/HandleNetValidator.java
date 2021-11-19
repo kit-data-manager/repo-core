@@ -18,7 +18,7 @@ package edu.kit.datamanager.repo.util.validators.impl;
 import edu.kit.datamanager.exceptions.BadArgumentException;
 import edu.kit.datamanager.exceptions.MessageValidationException;
 import edu.kit.datamanager.exceptions.UnsupportedMediaTypeException;
-import edu.kit.datamanager.repo.util.validators.IValidator;
+import edu.kit.datamanager.repo.util.validators.IIdentifierValidator;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 /**
  * This class validates Handles with help of handle.net.
  */
-public class HandleNetValidator implements IValidator {
+public class HandleNetValidator implements IIdentifierValidator {
 
     Logger log = LoggerFactory.getLogger(HandleNetValidator.class);
 
@@ -79,7 +79,7 @@ public class HandleNetValidator implements IValidator {
      * @return true if the record is downloadable
      */
     private boolean isDownloadable(String serverAddress, String prefix, String suffix) {
-        IValidator urlValidator = new URLValidator();
+        IIdentifierValidator urlValidator = new URLValidator();
         AtomicBoolean fullValid = new AtomicBoolean(false);
         log.debug("Server address: {}", serverAddress);
         log.debug("Prefix: {}", prefix);

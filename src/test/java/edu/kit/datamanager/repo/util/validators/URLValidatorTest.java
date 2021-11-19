@@ -18,16 +18,14 @@ package edu.kit.datamanager.repo.util.validators;
 import edu.kit.datamanager.exceptions.BadArgumentException;
 import edu.kit.datamanager.exceptions.ServiceUnavailableException;
 import edu.kit.datamanager.exceptions.UnsupportedMediaTypeException;
-import edu.kit.datamanager.repo.util.validators.IValidator;
 import edu.kit.datamanager.repo.util.validators.impl.URLValidator;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
 import static org.junit.Assert.*;
 import org.junit.Test;
-import org.springframework.http.InvalidMediaTypeException;
 
 public class URLValidatorTest {
 
-    IValidator validator = new URLValidator();
+    IIdentifierValidator validator = new URLValidator();
 
     @Test
     public void valid() {

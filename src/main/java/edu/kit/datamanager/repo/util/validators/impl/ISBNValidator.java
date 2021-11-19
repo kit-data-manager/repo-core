@@ -17,10 +17,10 @@ package edu.kit.datamanager.repo.util.validators.impl;
 
 import edu.kit.datamanager.exceptions.BadArgumentException;
 import edu.kit.datamanager.exceptions.UnsupportedMediaTypeException;
-import edu.kit.datamanager.repo.util.validators.IValidator;
+import edu.kit.datamanager.repo.util.validators.IIdentifierValidator;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
 
-public class ISBNValidator implements IValidator {
+public class ISBNValidator implements IIdentifierValidator {
     /**
      * This method returns the type of the validator implementation.
      *

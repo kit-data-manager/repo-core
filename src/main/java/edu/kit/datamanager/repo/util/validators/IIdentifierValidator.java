@@ -22,9 +22,9 @@ import org.slf4j.LoggerFactory;
 /**
  * This interface provides a method which is necessary to validate things.
  */
-public interface IValidator {
+public interface IIdentifierValidator {
 
-    Logger LOG = LoggerFactory.getLogger(IValidator.class);
+    Logger LOG = LoggerFactory.getLogger(IIdentifierValidator.class);
 
     /**
      * This method returns the type of the validator implementation.

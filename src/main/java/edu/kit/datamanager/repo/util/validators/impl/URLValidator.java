@@ -19,7 +19,7 @@ import edu.kit.datamanager.exceptions.BadArgumentException;
 import edu.kit.datamanager.exceptions.CustomInternalServerError;
 import edu.kit.datamanager.exceptions.ServiceUnavailableException;
 import edu.kit.datamanager.exceptions.UnsupportedMediaTypeException;
-import edu.kit.datamanager.repo.util.validators.IValidator;
+import edu.kit.datamanager.repo.util.validators.IIdentifierValidator;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -27,7 +27,7 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
-public class URLValidator implements IValidator {
+public class URLValidator implements IIdentifierValidator {
     @Override
     public RelatedIdentifierType supportedType() {
         return RelatedIdentifierType.URL;

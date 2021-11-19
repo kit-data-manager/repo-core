@@ -12,23 +12,24 @@ public class ValidatorUtilTest {
 
     @Test
     public void validNumberOfValidators(){
-        Assert.assertEquals(ValidatorUtil.soleInstance().getAllAvailableValidatorTypes().size(),3);
+        System.out.println(ValidatorUtil.getSingleton().getAllAvailableValidatorTypes().toString());
+        Assert.assertEquals(ValidatorUtil.getSingleton().getAllAvailableValidatorTypes().size(),3);
     }
 
     @Test
     public void valid() {
-        assertTrue(ValidatorUtil.soleInstance().isValid("https://kit.edu", RelatedIdentifierType.URL));
+        assertTrue(ValidatorUtil.getSingleton().isValid("https://kit.edu", RelatedIdentifierType.URL));
     }
 
     @Test
     public void validTypeString() {
-        assertTrue(ValidatorUtil.soleInstance().isValid("https://kit.edu", "URL"));
+        assertTrue(ValidatorUtil.getSingleton().isValid("https://kit.edu", "URL"));
     }
 
     @Test
     public void invalidInputString() {
         try{
-            assertFalse(ValidatorUtil.soleInstance().isValid("https://kit.example", RelatedIdentifierType.URL));
+            assertFalse(ValidatorUtil.getSingleton().isValid("https://kit.example", RelatedIdentifierType.URL));
         } catch(ServiceUnavailableException ignored){
         }
     }
@@ -36,7 +37,7 @@ public class ValidatorUtilTest {
     @Test
     public void invalidTypeString() {
         try{
-            assertTrue(ValidatorUtil.soleInstance().isValid("https://kit.edu", "INVALID"));
+            assertTrue(ValidatorUtil.getSingleton().isValid("https://kit.edu", "INVALID"));
         } catch (UnsupportedMediaTypeException ignored) {
         }
     }
@@ -44,7 +45,7 @@ public class ValidatorUtilTest {
     @Test
     public void unimplementedType() {
         try{
-            assertFalse(ValidatorUtil.soleInstance().isValid("https://kit.edu", RelatedIdentifierType.ARK));
+            assertFalse(ValidatorUtil.getSingleton().isValid("https://kit.edu", RelatedIdentifierType.ARK));
         } catch(UnsupportedMediaTypeException ignored){
         }
     }
