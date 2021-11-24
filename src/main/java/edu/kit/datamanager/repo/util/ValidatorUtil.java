@@ -39,6 +39,10 @@ public class ValidatorUtil {
         return soleInstance;
     }
 
+    /**
+     * This method returns a list of the types of all implemented validators.
+     * @return a list of RelatedIdentifierType.
+     */
     public List<RelatedIdentifierType> getAllAvailableValidatorTypes() {
         LOGGER.debug("getAllAvailableValidatorTypes");
         List<RelatedIdentifierType> result = new ArrayList<>();
@@ -46,10 +50,13 @@ public class ValidatorUtil {
         return result;
     }
 
-    public void addValidatorToMap(RelatedIdentifierType type, IIdentifierValidator validator){
-        validators.put(type, validator);
-    }
-
+    /**
+     * This method checks if the type passed in the parameter is valid and then uses the corresponding validator to check the input.
+     * @param input The input which gets validated.
+     * @param type The type of the validator.
+     * @return true if the input and type are valid.
+     * May throw an exception if the input or the type is invalid or other errors occur.
+     */
     public boolean isValid(String input, RelatedIdentifierType type){
         LOGGER.debug("isValid - string type");
         if (validators.containsKey(type)) {
@@ -61,13 +68,20 @@ public class ValidatorUtil {
         }
     }
 
+    /**
+     * This method checks if the type passed in the parameter is valid and then uses the corresponding validator to check the input.
+     * @param input The input which gets validated.
+     * @param type The type of the validator as string.
+     * @return true if the input and type are valid.
+     * May throw an exception if the input or the type is invalid or other errors occur.
+     */
     public boolean isValid(String input, String type) {
         LOGGER.debug("isValid - string string");
-        for (Map.Entry<RelatedIdentifierType, IIdentifierValidator> entry : validators.entrySet()) {
-            if (entry.getKey().toString().equals(type)) {
-                if (entry.getValue().isValid(input)) return true;
-            }
+        try {
+            RelatedIdentifierType rType = RelatedIdentifierType.valueOf(type);
+            return validators.get(rType).isValid(input);
+        } catch (IllegalArgumentException e) {
+            throw new UnsupportedMediaTypeException("Invalid Type!");
         }
-        throw new UnsupportedMediaTypeException("Invalid Type!");
     }
 }
