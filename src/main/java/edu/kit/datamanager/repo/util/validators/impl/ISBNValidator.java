@@ -16,41 +16,34 @@
 package edu.kit.datamanager.repo.util.validators.impl;
 
 import edu.kit.datamanager.exceptions.BadArgumentException;
-import edu.kit.datamanager.exceptions.UnsupportedMediaTypeException;
-import edu.kit.datamanager.repo.util.validators.IValidator;
+import edu.kit.datamanager.repo.util.validators.IIdentifierValidator;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
 
-public class ISBNValidator implements IValidator {
-    /**
-     * This method returns the type of the validator implementation.
-     *
-     * @return element of the enum defined in the Datacite schema.
-     */
+/**
+ * This class validates ISBN10 and ISBN13.
+ * @author maximilianiKIT
+ */
+public class ISBNValidator implements IIdentifierValidator {
+
     @Override
-    public RelatedIdentifierType supportedType() {
+    public RelatedIdentifierType getSupportedType() {
         return RelatedIdentifierType.ISBN;
     }
 
-    /**
-     * This method must be implemented by any implementation.
-     * It validates an input and either returns true or throws an exception.
-     *
-     * @param input to validate
-     * @param type  of the input
-     * @return true if input is valid for the special type of implementation.
-     */
     @Override
-    public boolean isValid(String input, RelatedIdentifierType type) {
-        if (type != supportedType()) {
-            LOG.warn("Illegal type of validator");
-            throw new UnsupportedMediaTypeException("Illegal type of Validator.");
-        }
+    public boolean isValid(String input) {
         if (input.length() == 10) return isValidISBN10(input);
         else if (input.length() == 13) return isValidISBN13(input);
         LOG.error("Invalid input length. Please use a valid ISBN10 or ISBN13.");
         throw new BadArgumentException("Invalid input length. Please use a valid ISBN10 or ISBN13.");
     }
 
+    /**
+     * This method validates ISBN-13
+     * @param input ISBN13 to validate
+     * @return true if valid
+     * Throws a BadArgumentException if the input is invalid.
+     */
     private boolean isValidISBN13(String input) {
         int sum = 0;
         boolean isOne = true;
@@ -60,15 +53,33 @@ public class ISBNValidator implements IValidator {
             sum += number;
             isOne = !isOne;
         }
-        return (sum % 10) == 0;
+        if ((sum % 10) == 0){
+            LOG.info("Valid ISBN13: {}", input);
+            return true;
+        } else{
+            LOG.error("Invalid input: {}", input);
+            throw new BadArgumentException("Invalid input");
+        }
     }
 
+    /**
+     * This method validates ISBN-10
+     * @param input ISBN10 to validate
+     * @return true if valid
+     * Throws a BadArgumentException if the input is invalid.
+     */
     private boolean isValidISBN10(String input) {
         int sum = 0;
         for (int i = 0; i < 10; i++) {
             sum += input.charAt(i) * (10 - i);
         }
-        return (sum % 11) == 0;
+        if ((sum % 11) == 0){
+            LOG.info("Valid ISBN10: {}", input);
+            return true;
+        } else{
+            LOG.error("Invalid input: {}", input);
+            throw new BadArgumentException("Invalid input");
+        }
     }
 
 }

@@ -17,54 +17,37 @@ package edu.kit.datamanager.repo.util.validators.impl;
 
 import edu.kit.datamanager.exceptions.BadArgumentException;
 import edu.kit.datamanager.exceptions.MessageValidationException;
-import edu.kit.datamanager.exceptions.UnsupportedMediaTypeException;
-import edu.kit.datamanager.repo.util.validators.IValidator;
+import edu.kit.datamanager.repo.util.validators.IIdentifierValidator;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * This class validates Handles with help of handle.net.
+ *
+ * @author maximilianiKIT
+ * @see <a href="https://handle.net">https://handle.net</a>
  */
-public class HandleNetValidator implements IValidator {
+public class HandleNetValidator implements IIdentifierValidator {
 
     Logger log = LoggerFactory.getLogger(HandleNetValidator.class);
 
-    /**
-     * This method returns the type of the validator implementation.
-     *
-     * @return element of the enum defined in the Datacite schema.
-     */
     @Override
-    public RelatedIdentifierType supportedType() {
+    public RelatedIdentifierType getSupportedType() {
         return RelatedIdentifierType.HANDLE;
     }
 
-    /**
-     * This method must be implemented by any implementation.
-     * It validates an input and either returns true or throws an exception.
-     *
-     * @param input to validate
-     * @param type  of the input
-     * @return true if input is valid for the special type of implementation.
-     */
     @Override
-    public boolean isValid(String input, RelatedIdentifierType type){
-        if (type != supportedType()) {
-            LOG.warn("Illegal type of validator");
-            throw new UnsupportedMediaTypeException("Illegal type of Validator.");
-        }
-
+    public boolean isValid(String input) {
         String regex = "^(hdl://|http://|https://|doi:)(.+)";
         Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
         Matcher matcher = pattern.matcher(input);
         if (matcher.find()) {
             if (matcher.group(1).equals("https://") || matcher.group(1).equals("http://"))
-                return isValidHTTPURL(matcher.group(0));
+                return isValidHTTP_URL(matcher.group(0));
             else return isValidHandle(matcher.group(2));
         } else return isValidHandle(input);
     }
@@ -79,18 +62,16 @@ public class HandleNetValidator implements IValidator {
      * @return true if the record is downloadable
      */
     private boolean isDownloadable(String serverAddress, String prefix, String suffix) {
-        IValidator urlValidator = new URLValidator();
-        AtomicBoolean fullValid = new AtomicBoolean(false);
+        IIdentifierValidator urlValidator = new URLValidator();
+        boolean fullValid = false;
         log.debug("Server address: {}", serverAddress);
         log.debug("Prefix: {}", prefix);
         log.debug("Suffix: {}", suffix);
-        ignoringExc(() -> {
-            try{
-                fullValid.set(urlValidator.isValid(serverAddress + "/" + prefix + "/" + suffix));
-            } catch (Exception ignored){
-            }
-        });
-        if (fullValid.get()) {
+        try {
+            fullValid = urlValidator.isValid(serverAddress + "/" + prefix + "/" + suffix);
+        } catch (Exception ignored) {
+        }
+        if (fullValid) {
             LOG.info("The handle is valid!");
             return true;
         }
@@ -121,7 +102,7 @@ public class HandleNetValidator implements IValidator {
      * @param url to validate
      * @return true if the input is valid and downloadable.
      */
-    private boolean isValidHTTPURL(String url) {
+    private boolean isValidHTTP_URL(String url) {
         String regex = "(http|https)://(.+)/([A-Za-z0-9.]+)/([A-Za-z0-9.]+)";
         Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
         Matcher matcher = pattern.matcher(url);
@@ -144,13 +125,5 @@ public class HandleNetValidator implements IValidator {
         if (matcher.find()) {
             return isDownloadable(matcher.group(1), matcher.group(2));
         } else throw new BadArgumentException("Invalid input");
-    }
-
-    private static void ignoringExc(Runnable r) {
-        try {
-            r.run();
-        }
-        catch (Exception ignored) {
-        }
     }
 }

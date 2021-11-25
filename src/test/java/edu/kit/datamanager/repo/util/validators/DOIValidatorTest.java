@@ -17,7 +17,9 @@ package edu.kit.datamanager.repo.util.validators;
 
 import edu.kit.datamanager.exceptions.BadArgumentException;
 import edu.kit.datamanager.exceptions.MessageValidationException;
+import edu.kit.datamanager.exceptions.ServiceUnavailableException;
 import edu.kit.datamanager.exceptions.UnsupportedMediaTypeException;
+import edu.kit.datamanager.repo.util.validators.impl.DOIValidator;
 import edu.kit.datamanager.repo.util.validators.impl.HandleNetValidator;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
 import org.junit.Test;
@@ -25,17 +27,19 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
+ *
  * @author maximilianiKIT
  */
-public class HandleNetValidatorTest {
+public class DOIValidatorTest {
 
-    HandleNetValidator validator = new HandleNetValidator();
+    DOIValidator validator = new DOIValidator();
 
     @Test
     public void valid() {
         try {
-            assertTrue(validator.isValid("hdl://10.1038/nphys1170"));
+            assertTrue(validator.isValid("doi:10.1038/nphys1170"));
         } catch (Exception e) {
+            e.printStackTrace();
             fail();
         }
     }
@@ -43,7 +47,7 @@ public class HandleNetValidatorTest {
     @Test
     public void invalidType() {
         try {
-            assertFalse(validator.isValid("hdl://10.1038/nphys1170", RelatedIdentifierType.AR_XIV));
+            assertFalse(validator.isValid("doi:10.1038/nphys1170", RelatedIdentifierType.AR_XIV));
         } catch (UnsupportedMediaTypeException ignored) {
         }
     }
@@ -66,11 +70,16 @@ public class HandleNetValidatorTest {
 
     @Test
     public void validHTTP() {
-        assertTrue(validator.isValid("http://hdl.handle.net/api/handles/10.1038/nphys1170"));
+        assertTrue(validator.isValid("http://doi.org/10.1038/nphys1170"));
     }
 
     @Test
     public void validHTTPS() {
+        assertTrue(validator.isValid("https://doi.org/10.1038/nphys1170"));
+    }
+
+    @Test
+    public void validExternalURL() {
         assertTrue(validator.isValid("https://hdl.handle.net/api/handles/10.1038/nphys1170"));
     }
 
@@ -83,7 +92,7 @@ public class HandleNetValidatorTest {
     }
 
     @Test
-    public void validHandle() {
+    public void validDOI() {
         assertTrue(validator.isValid("10.1038/nphys1170"));
     }
 
@@ -98,7 +107,7 @@ public class HandleNetValidatorTest {
     @Test
     public void invalidURL() {
         try {
-            assertFalse(validator.isValid("hdl.handle/10.1038/nphys1170"));
+            assertFalse(validator.isValid("doi.handle/10.1038/nphys1170"));
         } catch (BadArgumentException ignored) {
         }
     }
@@ -106,15 +115,23 @@ public class HandleNetValidatorTest {
     @Test
     public void serverNotReachable() {
         try {
-            assertFalse(validator.isValid("https://hdl.test.example/10.1038/nphys1170"));
-        } catch (MessageValidationException ignored) {
+            assertFalse(validator.isValid("https://doi.test.example/10.1038/nphys1170"));
+        } catch (ServiceUnavailableException ignored) {
         }
     }
 
     @Test
     public void invalidPrefixInURL() {
         try {
-            assertFalse(validator.isValid("http://hdl.handle.net/api/handles/10.10385/nphys1170"));
+            assertFalse(validator.isValid("http://doi.org/api/handles/10.10385/nphys1170"));
+        } catch (BadArgumentException ignored) {
+        }
+    }
+
+    @Test
+    public void invalidPrefixAndUnreachableServer() {
+        try {
+            assertFalse(validator.isValid("http://doi.test.example/10.10385/nphys1170"));
         } catch (BadArgumentException ignored) {
         }
     }

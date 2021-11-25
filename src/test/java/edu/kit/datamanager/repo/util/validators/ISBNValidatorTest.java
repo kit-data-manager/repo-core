@@ -12,6 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package edu.kit.datamanager.repo.util.validators;
 
 import edu.kit.datamanager.exceptions.BadArgumentException;
@@ -19,8 +20,12 @@ import edu.kit.datamanager.exceptions.UnsupportedMediaTypeException;
 import edu.kit.datamanager.repo.util.validators.impl.ISBNValidator;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
+/**
+ * @author maximilianiKIT
+ */
 public class ISBNValidatorTest {
     ISBNValidator validator = new ISBNValidator();
 
@@ -62,7 +67,7 @@ public class ISBNValidatorTest {
     @Test
     public void invalidType() {
         try {
-            assertFalse(validator.isValid("1234567890",RelatedIdentifierType.URL));
+            assertFalse(validator.isValid("1234567890", RelatedIdentifierType.URL));
         } catch (UnsupportedMediaTypeException ignored) {
         }
     }

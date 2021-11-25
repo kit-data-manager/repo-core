@@ -1,92 +1,115 @@
+/*
+ * Copyright 2021 Karlsruhe Institute of Technology.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package edu.kit.datamanager.repo.util;
 
 import edu.kit.datamanager.exceptions.UnsupportedMediaTypeException;
-import edu.kit.datamanager.repo.util.validators.IValidator;
-import lombok.extern.java.Log;
+import edu.kit.datamanager.repo.util.validators.IIdentifierValidator;
+import edu.kit.datamanager.repo.util.validators.impl.HandleNetValidator;
+import edu.kit.datamanager.repo.util.validators.impl.URLValidator;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.*;
-import java.util.stream.Collectors;
 
+/**
+ * @author maximilianiKIT
+ */
 public class ValidatorUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(ValidatorUtil.class);
     private static final ValidatorUtil soleInstance = new ValidatorUtil();
 
-    private static final Map<RelatedIdentifierType, IValidator> validators;
+    private static final Set<IIdentifierValidator> validators;
 
     static {
-        Map<RelatedIdentifierType, IValidator> validators1 = new HashMap<>();
-        Set<Class> classes = findAllClassesUsingClassLoader("edu.kit.datamanager.repo.util.validators.impl");
-        for (Class i: classes) {
-            try {
-                IValidator j = (IValidator) i.newInstance();
-                validators1.put(j.supportedType(), j);
-                LOGGER.debug(j.supportedType().toString());
-            } catch (InstantiationException | IllegalAccessException | ClassCastException e) {
-                e.printStackTrace();
-            }
-        }
+        Set<IIdentifierValidator> validators1 = new HashSet<>();
+
+        validators1.add(new HandleNetValidator());
+        validators1.add(new HandleNetValidator());
+        validators1.add(new URLValidator());
+
         validators = validators1;
     }
 
+    /**
+     * This private constructor enforces singularity.
+     */
     private ValidatorUtil() {
-        // enforces singularity
     }
 
-    public static ValidatorUtil soleInstance() {
+    /**
+     * This method returns the singleton.
+     *
+     * @return singleton instance of this class
+     */
+    public static ValidatorUtil getSingleton() {
         return soleInstance;
     }
 
+    /**
+     * This method returns a list of the types of all implemented validators.
+     *
+     * @return a list of RelatedIdentifierType.
+     */
     public List<RelatedIdentifierType> getAllAvailableValidatorTypes() {
-        Map<RelatedIdentifierType, IValidator> map = validators;
+        LOGGER.debug("getAllAvailableValidatorTypes");
         List<RelatedIdentifierType> result = new ArrayList<>();
-        for (Map.Entry entry : map.entrySet()) {
-            result.add((RelatedIdentifierType) entry.getKey());
-        }
+        for (IIdentifierValidator i : validators) result.add(i.getSupportedType());
+        LOGGER.info("All available validator types: {}", result.toString());
         return result;
     }
 
-    public boolean isValid(String input, RelatedIdentifierType type){
-        if (validators.containsKey(type)) {
-            if (validators.get(type).isValid(input, type)) LOGGER.info("Valid input and valid input type!");
-            return true;
-        } else {
-            LOGGER.warn("No matching validator found. Please check your input and plugins.");
-            throw new UnsupportedMediaTypeException("No matching validator found. Please check your input and plugins.");
-        }
-    }
-
-    public boolean isValid(String input, String type) {
-        for (Map.Entry<RelatedIdentifierType, IValidator> entry : validators.entrySet()) {
-            if (entry.getKey().toString().equals(type)) {
-                if (entry.getValue().isValid(input)) return true;
+    /**
+     * This method checks if the type passed in the parameter is valid and then uses the corresponding validator to check the input.
+     *
+     * @param input The input which gets validated.
+     * @param type  The type of the validator.
+     * @return true if the input and type are valid.
+     * May throw an exception if the input or the type is invalid or other errors occur.
+     */
+    public boolean isValid(String input, RelatedIdentifierType type) {
+        LOGGER.debug("isValid - string type");
+        for (IIdentifierValidator i : validators) {
+            if (i.getSupportedType().equals(type)) {
+                if (i.isValid(input, type)) {
+                    LOGGER.info("Valid input and valid input type!");
+                    return true;
+                }
             }
         }
-        throw new UnsupportedMediaTypeException("Invalid Type!");
+        LOGGER.warn("No matching validator found for type {}. Please check the available types.", type);
+        throw new UnsupportedMediaTypeException("No matching validator found. Please check the available types.");
     }
 
-    private static Set<Class> findAllClassesUsingClassLoader(String packageName) {
-        InputStream stream = ClassLoader.getSystemClassLoader()
-                .getResourceAsStream(packageName.replaceAll("[.]", "/"));
-        System.out.println(stream);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-        return reader.lines()
-                .filter(line -> line.endsWith(".class"))
-                .map(line -> getClass(line, packageName))
-                .collect(Collectors.toSet());
-    }
-
-    private static Class getClass(String className, String packageName) {
+    /**
+     * This method checks if the type passed in the parameter is valid and then uses the corresponding validator to check the input.
+     *
+     * @param input The input which gets validated.
+     * @param type  The type of the validator as string.
+     * @return true if the input and type are valid.
+     * May throw an exception if the input or the type is invalid or other errors occur.
+     */
+    public boolean isValid(String input, String type) {
+        LOGGER.debug("isValid - string string");
         try {
-            return Class.forName(packageName + "."
-                    + className.substring(0, className.lastIndexOf('.')));
-        } catch (ClassNotFoundException e) {
+            RelatedIdentifierType rType = RelatedIdentifierType.valueOf(type);
+            return isValid(input, rType);
+        } catch (IllegalArgumentException e) {
+            LOGGER.warn("No matching validator found for type {}. Please check the available types.", type);
+            throw new UnsupportedMediaTypeException("No matching validator found. Please check the available types.");
         }
-        return null;
     }
 }
