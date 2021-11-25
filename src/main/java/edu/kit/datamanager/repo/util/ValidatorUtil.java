@@ -17,7 +17,9 @@ package edu.kit.datamanager.repo.util;
 
 import edu.kit.datamanager.exceptions.UnsupportedMediaTypeException;
 import edu.kit.datamanager.repo.util.validators.IIdentifierValidator;
+import edu.kit.datamanager.repo.util.validators.impl.DOIValidator;
 import edu.kit.datamanager.repo.util.validators.impl.HandleNetValidator;
+import edu.kit.datamanager.repo.util.validators.impl.ISBNValidator;
 import edu.kit.datamanager.repo.util.validators.impl.URLValidator;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
 import org.slf4j.Logger;
@@ -38,8 +40,9 @@ public class ValidatorUtil {
         Set<IIdentifierValidator> validators1 = new HashSet<>();
 
         validators1.add(new HandleNetValidator());
-        validators1.add(new HandleNetValidator());
+        validators1.add(new DOIValidator());
         validators1.add(new URLValidator());
+        validators1.add(new ISBNValidator());
 
         validators = validators1;
     }
