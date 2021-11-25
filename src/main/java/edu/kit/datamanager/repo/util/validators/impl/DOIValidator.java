@@ -19,6 +19,7 @@ import edu.kit.datamanager.exceptions.BadArgumentException;
 import edu.kit.datamanager.exceptions.MessageValidationException;
 import edu.kit.datamanager.exceptions.ServiceUnavailableException;
 import edu.kit.datamanager.repo.util.validators.IIdentifierValidator;
+import lombok.SneakyThrows;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
 
 import java.util.regex.Matcher;
@@ -67,6 +68,7 @@ public class DOIValidator implements IIdentifierValidator {
      * @param suffix        the DOI suffix
      * @return true if the record is downloadable
      */
+    @SneakyThrows
     private boolean isDownloadable(String serverAddress, String prefix, String suffix) {
         IIdentifierValidator urlValidator = new URLValidator();
         boolean fullValid = false;
@@ -89,20 +91,22 @@ public class DOIValidator implements IIdentifierValidator {
             return true;
         }
 
+        Exception buffer = null;
+
         LOG.warn("Either the suffix or the prefix might be invalid. Proving if prefix is valid...");
         try {
             if (urlValidator.isValid("https://doi.org/0.NA/" + prefix)) {
                 LOG.info("The prefix {} is valid!", prefix);
-                if (!serverUnavailable) throw new MessageValidationException("The prefix is valid, but suffix is not.");
-                else
-                    throw new ServiceUnavailableException("Connection to the specified server is not possible, but the prefix has been confirmed as valid on doi.org.");
+                if (!serverUnavailable) buffer = new BadArgumentException("The prefix is valid, but suffix is not.");
+                else buffer = new ServiceUnavailableException("Connection to the specified server is not possible, but the prefix has been confirmed as valid on doi.org.");
             }
         } catch (BadArgumentException ignored) {
         }
 
+        if(buffer!= null) throw buffer;
+
         LOG.error("The entered prefix {} is invalid!", prefix);
         if (!serverUnavailable) throw new BadArgumentException("Prefix not provable on doi.org");
-        else
-            throw new BadArgumentException("A connection to the specified server is not possible and the prefix has been detected as invalid by doi.org.");
+        else throw new BadArgumentException("A connection to the specified server is not possible and the prefix has been detected as invalid by doi.org.");
     }
 }
