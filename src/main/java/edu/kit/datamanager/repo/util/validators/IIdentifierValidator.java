@@ -15,12 +15,13 @@
 
 package edu.kit.datamanager.repo.util.validators;
 
+import edu.kit.datamanager.exceptions.UnsupportedMediaTypeException;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This interface provides a method which is necessary to validate things.
+ * This interface provides everything that is necessary to validate identifiers.
  */
 public interface IIdentifierValidator {
 
@@ -31,27 +32,30 @@ public interface IIdentifierValidator {
      *
      * @return element of the enum defined in the Datacite schema.
      */
-    RelatedIdentifierType supportedType();
+    RelatedIdentifierType getSupportedType();
 
     /**
-     * This method is a shortcut for isValid.
+     * This method must be implemented by any implementation.
      * It doesn't require the type parameter and sets the type of the implementation instead.
      *
      * @param input to validate
      * @return true if input is valid for the special type of implementation
      */
-    default boolean isValid(String input) {
-        return isValid(input, supportedType());
-    }
+    boolean isValid(String input);
 
     /**
-     * This method must be implemented by any implementation.
      * It validates an input and either returns true or throws an exception.
      *
      * @param input to validate
      * @param type  of the input
      * @return true if input is valid for the special type of implementation.
      */
-    boolean isValid(String input, RelatedIdentifierType type);
+    default boolean isValid(String input, RelatedIdentifierType type){
+        if (type != getSupportedType()) {
+            LOG.warn("Illegal type of validator: {}", type);
+            throw new UnsupportedMediaTypeException("Illegal type of validator.");
+        }
+        return isValid(input);
+    }
 
 }

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2021 Karlsruhe Institute of Technology.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package edu.kit.datamanager.repo.util;
 
 import edu.kit.datamanager.exceptions.UnsupportedMediaTypeException;
@@ -9,18 +24,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.*;
 
+/**
+ *
+ * @author maximilianiKIT
+ */
 public class ValidatorUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(ValidatorUtil.class);
     private static final ValidatorUtil soleInstance = new ValidatorUtil();
 
-    private static final Map<RelatedIdentifierType, IIdentifierValidator> validators;
+    private static final Set<IIdentifierValidator> validators;
 
     static {
-        Map<RelatedIdentifierType, IIdentifierValidator> validators1 = new HashMap<>();
+        Set<IIdentifierValidator> validators1 = new HashSet<>();
 
-        validators1.put(RelatedIdentifierType.DOI, new HandleNetValidator());
-        validators1.put(RelatedIdentifierType.HANDLE, new HandleNetValidator());
-        validators1.put(RelatedIdentifierType.URL, new URLValidator());
+        validators1.add(new HandleNetValidator());
+        validators1.add(new HandleNetValidator());
+        validators1.add(new URLValidator());
 
         validators = validators1;
     }
@@ -46,7 +65,8 @@ public class ValidatorUtil {
     public List<RelatedIdentifierType> getAllAvailableValidatorTypes() {
         LOGGER.debug("getAllAvailableValidatorTypes");
         List<RelatedIdentifierType> result = new ArrayList<>();
-        validators.forEach((key, value) -> result.add(key));
+        for (IIdentifierValidator i: validators) result.add(i.getSupportedType());
+        LOGGER.info("All available validator types: {}", result.toString());
         return result;
     }
 
@@ -59,13 +79,16 @@ public class ValidatorUtil {
      */
     public boolean isValid(String input, RelatedIdentifierType type){
         LOGGER.debug("isValid - string type");
-        if (validators.containsKey(type)) {
-            if (validators.get(type).isValid(input, type)) LOGGER.info("Valid input and valid input type!");
-            return true;
-        } else {
-            LOGGER.warn("No matching validator found. Please check your input and plugins.");
-            throw new UnsupportedMediaTypeException("No matching validator found. Please check your input and plugins.");
+        for (IIdentifierValidator i: validators){
+            if(i.getSupportedType().equals(type)){
+                if (i.isValid(input, type)){
+                    LOGGER.info("Valid input and valid input type!");
+                    return true;
+                }
+            }
         }
+        LOGGER.warn("No matching validator found for type {}. Please check the available types.", type);
+        throw new UnsupportedMediaTypeException("No matching validator found. Please check the available types.");
     }
 
     /**
@@ -79,9 +102,10 @@ public class ValidatorUtil {
         LOGGER.debug("isValid - string string");
         try {
             RelatedIdentifierType rType = RelatedIdentifierType.valueOf(type);
-            return validators.get(rType).isValid(input);
+            return isValid(input, rType);
         } catch (IllegalArgumentException e) {
-            throw new UnsupportedMediaTypeException("Invalid Type!");
+            LOGGER.warn("No matching validator found for type {}. Please check the available types.", type);
+            throw new UnsupportedMediaTypeException("No matching validator found. Please check the available types.");
         }
     }
 }

@@ -12,7 +12,6 @@ public class ValidatorUtilTest {
 
     @Test
     public void validNumberOfValidators(){
-        System.out.println(ValidatorUtil.getSingleton().getAllAvailableValidatorTypes().toString());
         Assert.assertEquals(ValidatorUtil.getSingleton().getAllAvailableValidatorTypes().size(),3);
     }
 
