@@ -26,6 +26,10 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+/**
+ *
+ * @author maximilianiKIT
+ */
 public class DOIValidatorTest {
 
     DOIValidator validator = new DOIValidator();

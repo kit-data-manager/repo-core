@@ -21,13 +21,15 @@ import edu.kit.datamanager.repo.util.validators.IIdentifierValidator;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * This class validates Handles with help of handle.net.
- * @see <a href="https://handle.net">https://handle.net</a>
+ *
  * @author maximilianiKIT
+ * @see <a href="https://handle.net">https://handle.net</a>
  */
 public class HandleNetValidator implements IIdentifierValidator {
 
@@ -65,9 +67,9 @@ public class HandleNetValidator implements IIdentifierValidator {
         log.debug("Server address: {}", serverAddress);
         log.debug("Prefix: {}", prefix);
         log.debug("Suffix: {}", suffix);
-        try{
+        try {
             fullValid = urlValidator.isValid(serverAddress + "/" + prefix + "/" + suffix);
-        } catch (Exception ignored){
+        } catch (Exception ignored) {
         }
         if (fullValid) {
             LOG.info("The handle is valid!");

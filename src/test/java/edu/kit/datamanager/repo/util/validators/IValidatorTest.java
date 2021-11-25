@@ -18,12 +18,15 @@ package edu.kit.datamanager.repo.util.validators;
 import edu.kit.datamanager.repo.util.validators.impl.HandleNetValidator;
 import org.junit.jupiter.api.Test;
 
-class IValidatorTest {
+/**
+ * @author maximilianiKIT
+ */
+public class IValidatorTest {
 
     IIdentifierValidator validatorInterface = new HandleNetValidator();
 
     @Test
-    void valid_isValid() {
+    public void valid_isValid() {
         validatorInterface.isValid("hdl://10.1038/nphys1170");
     }
 }

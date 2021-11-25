@@ -20,6 +20,7 @@ import edu.kit.datamanager.exceptions.CustomInternalServerError;
 import edu.kit.datamanager.exceptions.ServiceUnavailableException;
 import edu.kit.datamanager.repo.util.validators.IIdentifierValidator;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -28,6 +29,7 @@ import java.net.URL;
 
 /**
  * This class validates URLs via a HTTP get request.
+ *
  * @author maximilianiKIT
  */
 public class URLValidator implements IIdentifierValidator {

@@ -20,9 +20,14 @@ import edu.kit.datamanager.exceptions.ServiceUnavailableException;
 import edu.kit.datamanager.exceptions.UnsupportedMediaTypeException;
 import edu.kit.datamanager.repo.util.validators.impl.URLValidator;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
+
 import static org.junit.Assert.*;
+
 import org.junit.Test;
 
+/**
+ * @author maximilianiKIT
+ */
 public class URLValidatorTest {
 
     IIdentifierValidator validator = new URLValidator();

@@ -20,13 +20,15 @@ import edu.kit.datamanager.exceptions.MessageValidationException;
 import edu.kit.datamanager.exceptions.ServiceUnavailableException;
 import edu.kit.datamanager.repo.util.validators.IIdentifierValidator;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * This class validates DOIS with help of doi.org.
- * @see <a href="https://doi.org">https://doi.org</a>
+ *
  * @author maximilianiKIT
+ * @see <a href="https://doi.org">https://doi.org</a>
  */
 public class DOIValidator implements IIdentifierValidator {
     @Override
@@ -41,7 +43,7 @@ public class DOIValidator implements IIdentifierValidator {
         Matcher matcher = pattern.matcher(input);
         if (matcher.find()) {
             LOG.debug(matcher.group(0));
-            if(matcher.group(2) != null && (!matcher.group(2).equals("doi.org/") || matcher.group(2).equals("doi.org/api/handles/")) && (matcher.group(1).equals("https://") || matcher.group(1).equals("http://"))){
+            if (matcher.group(2) != null && (!matcher.group(2).equals("doi.org/") || matcher.group(2).equals("doi.org/api/handles/")) && (matcher.group(1).equals("https://") || matcher.group(1).equals("http://"))) {
                 LOG.debug("Server address: {}", matcher.group(2));
                 return isDownloadable((matcher.group(1) + matcher.group(2)), matcher.group(3), matcher.group(4));
             }
@@ -50,7 +52,8 @@ public class DOIValidator implements IIdentifierValidator {
             String regex2 = "([A-Za-z0-9.]+)/([A-Za-z0-9.]+)";
             Pattern pattern2 = Pattern.compile(regex2, Pattern.MULTILINE);
             Matcher matcher2 = pattern2.matcher(input);
-            if(matcher2.find()) return isDownloadable("https://doi.org/api/handles/", matcher2.group(1), matcher2.group(2));
+            if (matcher2.find())
+                return isDownloadable("https://doi.org/api/handles/", matcher2.group(1), matcher2.group(2));
         }
         throw new BadArgumentException("Invalid input!");
     }
@@ -73,12 +76,12 @@ public class DOIValidator implements IIdentifierValidator {
         LOG.debug("Prefix: {}", prefix);
         LOG.debug("Suffix: {}", suffix);
 
-        try{
+        try {
             fullValid = urlValidator.isValid(serverAddress + "" + prefix + "/" + suffix);
-        } catch (ServiceUnavailableException e){
+        } catch (ServiceUnavailableException e) {
             LOG.warn("Server address {} is not reachable", serverAddress + "" + prefix + "/" + suffix);
             serverUnavailable = true;
-        } catch (Exception ignored){
+        } catch (Exception ignored) {
         }
 
         if (fullValid) {
@@ -90,14 +93,16 @@ public class DOIValidator implements IIdentifierValidator {
         try {
             if (urlValidator.isValid("https://doi.org/0.NA/" + prefix)) {
                 LOG.info("The prefix {} is valid!", prefix);
-                if(!serverUnavailable) throw new MessageValidationException("The prefix is valid, but suffix is not.");
-                else throw new ServiceUnavailableException("Connection to the specified server is not possible, but the prefix has been confirmed as valid on doi.org.");
+                if (!serverUnavailable) throw new MessageValidationException("The prefix is valid, but suffix is not.");
+                else
+                    throw new ServiceUnavailableException("Connection to the specified server is not possible, but the prefix has been confirmed as valid on doi.org.");
             }
-        } catch (BadArgumentException ignored){
+        } catch (BadArgumentException ignored) {
         }
 
         LOG.error("The entered prefix {} is invalid!", prefix);
-        if(!serverUnavailable) throw new BadArgumentException("Prefix not provable on doi.org");
-        else throw new BadArgumentException("A connection to the specified server is not possible and the prefix has been detected as invalid by doi.org.");
+        if (!serverUnavailable) throw new BadArgumentException("Prefix not provable on doi.org");
+        else
+            throw new BadArgumentException("A connection to the specified server is not possible and the prefix has been detected as invalid by doi.org.");
     }
 }

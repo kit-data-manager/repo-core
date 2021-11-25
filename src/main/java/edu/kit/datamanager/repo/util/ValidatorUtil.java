@@ -22,10 +22,10 @@ import edu.kit.datamanager.repo.util.validators.impl.URLValidator;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 /**
- *
  * @author maximilianiKIT
  */
 public class ValidatorUtil {
@@ -52,6 +52,7 @@ public class ValidatorUtil {
 
     /**
      * This method returns the singleton.
+     *
      * @return singleton instance of this class
      */
     public static ValidatorUtil getSingleton() {
@@ -60,28 +61,30 @@ public class ValidatorUtil {
 
     /**
      * This method returns a list of the types of all implemented validators.
+     *
      * @return a list of RelatedIdentifierType.
      */
     public List<RelatedIdentifierType> getAllAvailableValidatorTypes() {
         LOGGER.debug("getAllAvailableValidatorTypes");
         List<RelatedIdentifierType> result = new ArrayList<>();
-        for (IIdentifierValidator i: validators) result.add(i.getSupportedType());
+        for (IIdentifierValidator i : validators) result.add(i.getSupportedType());
         LOGGER.info("All available validator types: {}", result.toString());
         return result;
     }
 
     /**
      * This method checks if the type passed in the parameter is valid and then uses the corresponding validator to check the input.
+     *
      * @param input The input which gets validated.
-     * @param type The type of the validator.
+     * @param type  The type of the validator.
      * @return true if the input and type are valid.
      * May throw an exception if the input or the type is invalid or other errors occur.
      */
-    public boolean isValid(String input, RelatedIdentifierType type){
+    public boolean isValid(String input, RelatedIdentifierType type) {
         LOGGER.debug("isValid - string type");
-        for (IIdentifierValidator i: validators){
-            if(i.getSupportedType().equals(type)){
-                if (i.isValid(input, type)){
+        for (IIdentifierValidator i : validators) {
+            if (i.getSupportedType().equals(type)) {
+                if (i.isValid(input, type)) {
                     LOGGER.info("Valid input and valid input type!");
                     return true;
                 }
@@ -93,8 +96,9 @@ public class ValidatorUtil {
 
     /**
      * This method checks if the type passed in the parameter is valid and then uses the corresponding validator to check the input.
+     *
      * @param input The input which gets validated.
-     * @param type The type of the validator as string.
+     * @param type  The type of the validator as string.
      * @return true if the input and type are valid.
      * May throw an exception if the input or the type is invalid or other errors occur.
      */

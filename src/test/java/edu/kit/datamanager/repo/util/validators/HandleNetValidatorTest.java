@@ -24,6 +24,9 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+/**
+ * @author maximilianiKIT
+ */
 public class HandleNetValidatorTest {
 
     HandleNetValidator validator = new HandleNetValidator();
