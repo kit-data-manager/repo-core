@@ -54,7 +54,7 @@ public class ISBNValidator implements IIdentifierValidator {
             isOne = !isOne;
         }
         if ((sum % 10) == 0){
-            LOG.info("Valid ISBN13: {}", input);
+            LOG.debug("The ISBN13 {} is valid!", input);
             return true;
         } else{
             LOG.error("Invalid input: {}", input);
@@ -74,7 +74,7 @@ public class ISBNValidator implements IIdentifierValidator {
             sum += input.charAt(i) * (10 - i);
         }
         if ((sum % 11) == 0){
-            LOG.info("Valid ISBN10: {}", input);
+            LOG.debug("The ISBN10 {} is valid", input);
             return true;
         } else{
             LOG.error("Invalid input: {}", input);

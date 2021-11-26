@@ -87,7 +87,7 @@ public class DOIValidator implements IIdentifierValidator {
         }
 
         if (fullValid) {
-            LOG.info("The DOI is valid!");
+            LOG.debug("The DOI {} is valid!", prefix + "/" + suffix);
             return true;
         }
 

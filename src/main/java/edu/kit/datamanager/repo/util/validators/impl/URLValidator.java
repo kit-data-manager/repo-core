@@ -55,6 +55,7 @@ public class URLValidator implements IIdentifierValidator {
                 LOG.error("Invalid URL");
                 throw new BadArgumentException("Invalid URL!");
             }
+            LOG.debug("The URL {} is valid!", input);
             return true;
         } catch (ProtocolException e) {
             LOG.warn("Error while setting request method");

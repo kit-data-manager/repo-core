@@ -72,7 +72,7 @@ public class HandleNetValidator implements IIdentifierValidator {
         } catch (Exception ignored) {
         }
         if (fullValid) {
-            LOG.info("The handle is valid!");
+            LOG.debug("The handle {} is valid!", prefix + "/" + suffix);
             return true;
         }
         log.warn("Either the suffix or the prefix might be invalid. Proving if prefix is valid...");
