@@ -30,7 +30,7 @@ public class ValidatorUtilTest {
 
     @Test
     public void validNumberOfValidators() {
-        Assert.assertEquals(ValidatorUtil.getSingleton().getAllAvailableValidatorTypes().size(), 3);
+        Assert.assertEquals(4, ValidatorUtil.getSingleton().getAllAvailableValidatorTypes().size());
     }
 
     @Test

@@ -140,7 +140,7 @@ public class DOIValidatorTest {
     public void invalidSuffix() {
         try {
             assertFalse(validator.isValid("10.1038/nphys1170.345678"));
-        } catch (MessageValidationException ignored) {
+        } catch (BadArgumentException ignored) {
         }
     }
 

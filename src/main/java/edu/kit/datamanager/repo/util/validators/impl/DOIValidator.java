@@ -40,7 +40,7 @@ public class DOIValidator implements IIdentifierValidator {
     @Override
     public boolean isValid(String input) {
         String regex = "^(http:\\/\\/|https:\\/\\/|doi:)\\/?(.+)?(10\\.[A-Za-z0-9.]+)\\/([A-Za-z0-9.]*)$";
-        Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+        Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(input);
         if (matcher.find()) {
             LOG.debug(matcher.group(0));
@@ -51,7 +51,7 @@ public class DOIValidator implements IIdentifierValidator {
             return isDownloadable("https://doi.org/api/handles/", matcher.group(3), matcher.group(4));
         } else {
             String regex2 = "([A-Za-z0-9.]+)/([A-Za-z0-9.]+)";
-            Pattern pattern2 = Pattern.compile(regex2, Pattern.MULTILINE);
+            Pattern pattern2 = Pattern.compile(regex2);
             Matcher matcher2 = pattern2.matcher(input);
             if (matcher2.find())
                 return isDownloadable("https://doi.org/api/handles/", matcher2.group(1), matcher2.group(2));

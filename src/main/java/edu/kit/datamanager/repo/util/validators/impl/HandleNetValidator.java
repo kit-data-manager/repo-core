@@ -43,7 +43,7 @@ public class HandleNetValidator implements IIdentifierValidator {
     @Override
     public boolean isValid(String input) {
         String regex = "^(hdl://|http://|https://|doi:)(.+)";
-        Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+        Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(input);
         if (matcher.find()) {
             if (matcher.group(1).equals("https://") || matcher.group(1).equals("http://"))
@@ -104,7 +104,7 @@ public class HandleNetValidator implements IIdentifierValidator {
      */
     private boolean isValidHTTP_URL(String url) {
         String regex = "(http|https)://(.+)/([A-Za-z0-9.]+)/([A-Za-z0-9.]+)";
-        Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+        Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(url);
         if (matcher.find()) {
             return isDownloadable((matcher.group(1) + "://" + matcher.group(2)), matcher.group(3), matcher.group(4));
@@ -120,7 +120,7 @@ public class HandleNetValidator implements IIdentifierValidator {
      */
     private boolean isValidHandle(String handle) {
         String regex = "([A-Za-z0-9.]+)/([A-Za-z0-9.]+)";
-        Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+        Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(handle);
         if (matcher.find()) {
             return isDownloadable(matcher.group(1), matcher.group(2));
