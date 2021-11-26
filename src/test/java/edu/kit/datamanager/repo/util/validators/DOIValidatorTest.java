@@ -16,11 +16,9 @@
 package edu.kit.datamanager.repo.util.validators;
 
 import edu.kit.datamanager.exceptions.BadArgumentException;
-import edu.kit.datamanager.exceptions.MessageValidationException;
 import edu.kit.datamanager.exceptions.ServiceUnavailableException;
 import edu.kit.datamanager.exceptions.UnsupportedMediaTypeException;
 import edu.kit.datamanager.repo.util.validators.impl.DOIValidator;
-import edu.kit.datamanager.repo.util.validators.impl.HandleNetValidator;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
 import org.junit.Test;
 
@@ -41,6 +39,15 @@ public class DOIValidatorTest {
         } catch (Exception e) {
             e.printStackTrace();
             fail();
+        }
+    }
+
+    @Test
+    public void anotherValid() {
+        try {
+            assertTrue(validator.isValid("https://www.doi.org/10.1109/5.771073"));
+        } catch (Exception e){
+            fail(e.getMessage());
         }
     }
 
@@ -148,6 +155,14 @@ public class DOIValidatorTest {
     public void invalidCharacters() {
         try {
             assertFalse(validator.isValid("http://google.com/®¡“¢∂‚/®¡“¢∂‚"));
+        } catch (BadArgumentException ignored) {
+        }
+    }
+
+    @Test
+    public void multiLineInput() {
+        try {
+            assertFalse(validator.isValid("10.1038/nphy/ns1170/n"));
         } catch (BadArgumentException ignored) {
         }
     }

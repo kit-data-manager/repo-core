@@ -18,7 +18,8 @@ package edu.kit.datamanager.repo.util;
 import edu.kit.datamanager.exceptions.UnsupportedMediaTypeException;
 import edu.kit.datamanager.repo.util.validators.IIdentifierValidator;
 import edu.kit.datamanager.repo.util.validators.impl.DOIValidator;
-import edu.kit.datamanager.repo.util.validators.impl.HandleNetValidator;
+//import edu.kit.datamanager.repo.util.validators.impl.HandleNetValidator;
+import edu.kit.datamanager.repo.util.validators.impl.HandleValidator;
 import edu.kit.datamanager.repo.util.validators.impl.ISBNValidator;
 import edu.kit.datamanager.repo.util.validators.impl.URLValidator;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
@@ -28,21 +29,23 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 /**
+ * This class provides an util to validate identifiers.
+ *
  * @author maximilianiKIT
  */
 public class ValidatorUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(ValidatorUtil.class);
     private static final ValidatorUtil soleInstance = new ValidatorUtil();
-
-    private static final Set<IIdentifierValidator> validators;
+    private static final Map<RelatedIdentifierType, IIdentifierValidator> validators;
 
     static {
-        Set<IIdentifierValidator> validators1 = new HashSet<>();
+        Map<RelatedIdentifierType, IIdentifierValidator> validators1 = new HashMap<>();
 
-        validators1.add(new HandleNetValidator());
-        validators1.add(new DOIValidator());
-        validators1.add(new URLValidator());
-        validators1.add(new ISBNValidator());
+//        validators1.put(RelatedIdentifierType.HANDLE, new HandleNetValidator());
+        validators1.put(RelatedIdentifierType.HANDLE, new HandleValidator());
+        validators1.put(RelatedIdentifierType.DOI, new DOIValidator());
+        validators1.put(RelatedIdentifierType.URL, new URLValidator());
+        validators1.put(RelatedIdentifierType.ISBN, new ISBNValidator());
 
         validators = validators1;
     }
@@ -68,10 +71,9 @@ public class ValidatorUtil {
      * @return a list of RelatedIdentifierType.
      */
     public List<RelatedIdentifierType> getAllAvailableValidatorTypes() {
-        LOGGER.debug("getAllAvailableValidatorTypes");
         List<RelatedIdentifierType> result = new ArrayList<>();
-        for (IIdentifierValidator i : validators) result.add(i.getSupportedType());
-        LOGGER.info("All available validator types: {}", result.toString());
+        validators.forEach((key, value) -> result.add(key));
+        LOGGER.debug("All available validator types: {}", result);
         return result;
     }
 
@@ -84,17 +86,18 @@ public class ValidatorUtil {
      * May throw an exception if the input or the type is invalid or other errors occur.
      */
     public boolean isValid(String input, RelatedIdentifierType type) {
-        LOGGER.debug("isValid - string type");
-        for (IIdentifierValidator i : validators) {
-            if (i.getSupportedType().equals(type)) {
-                if (i.isValid(input, type)) {
-                    LOGGER.info("Valid input and valid input type!");
-                    return true;
-                }
+        LOGGER.debug("Validate identifier '{}' with type '{}'...", input, type);
+        boolean result = false;
+        if (validators.containsKey(type)) {
+            if (validators.get(type).isValid(input, type)) {
+                LOGGER.debug("Valid input {} and valid input type{}!", input, type);
+                result = true;
             }
+        } else {
+            LOGGER.warn("No matching validator found for type {}. Please check the available types.", type);
+            throw new UnsupportedMediaTypeException("No matching validator found. Please check the available types.");
         }
-        LOGGER.warn("No matching validator found for type {}. Please check the available types.", type);
-        throw new UnsupportedMediaTypeException("No matching validator found. Please check the available types.");
+        return result;
     }
 
     /**
@@ -106,13 +109,15 @@ public class ValidatorUtil {
      * May throw an exception if the input or the type is invalid or other errors occur.
      */
     public boolean isValid(String input, String type) {
-        LOGGER.debug("isValid - string string");
+        LOGGER.debug("Validate identifier '{}' with type '{}'...", input, type);
+        boolean result = false;
         try {
             RelatedIdentifierType rType = RelatedIdentifierType.valueOf(type);
-            return isValid(input, rType);
+            result = isValid(input, rType);
         } catch (IllegalArgumentException e) {
             LOGGER.warn("No matching validator found for type {}. Please check the available types.", type);
             throw new UnsupportedMediaTypeException("No matching validator found. Please check the available types.");
         }
+        return result;
     }
 }

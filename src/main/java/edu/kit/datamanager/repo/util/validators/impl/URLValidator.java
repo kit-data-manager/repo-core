@@ -19,7 +19,9 @@ import edu.kit.datamanager.exceptions.BadArgumentException;
 import edu.kit.datamanager.exceptions.CustomInternalServerError;
 import edu.kit.datamanager.exceptions.ServiceUnavailableException;
 import edu.kit.datamanager.repo.util.validators.IIdentifierValidator;
+import org.apache.http.HttpStatus;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -41,31 +43,37 @@ public class URLValidator implements IIdentifierValidator {
 
     @Override
     public boolean isValid(String input) {
-        URL urlHandler = null;
-        HttpURLConnection con = null;
-        LOG.debug("URL: {}", input);
+        URL urlHandler;
+        HttpURLConnection con;
+        LOGGER.debug("URL: {}", input);
         int status;
+        boolean result;
+
         try {
             urlHandler = new URL(input);
             con = (HttpURLConnection) urlHandler.openConnection();
             con.setRequestMethod("GET");
             status = con.getResponseCode();
-            LOG.debug("HTTP status: {}", status);
-            if (status != 200) {
-                LOG.error("Invalid URL");
-                throw new BadArgumentException("Invalid URL!");
+            LOGGER.debug("HTTP status: {}", status);
+//            if (status == HttpStatus.SC_OK || status == HttpStatus.SC_MOVED_TEMPORARILY || status == HttpStatus.SC_TEMPORARY_REDIRECT) {
+            if(status == HttpStatus.SC_OK) {
+                result = true;
+            } else {
+                LOGGER.error("Invalid URL");
+                throw new ResponseStatusException(org.springframework.http.HttpStatus.valueOf(status));
+//                throw new BadArgumentException("Invalid URL!");
             }
-            LOG.debug("The URL {} is valid!", input);
-            return true;
         } catch (ProtocolException e) {
-            LOG.warn("Error while setting request method");
+            LOGGER.warn("Error while setting request method");
             throw new CustomInternalServerError("Error setting request method");
         } catch (MalformedURLException e) {
-            LOG.warn("Invalid URL");
+            LOGGER.warn("Invalid URL");
             throw new BadArgumentException("Invalid URL");
         } catch (IOException e) {
-            LOG.warn("No connection to the server possible. Do you have an internet connection?");
+            LOGGER.warn("No connection to the server possible. Do you have an internet connection?");
             throw new ServiceUnavailableException("No connection to the server possible. Do you have an internet connection?");
         }
+        LOGGER.debug("The URL {} is valid!", input);
+        return result;
     }
 }

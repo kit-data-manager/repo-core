@@ -15,7 +15,7 @@
 
 package edu.kit.datamanager.repo.util.validators;
 
-import edu.kit.datamanager.repo.util.validators.impl.HandleNetValidator;
+import edu.kit.datamanager.repo.util.validators.impl.DOIValidator;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -23,10 +23,10 @@ import org.junit.jupiter.api.Test;
  */
 public class IValidatorTest {
 
-    IIdentifierValidator validatorInterface = new HandleNetValidator();
+    IIdentifierValidator validatorInterface = new DOIValidator();
 
     @Test
     public void valid_isValid() {
-        validatorInterface.isValid("hdl://10.1038/nphys1170");
+        validatorInterface.isValid("doi://10.1038/nphys1170");
     }
 }

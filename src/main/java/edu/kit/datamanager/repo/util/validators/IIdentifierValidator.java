@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  */
 public interface IIdentifierValidator {
 
-    Logger LOG = LoggerFactory.getLogger(IIdentifierValidator.class);
+    Logger LOGGER = LoggerFactory.getLogger(IIdentifierValidator.class);
 
     /**
      * This method returns the type of the validator implementation.
@@ -52,7 +52,7 @@ public interface IIdentifierValidator {
      */
     default boolean isValid(String input, RelatedIdentifierType type){
         if (type != getSupportedType()) {
-            LOG.warn("Illegal type of validator: {}", type);
+            LOGGER.warn("Illegal type of validator: {}", type);
             throw new UnsupportedMediaTypeException("Illegal type of validator.");
         }
         return isValid(input);

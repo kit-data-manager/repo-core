@@ -32,10 +32,14 @@ public class ISBNValidator implements IIdentifierValidator {
 
     @Override
     public boolean isValid(String input) {
-        if (input.length() == 10) return isValidISBN10(input);
-        else if (input.length() == 13) return isValidISBN13(input);
-        LOG.error("Invalid input length. Please use a valid ISBN10 or ISBN13.");
-        throw new BadArgumentException("Invalid input length. Please use a valid ISBN10 or ISBN13.");
+        boolean result;
+        if (input.length() == 10) result = isValidISBN10(input);
+        else if (input.length() == 13) result = isValidISBN13(input);
+        else {
+            LOGGER.error("Invalid input length. Please use a valid ISBN10 or ISBN13.");
+            throw new BadArgumentException("Invalid input length. Please use a valid ISBN10 or ISBN13.");
+        }
+        return result;
     }
 
     /**
@@ -46,20 +50,19 @@ public class ISBNValidator implements IIdentifierValidator {
      */
     private boolean isValidISBN13(String input) {
         int sum = 0;
-        boolean isOne = true;
+        boolean isOddIndex = true;
         for (int i = 0; i < 13; i++) {
             int number = input.charAt(i);
-            if (!isOne) number *= 3;
+            if (!isOddIndex) number *= 3;
             sum += number;
-            isOne = !isOne;
+            isOddIndex = !isOddIndex;
         }
-        if ((sum % 10) == 0){
-            LOG.debug("The ISBN13 {} is valid!", input);
-            return true;
-        } else{
-            LOG.error("Invalid input: {}", input);
+        if ((sum % 10) != 0){
+            LOGGER.error("Invalid input: {}", input);
             throw new BadArgumentException("Invalid input");
         }
+        LOGGER.debug("The ISBN13 {} is valid!", input);
+        return true;
     }
 
     /**
@@ -74,10 +77,10 @@ public class ISBNValidator implements IIdentifierValidator {
             sum += input.charAt(i) * (10 - i);
         }
         if ((sum % 11) == 0){
-            LOG.debug("The ISBN10 {} is valid", input);
+            LOGGER.debug("The ISBN10 {} is valid", input);
             return true;
         } else{
-            LOG.error("Invalid input: {}", input);
+            LOGGER.error("Invalid input: {}", input);
             throw new BadArgumentException("Invalid input");
         }
     }

@@ -18,7 +18,8 @@ package edu.kit.datamanager.repo.util.validators;
 import edu.kit.datamanager.exceptions.BadArgumentException;
 import edu.kit.datamanager.exceptions.MessageValidationException;
 import edu.kit.datamanager.exceptions.UnsupportedMediaTypeException;
-import edu.kit.datamanager.repo.util.validators.impl.HandleNetValidator;
+//import edu.kit.datamanager.repo.util.validators.impl.HandleNetValidator;
+import edu.kit.datamanager.repo.util.validators.impl.HandleValidator;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
 import org.junit.Test;
 
@@ -27,9 +28,9 @@ import static org.junit.Assert.*;
 /**
  * @author maximilianiKIT
  */
-public class HandleNetValidatorTest {
+public class HandleValidatorTest {
 
-    HandleNetValidator validator = new HandleNetValidator();
+    HandleValidator validator = new HandleValidator();
 
     @Test
     public void valid() {
@@ -131,6 +132,14 @@ public class HandleNetValidatorTest {
     public void invalidCharacters() {
         try {
             assertFalse(validator.isValid("http://google.com/®¡“¢∂‚/®¡“¢∂‚"));
+        } catch (BadArgumentException ignored) {
+        }
+    }
+
+    @Test
+    public void multiLineInput() {
+        try {
+            assertFalse(validator.isValid("10.1038/nphy/ns1170/n"));
         } catch (BadArgumentException ignored) {
         }
     }
