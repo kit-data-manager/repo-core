@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - none
 
 ### Fixed
-- none
+- Improved error handling and added persistence for AMQP messages if message queue is offline
 
 ### Deprecated
 - none
