@@ -112,8 +112,8 @@ dependencies {
     implementation "javax.activation:activation:1.1.1"
     implementation "org.javassist:javassist:3.28.0-GA"
     
-    implementation "edu.kit.datamanager:service-base:0.3.1-SNAPSHOT"
-//    implementation "edu.kit.datamanager:generic-message-consumer:0.2.0"
+    implementation "edu.kit.datamanager:service-base:0.3.1"
+    //implementation "edu.kit.datamanager:generic-message-consumer:0.2.0"
 
     implementation "com.github.fge:json-patch:1.9"
     implementation "net.sf.dozer:dozer:5.5.1"
