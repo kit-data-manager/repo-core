@@ -18,7 +18,6 @@ package edu.kit.datamanager.repo.util.validators;
 import edu.kit.datamanager.exceptions.BadArgumentException;
 import edu.kit.datamanager.exceptions.MessageValidationException;
 import edu.kit.datamanager.exceptions.UnsupportedMediaTypeException;
-//import edu.kit.datamanager.repo.util.validators.impl.HandleNetValidator;
 import edu.kit.datamanager.repo.util.validators.impl.HandleValidator;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
 import org.junit.Test;
@@ -34,17 +33,13 @@ public class HandleValidatorTest {
 
     @Test
     public void valid() {
-        try {
-            assertTrue(validator.isValid("hdl://10.1038/nphys1170"));
-        } catch (Exception e) {
-            fail();
-        }
+        assertTrue(validator.isValid("hdl:10.1038/nphys1170"));
     }
 
     @Test
     public void invalidType() {
         try {
-            assertFalse(validator.isValid("hdl://10.1038/nphys1170", RelatedIdentifierType.AR_XIV));
+            assertFalse(validator.isValid("hdl:10.1038/nphys1170", RelatedIdentifierType.AR_XIV));
         } catch (UnsupportedMediaTypeException ignored) {
         }
     }

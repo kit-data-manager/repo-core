@@ -28,6 +28,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This class validates URLs via a HTTP get request.
@@ -48,6 +50,14 @@ public class URLValidator implements IIdentifierValidator {
         LOGGER.debug("URL: {}", input);
         int status;
         boolean result;
+        String regex = "^(http|https):\\/\\/[-A-Za-z0-9+&@#\\/%?=~_|!:,.;]+[-A-Za-z0-9+&@#\\/%=~_|]$";
+        Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+        Matcher matcher = pattern.matcher(input);
+
+        if (!matcher.find()) {
+            LOGGER.error("The URL {} does not match the pattern or contains illegal characters.", input);
+            throw new BadArgumentException("The URL " + input + " does not match the pattern or contains illegal characters.");
+        }
 
         try {
             urlHandler = new URL(input);
@@ -55,20 +65,18 @@ public class URLValidator implements IIdentifierValidator {
             con.setRequestMethod("GET");
             status = con.getResponseCode();
             LOGGER.debug("HTTP status: {}", status);
-//            if (status == HttpStatus.SC_OK || status == HttpStatus.SC_MOVED_TEMPORARILY || status == HttpStatus.SC_TEMPORARY_REDIRECT) {
-            if(status == HttpStatus.SC_OK) {
+            if (status == HttpStatus.SC_OK) {
                 result = true;
             } else {
                 LOGGER.error("Invalid URL");
                 throw new ResponseStatusException(org.springframework.http.HttpStatus.valueOf(status));
-//                throw new BadArgumentException("Invalid URL!");
             }
         } catch (ProtocolException e) {
             LOGGER.warn("Error while setting request method");
             throw new CustomInternalServerError("Error setting request method");
         } catch (MalformedURLException e) {
-            LOGGER.warn("Invalid URL");
-            throw new BadArgumentException("Invalid URL");
+            LOGGER.error("The URL {} does not match the pattern or contains illegal characters.", input);
+            throw new BadArgumentException("The URL " + input + " does not match the pattern or contains illegal characters.");
         } catch (IOException e) {
             LOGGER.warn("No connection to the server possible. Do you have an internet connection?");
             throw new ServiceUnavailableException("No connection to the server possible. Do you have an internet connection?");

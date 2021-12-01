@@ -18,7 +18,6 @@ package edu.kit.datamanager.repo.util;
 import edu.kit.datamanager.exceptions.UnsupportedMediaTypeException;
 import edu.kit.datamanager.repo.util.validators.IIdentifierValidator;
 import edu.kit.datamanager.repo.util.validators.impl.DOIValidator;
-//import edu.kit.datamanager.repo.util.validators.impl.HandleNetValidator;
 import edu.kit.datamanager.repo.util.validators.impl.HandleValidator;
 import edu.kit.datamanager.repo.util.validators.impl.ISBNValidator;
 import edu.kit.datamanager.repo.util.validators.impl.URLValidator;
@@ -41,12 +40,12 @@ public class ValidatorUtil {
     static {
         Map<RelatedIdentifierType, IIdentifierValidator> validators1 = new HashMap<>();
 
-//        validators1.put(RelatedIdentifierType.HANDLE, new HandleNetValidator());
         validators1.put(RelatedIdentifierType.HANDLE, new HandleValidator());
         validators1.put(RelatedIdentifierType.DOI, new DOIValidator());
         validators1.put(RelatedIdentifierType.URL, new URLValidator());
         validators1.put(RelatedIdentifierType.ISBN, new ISBNValidator());
 
+        LOGGER.info(validators1.toString());
         validators = validators1;
     }
 

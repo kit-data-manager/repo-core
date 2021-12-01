@@ -62,15 +62,6 @@ public class URLValidatorTest {
     }
 
     @Test
-    public void invalidPrefixInURL() {
-        try {
-            assertFalse(validator.isValid("http://hdl.handle.net/api/handles/10.10385/nphys1170"));
-        } catch (BadArgumentException ignored) {
-        }
-    }
-
-
-    @Test
     public void invalidCharacters() {
         try {
             assertFalse(validator.isValid("http://google.com/®¡“¢∂‚/®¡“¢∂‚"));

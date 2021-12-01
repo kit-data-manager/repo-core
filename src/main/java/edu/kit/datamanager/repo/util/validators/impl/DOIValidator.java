@@ -36,8 +36,8 @@ public class DOIValidator implements IIdentifierValidator {
                 "doi.org",
                 "api/handles/",
                 RelatedIdentifierType.DOI,
-                "^(http://|https://|doi:)/?(.+)?(10\\.[A-Za-z0-9.]+)/([A-Za-z0-9.]*)$",
-                "(10\\.[A-Za-z0-9.]+)/([A-Za-z0-9.]+)")
+                "^(http://|https://|doi:)/?(.+)?(10\\.[A-Za-z0-9.]+)/([A-Za-z0-9.]+)$",
+                "^(10\\.[A-Za-z0-9.]+)/([A-Za-z0-9.]+)$")
                 .isValid(input);
     }
 }

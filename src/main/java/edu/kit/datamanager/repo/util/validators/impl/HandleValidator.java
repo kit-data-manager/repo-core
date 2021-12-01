@@ -48,8 +48,9 @@ public class HandleValidator implements IIdentifierValidator {
         humanReadableServer = "handle.net";
         apiPath = "api/handles/";
         supportedType = RelatedIdentifierType.HANDLE;
-        regex = "^(http://|https://|hdl:)/?(.+)?([A-Za-z0-9.]+)/([A-Za-z0-9.]*)$";
-        standaloneRegex = "([A-Za-z0-9.]+)/([A-Za-z0-9.]+)";
+//        regex = "^(http://|https://|hdl:)/?(.+)?([A-Za-z0-9.]+)/([A-Za-z0-9.]+)$";
+        regex = "^(http://|https://|hdl:)/?(.+)?(10\\.[A-Za-z0-9.]+)/([A-Za-z0-9.]+)$";
+        standaloneRegex = "^([A-Za-z0-9.]+)/([A-Za-z0-9.]+)$";
     }
 
     /**
@@ -89,6 +90,7 @@ public class HandleValidator implements IIdentifierValidator {
         Matcher matcher2 = pattern2.matcher(input);
 
         boolean result;
+        LOGGER.debug("Input: {}", input);
 
         if (matcher.find()) {
             if (matcher.group(3).contains("/n") || matcher.group(4).contains("/n")) {
@@ -97,7 +99,6 @@ public class HandleValidator implements IIdentifierValidator {
             }
             LOGGER.debug(matcher.group(0));
             if (matcher.group(2) != null && (!matcher.group(2).equals(humanReadableServer + "/") || !matcher.group(2).equals(humanReadableServer + apiPath)) && (matcher.group(1).equals("https://") || matcher.group(1).equals("http://"))) {
-//              if(matcher.group(2) != null && (matcher.group(1).equals("https://") || matcher.group(1).equals("http://"))) {
                 LOGGER.debug("Server address: {}", matcher.group(2));
                 result = isDownloadable((matcher.group(1) + matcher.group(2)), matcher.group(3), matcher.group(4));
             } else result = isDownloadable(serverURL + apiPath, matcher.group(3), matcher.group(4));
@@ -120,51 +121,55 @@ public class HandleValidator implements IIdentifierValidator {
     @SneakyThrows
     private boolean isDownloadable(String serverAddress, String prefix, String suffix) {
         IIdentifierValidator urlValidator = new URLValidator();
-        boolean fullValid = false;
-        boolean serverUnavailable = false;
+        boolean serverValid = false;
+        boolean allValid = false;
 
         LOGGER.debug("Server address: {}", serverAddress);
         LOGGER.debug("Prefix: {}", prefix);
         LOGGER.debug("Suffix: {}", suffix);
 
         try {
-            fullValid = urlValidator.isValid(serverAddress + "" + prefix + "/" + suffix);
+            serverValid = urlValidator.isValid(serverAddress);
+            LOGGER.debug("The server address " + serverAddress + " is valid!");
         } catch (ServiceUnavailableException e) {
-            LOGGER.warn("Server address {} is not reachable", serverAddress + "" + prefix + "/" + suffix);
-            serverUnavailable = true;
+            LOGGER.error("The server address {} is not valid!", serverAddress, e);
+        } catch (ResponseStatusException e) {
+            serverValid = true;
+            LOGGER.debug("The server address {} is valid, but throws status {}!", serverAddress, e.getStatus());
+        } catch (Exception e) {
+            LOGGER.error("The server address {} is not valid!", serverAddress, e);
+        }
+
+        try {
+            urlValidator.isValid(serverURL + apiPath + "0.NA/" + prefix);
+            if (serverValid) LOGGER.debug("The prefix " + prefix + " is valid!");
+            else {
+                LOGGER.error("A connection to the server " + serverAddress + " is not possible, but the prefix has been confirmed as valid by " + humanReadableServer + ".");
+                throw new ServiceUnavailableException("A connection to the server " + serverAddress + " is not possible, but the prefix has been confirmed as valid by " + humanReadableServer + ".");
+            }
+        } catch (ServiceUnavailableException ignored) {
+
+        } catch (Exception e) {
+            LOGGER.error("The prefix " + prefix + " is not provable on " + humanReadableServer + ".");
+            throw new BadArgumentException("The prefix " + prefix + " is not provable on " + humanReadableServer + ".");
+        }
+
+        try {
+            allValid = urlValidator.isValid(serverAddress + prefix + "/" + suffix);
         } catch (ResponseStatusException e) {
             HttpStatus status = e.getStatus();
-            if(status == HttpStatus.MOVED_PERMANENTLY || status == HttpStatus.FOUND || status == HttpStatus.MOVED_PERMANENTLY) {
-                LOGGER.info("The URL behind the {} might not be accessible.", supportedType);
-                fullValid = true;
+            if (status.is2xxSuccessful()) {
+                LOGGER.debug("The {} {} is valid!", getSupportedType(), prefix + "/" + suffix);
+                allValid = true;
+            } else if (status.is3xxRedirection()) {
+                LOGGER.debug("The {} {} is valid!", getSupportedType(), prefix + "/" + suffix);
+                allValid = true;
             }
+        } catch (Exception e) {
+            LOGGER.error("The prefix " + prefix + " is valid, but the suffix " + suffix + " is not.");
+            throw new BadArgumentException("The prefix " + prefix + " is valid, but the suffix " + suffix + " is not.");
         }
 
-        if (fullValid) {
-            LOGGER.debug("The {} {} is valid!", getSupportedType(), prefix + "/" + suffix);
-            return true;
-        }
-
-        Exception buffer = null;
-
-        LOGGER.warn("Either the suffix or the prefix might be invalid. Proving if prefix is valid...");
-        try {
-            if (urlValidator.isValid(serverURL + "0.NA/" + prefix)) {
-                LOGGER.debug("The prefix {} is valid!", prefix);
-                if (!serverUnavailable)
-                    buffer = new BadArgumentException("The prefix " + prefix + " is valid, but the suffix " + suffix + " is not.");
-                else
-                    buffer = new ServiceUnavailableException("A connection to the server " + serverAddress + " is not possible, but the prefix has been confirmed as valid by " + humanReadableServer + ".");
-            }
-        } catch (Exception ignored) {
-        }
-
-        if (buffer != null) throw buffer;
-
-        LOGGER.error("The entered prefix {} is invalid!", prefix);
-        if (!serverUnavailable)
-            throw new BadArgumentException("The prefix " + prefix + " is not provable on " + humanReadableServer + ".");
-        else
-            throw new BadArgumentException("A connection to the server " + serverAddress + " is not possible and the prefix has been detected as invalid by " + humanReadableServer + ".");
+        return allValid;
     }
 }

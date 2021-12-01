@@ -25,7 +25,6 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
  * @author maximilianiKIT
  */
 public class DOIValidatorTest {
@@ -44,11 +43,7 @@ public class DOIValidatorTest {
 
     @Test
     public void anotherValid() {
-        try {
-            assertTrue(validator.isValid("https://www.doi.org/10.1109/5.771073"));
-        } catch (Exception e){
-            fail(e.getMessage());
-        }
+        assertTrue(validator.isValid("https://www.doi.org/10.1109/5.771073"));
     }
 
     @Test
@@ -114,7 +109,7 @@ public class DOIValidatorTest {
     @Test
     public void invalidURL() {
         try {
-            assertFalse(validator.isValid("doi.handle/10.1038/nphys1170"));
+            assertFalse(validator.isValid("doi.example/10.1038/nphys1170"));
         } catch (BadArgumentException ignored) {
         }
     }
@@ -130,7 +125,7 @@ public class DOIValidatorTest {
     @Test
     public void invalidPrefixInURL() {
         try {
-            assertFalse(validator.isValid("http://doi.org/api/handles/10.10385/nphys1170"));
+            assertFalse(validator.isValid("http://doi.org/api/handles/10.3543254324325432/nphys1170"));
         } catch (BadArgumentException ignored) {
         }
     }

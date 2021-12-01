@@ -50,7 +50,7 @@ public interface IIdentifierValidator {
      * @param type  of the input
      * @return true if input is valid for the special type of implementation.
      */
-    default boolean isValid(String input, RelatedIdentifierType type){
+    default boolean isValid(String input, RelatedIdentifierType type) {
         if (type != getSupportedType()) {
             LOGGER.warn("Illegal type of validator: {}", type);
             throw new UnsupportedMediaTypeException("Illegal type of validator.");
