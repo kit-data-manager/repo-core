@@ -49,7 +49,6 @@ public class URLValidator implements IIdentifierValidator {
         HttpURLConnection con;
         LOGGER.debug("URL: {}", input);
         int status;
-        boolean result;
         String regex = "^(http|https):\\/\\/[-A-Za-z0-9+&@#\\/%?=~_|!:,.;]+[-A-Za-z0-9+&@#\\/%=~_|]$";
         Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
         Matcher matcher = pattern.matcher(input);
@@ -65,23 +64,15 @@ public class URLValidator implements IIdentifierValidator {
             con.setRequestMethod("GET");
             status = con.getResponseCode();
             LOGGER.debug("HTTP status: {}", status);
-            if (status == HttpStatus.SC_OK) {
-                result = true;
-            } else {
+            if (status != HttpStatus.SC_OK) {
                 LOGGER.error("Connection to URL '{}' fails with status '{}'", input, status);
                 throw new ResponseStatusException(org.springframework.http.HttpStatus.valueOf(status));
             }
-        } catch (ProtocolException e) {
-            LOGGER.warn("Error while setting request method");
-            throw new CustomInternalServerError("Error setting request method");
-        } catch (MalformedURLException e) {
-            LOGGER.error("The URL '{}' does not match the pattern or contains illegal characters.", input);
-            throw new BadArgumentException("The URL " + input + " does not match the pattern or contains illegal characters.");
         } catch (IOException e) {
             LOGGER.warn("No connection to the server '{}' possible. Do you have an internet connection?", input);
             throw new ServiceUnavailableException("No connection to the server '" + input + "' possible. Do you have an internet connection?");
         }
         LOGGER.debug("The URL '{}' is valid!", input);
-        return result;
+        return true;
     }
 }

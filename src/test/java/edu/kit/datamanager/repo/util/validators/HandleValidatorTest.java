@@ -17,6 +17,7 @@ package edu.kit.datamanager.repo.util.validators;
 
 import edu.kit.datamanager.exceptions.BadArgumentException;
 import edu.kit.datamanager.exceptions.MessageValidationException;
+import edu.kit.datamanager.exceptions.ServiceUnavailableException;
 import edu.kit.datamanager.exceptions.UnsupportedMediaTypeException;
 import edu.kit.datamanager.repo.util.validators.impl.HandleValidator;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
@@ -103,7 +104,7 @@ public class HandleValidatorTest {
     public void serverNotReachable() {
         try {
             assertFalse(validator.isValid("https://hdl.test.example/10.1038/nphys1170"));
-        } catch (MessageValidationException ignored) {
+        } catch (ServiceUnavailableException ignored) {
         }
     }
 
@@ -119,7 +120,7 @@ public class HandleValidatorTest {
     public void invalidSuffix() {
         try {
             assertFalse(validator.isValid("10.1038/nphys1170.345678"));
-        } catch (MessageValidationException ignored) {
+        } catch (BadArgumentException ignored) {
         }
     }
 
