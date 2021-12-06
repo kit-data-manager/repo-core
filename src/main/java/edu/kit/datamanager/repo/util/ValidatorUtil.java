@@ -45,7 +45,9 @@ public class ValidatorUtil {
         validators1.put(RelatedIdentifierType.URL, new URLValidator());
         validators1.put(RelatedIdentifierType.ISBN, new ISBNValidator());
 
-        LOGGER.info(validators1.toString());
+        if (LOGGER.isInfoEnabled()) {
+            for (RelatedIdentifierType type : validators1.keySet()) LOGGER.info("Validator found for '{}'", type);
+        }
         validators = validators1;
     }
 

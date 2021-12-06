@@ -18,7 +18,6 @@ package edu.kit.datamanager.repo.util.validators.impl;
 import edu.kit.datamanager.exceptions.BadArgumentException;
 import edu.kit.datamanager.exceptions.ServiceUnavailableException;
 import edu.kit.datamanager.repo.util.validators.IIdentifierValidator;
-import lombok.SneakyThrows;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -48,7 +47,6 @@ public class HandleValidator implements IIdentifierValidator {
         humanReadableServer = "handle.net";
         apiPath = "api/handles/";
         supportedType = RelatedIdentifierType.HANDLE;
-//        regex = "^(http://|https://|hdl:)/?(.+)?([A-Za-z0-9.]+)/([A-Za-z0-9.]+)$";
         regex = "^(http://|https://|hdl:)/?(.+)?(10\\.[A-Za-z0-9.]+)/([A-Za-z0-9.]+)$";
         standaloneRegex = "^([A-Za-z0-9.]+)/([A-Za-z0-9.]+)$";
     }
@@ -88,16 +86,14 @@ public class HandleValidator implements IIdentifierValidator {
         Matcher matcher = pattern.matcher(input);
         Pattern pattern2 = Pattern.compile(standaloneRegex);
         Matcher matcher2 = pattern2.matcher(input);
-
         boolean result;
-        LOGGER.debug("Input: {}", input);
 
         if (matcher.find()) {
             if (matcher.group(3).contains("/n") || matcher.group(4).contains("/n")) {
                 LOGGER.error("Illegal line breaks in input {}", input);
                 throw new BadArgumentException("Illegal line breaks in input: " + input);
             }
-            LOGGER.debug(matcher.group(0));
+            LOGGER.debug("Found {} with regex", matcher.group(0));
             if (matcher.group(2) != null && (!matcher.group(2).equals(humanReadableServer + "/") || !matcher.group(2).equals(humanReadableServer + apiPath)) && (matcher.group(1).equals("https://") || matcher.group(1).equals("http://"))) {
                 LOGGER.debug("Server address: {}", matcher.group(2));
                 result = isDownloadable((matcher.group(1) + matcher.group(2)), matcher.group(3), matcher.group(4));
@@ -118,7 +114,6 @@ public class HandleValidator implements IIdentifierValidator {
      * @param suffix        the DOI suffix
      * @return true if the record is downloadable
      */
-    @SneakyThrows
     private boolean isDownloadable(String serverAddress, String prefix, String suffix) {
         IIdentifierValidator urlValidator = new URLValidator();
         boolean serverValid = false;
@@ -128,46 +123,50 @@ public class HandleValidator implements IIdentifierValidator {
         LOGGER.debug("Prefix: {}", prefix);
         LOGGER.debug("Suffix: {}", suffix);
 
+        // Check if the serverAddress is valid or at least available
         try {
             serverValid = urlValidator.isValid(serverAddress);
-            LOGGER.debug("The server address " + serverAddress + " is valid!");
+            LOGGER.debug("The server address '" + serverAddress + "' is valid!");
         } catch (ServiceUnavailableException e) {
-            LOGGER.error("The server address {} is not valid!", serverAddress, e);
+            LOGGER.error("The server address '{}' is not valid!", serverAddress, e);
         } catch (ResponseStatusException e) {
             serverValid = true;
-            LOGGER.debug("The server address {} is valid, but throws status {}!", serverAddress, e.getStatus());
+            LOGGER.debug("The server address '{}' is valid, but throws status '{}'!", serverAddress, e.getStatus());
         } catch (Exception e) {
-            LOGGER.error("The server address {} is not valid!", serverAddress, e);
+            LOGGER.error("The server address '{}' is not valid!", serverAddress, e);
         }
 
+        // Check if the prefix is valid
         try {
             urlValidator.isValid(serverURL + apiPath + "0.NA/" + prefix);
-            if (serverValid) LOGGER.debug("The prefix " + prefix + " is valid!");
+            if (serverValid) LOGGER.debug("The prefix '" + prefix + "' is valid!");
             else {
-                LOGGER.error("A connection to the server " + serverAddress + " is not possible, but the prefix has been confirmed as valid by " + humanReadableServer + ".");
-                throw new ServiceUnavailableException("A connection to the server " + serverAddress + " is not possible, but the prefix has been confirmed as valid by " + humanReadableServer + ".");
+                // If the prefix is valid, but the serverAddress is not, the input can't be accepted as fully valid.
+                LOGGER.error("A connection to the server '" + serverAddress + "' is not possible, but the prefix '" + prefix + "' has been confirmed as valid by '" + humanReadableServer + "'.");
+                throw new ServiceUnavailableException("A connection to the server '" + serverAddress + "' is not possible, but the prefix '" + prefix + "' has been confirmed as valid by '" + humanReadableServer + "'.");
             }
         } catch (ServiceUnavailableException ignored) {
-
         } catch (Exception e) {
-            LOGGER.error("The prefix " + prefix + " is not provable on " + humanReadableServer + ".");
-            throw new BadArgumentException("The prefix " + prefix + " is not provable on " + humanReadableServer + ".");
+            LOGGER.error("The prefix '" + prefix + "' is not provable on '" + humanReadableServer + "'.");
+            throw new BadArgumentException("The prefix '" + prefix + "' is not provable on '" + humanReadableServer + "'.");
         }
 
+        // Check if the URL built from serverAddress, prefix and suffix is valid and solvable.
+        // This means that the URL returns a 2xx or 3xx HTTP response code.
         try {
             allValid = urlValidator.isValid(serverAddress + prefix + "/" + suffix);
         } catch (ResponseStatusException e) {
             HttpStatus status = e.getStatus();
             if (status.is2xxSuccessful()) {
-                LOGGER.debug("The {} {} is valid!", getSupportedType(), prefix + "/" + suffix);
+                LOGGER.debug("The '{}' '{}' is valid!", getSupportedType(), prefix + "/" + suffix);
                 allValid = true;
             } else if (status.is3xxRedirection()) {
-                LOGGER.debug("The {} {} is valid!", getSupportedType(), prefix + "/" + suffix);
+                LOGGER.debug("The '{}' '{}' is valid!", getSupportedType(), prefix + "/" + suffix);
                 allValid = true;
             }
         } catch (Exception e) {
-            LOGGER.error("The prefix " + prefix + " is valid, but the suffix " + suffix + " is not.");
-            throw new BadArgumentException("The prefix " + prefix + " is valid, but the suffix " + suffix + " is not.");
+            LOGGER.error("The prefix '" + prefix + "' is valid, but the suffix '" + suffix + "' is not.");
+            throw new BadArgumentException("The prefix '" + prefix + "' is valid, but the suffix '" + suffix + "' is not.");
         }
 
         return allValid;

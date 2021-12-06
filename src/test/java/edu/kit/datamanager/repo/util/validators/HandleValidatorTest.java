@@ -94,7 +94,7 @@ public class HandleValidatorTest {
     @Test
     public void invalidURL() {
         try {
-            assertFalse(validator.isValid("hdl.handle/10.1038/nphys1170"));
+            assertFalse(validator.isValid("hdl.example/10.1038/nphys1170"));
         } catch (BadArgumentException ignored) {
         }
     }

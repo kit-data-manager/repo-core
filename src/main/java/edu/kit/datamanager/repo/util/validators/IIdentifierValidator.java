@@ -55,6 +55,7 @@ public interface IIdentifierValidator {
             LOGGER.warn("Illegal type of validator: {}", type);
             throw new UnsupportedMediaTypeException("Illegal type of validator.");
         }
+        LOGGER.debug("Validating input {} of type {}", input, type);
         return isValid(input);
     }
 
