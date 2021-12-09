@@ -18,6 +18,7 @@ package edu.kit.datamanager.repo.util.validators;
 import edu.kit.datamanager.exceptions.BadArgumentException;
 import edu.kit.datamanager.exceptions.ServiceUnavailableException;
 import edu.kit.datamanager.exceptions.UnsupportedMediaTypeException;
+import edu.kit.datamanager.repo.util.ValidatorUtil;
 import edu.kit.datamanager.repo.util.validators.impl.DOIValidator;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
 import org.junit.Test;
@@ -32,18 +33,29 @@ public class DOIValidatorTest {
     DOIValidator validator = new DOIValidator();
 
     @Test
-    public void valid() {
-        try {
-            assertTrue(validator.isValid("doi:10.1038/nphys1170"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail();
-        }
+    public void validInFULLValidMode() {
+        ValidatorUtil.getSingleton().setMode(EValidatorMode.FULL);
+        assertTrue(validator.isValid("doi:10.1038/nphys1170"));
     }
 
     @Test
-    public void anotherValid() {
+    public void anotherValidInFULLValidMode() {
+        ValidatorUtil.getSingleton().setMode(EValidatorMode.FULL);
         assertTrue(validator.isValid("https://www.doi.org/10.1109/5.771073"));
+    }
+
+    @Test
+    public void validInSIMPLEValidMode() {
+        ValidatorUtil.getSingleton().setMode(EValidatorMode.SIMPLE);
+        assertTrue(validator.isValid("doi:10.1test2/3example4"));
+        ValidatorUtil.getSingleton().setMode(EValidatorMode.FULL);
+    }
+
+    @Test
+    public void validInOFFValidMode() {
+        ValidatorUtil.getSingleton().setMode(EValidatorMode.OFF);
+        assertTrue(validator.isValid("invalid input"));
+        ValidatorUtil.getSingleton().setMode(EValidatorMode.FULL);
     }
 
     @Test
@@ -54,12 +66,24 @@ public class DOIValidatorTest {
         }
     }
 
+
     @Test
-    public void invalid() {
+    public void invalidInFULLValidMode() {
+        ValidatorUtil.getSingleton().setMode(EValidatorMode.FULL);
         try {
             assertFalse(validator.isValid("test/auifz8zhunjkad"));
         } catch (BadArgumentException ignored) {
         }
+    }
+
+    @Test
+    public void invalidInSIMPLEValidMode() {
+        ValidatorUtil.getSingleton().setMode(EValidatorMode.SIMPLE);
+        try {
+            assertFalse(validator.isValid("doi:invalid"));
+        } catch (BadArgumentException ignored) {
+        }
+        ValidatorUtil.getSingleton().setMode(EValidatorMode.FULL);
     }
 
     @Test

@@ -18,6 +18,7 @@ package edu.kit.datamanager.repo.util.validators;
 import edu.kit.datamanager.exceptions.BadArgumentException;
 import edu.kit.datamanager.exceptions.ServiceUnavailableException;
 import edu.kit.datamanager.exceptions.UnsupportedMediaTypeException;
+import edu.kit.datamanager.repo.util.ValidatorUtil;
 import edu.kit.datamanager.repo.util.validators.impl.URLValidator;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
 
@@ -33,24 +34,57 @@ public class URLValidatorTest {
     IIdentifierValidator validator = new URLValidator();
 
     @Test
-    public void valid() {
-        assertTrue(validator.isValid("http://hdl.handle.net/api/handles/10.1038/nphys1170"));
+    public void httpValidInFULLValidMode() {
+        ValidatorUtil.getSingleton().setMode(EValidatorMode.FULL);
+        assertTrue(validator.isValid("http://hdl.handle.net"));
     }
 
     @Test
-    public void invalidURL() {
-        try {
-            assertFalse(validator.isValid("hdl.handle/10.1038/nphys1170"));
-        } catch (BadArgumentException ignored) {
-        }
+    public void httpsValidInFULLValidMode() {
+        ValidatorUtil.getSingleton().setMode(EValidatorMode.FULL);
+        assertTrue(validator.isValid("https://kit.edu"));
+    }
+
+    @Test
+    public void validInSIMPLEValidMode() {
+        ValidatorUtil.getSingleton().setMode(EValidatorMode.SIMPLE);
+        assertTrue(validator.isValid("http://kit.example"));
+        ValidatorUtil.getSingleton().setMode(EValidatorMode.FULL);
+    }
+
+    @Test
+    public void validInOFFValidMode() {
+        ValidatorUtil.getSingleton().setMode(EValidatorMode.OFF);
+        assertTrue(validator.isValid("invalid input"));
+        ValidatorUtil.getSingleton().setMode(EValidatorMode.FULL);
     }
 
     @Test
     public void invalidType() {
         try {
-            assertFalse(validator.isValid("hdl.handle/10.1038/nphys1170", RelatedIdentifierType.ARK));
+            assertFalse(validator.isValid("hdl.example/10.1038/nphys1170", RelatedIdentifierType.AR_XIV));
         } catch (UnsupportedMediaTypeException ignored) {
         }
+    }
+
+
+    @Test
+    public void invalidInFULLValidMode() {
+        ValidatorUtil.getSingleton().setMode(EValidatorMode.FULL);
+        try {
+            assertFalse(validator.isValid("https://google.example"));
+        } catch (BadArgumentException | ServiceUnavailableException ignored) {
+        }
+    }
+
+    @Test
+    public void invalidInSIMPLEValidMode() {
+        ValidatorUtil.getSingleton().setMode(EValidatorMode.SIMPLE);
+        try {
+            assertFalse(validator.isValid("hdl.handle/10.1038/nphys1170"));
+        } catch (BadArgumentException ignored) {
+        }
+        ValidatorUtil.getSingleton().setMode(EValidatorMode.FULL);
     }
 
     @Test

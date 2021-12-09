@@ -16,9 +16,9 @@
 package edu.kit.datamanager.repo.util.validators;
 
 import edu.kit.datamanager.exceptions.BadArgumentException;
-import edu.kit.datamanager.exceptions.MessageValidationException;
 import edu.kit.datamanager.exceptions.ServiceUnavailableException;
 import edu.kit.datamanager.exceptions.UnsupportedMediaTypeException;
+import edu.kit.datamanager.repo.util.ValidatorUtil;
 import edu.kit.datamanager.repo.util.validators.impl.HandleValidator;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
 import org.junit.Test;
@@ -33,8 +33,23 @@ public class HandleValidatorTest {
     HandleValidator validator = new HandleValidator();
 
     @Test
-    public void valid() {
+    public void validInFULLValidMode() {
+        ValidatorUtil.getSingleton().setMode(EValidatorMode.FULL);
         assertTrue(validator.isValid("hdl:10.1038/nphys1170"));
+    }
+
+    @Test
+    public void validInSIMPLEValidMode() {
+        ValidatorUtil.getSingleton().setMode(EValidatorMode.SIMPLE);
+        assertTrue(validator.isValid("hdl:10.1test2/3example4"));
+        ValidatorUtil.getSingleton().setMode(EValidatorMode.FULL);
+    }
+
+    @Test
+    public void validInOFFValidMode() {
+        ValidatorUtil.getSingleton().setMode(EValidatorMode.OFF);
+        assertTrue(validator.isValid("invalid input"));
+        ValidatorUtil.getSingleton().setMode(EValidatorMode.FULL);
     }
 
     @Test
@@ -45,12 +60,24 @@ public class HandleValidatorTest {
         }
     }
 
+
     @Test
-    public void invalid() {
+    public void invalidInFULLValidMode() {
+        ValidatorUtil.getSingleton().setMode(EValidatorMode.FULL);
         try {
             assertFalse(validator.isValid("test/auifz8zhunjkad"));
         } catch (BadArgumentException ignored) {
         }
+    }
+
+    @Test
+    public void invalidInSIMPLEValidMode() {
+        ValidatorUtil.getSingleton().setMode(EValidatorMode.SIMPLE);
+        try {
+            assertFalse(validator.isValid("hdl:invalid"));
+        } catch (BadArgumentException ignored) {
+        }
+        ValidatorUtil.getSingleton().setMode(EValidatorMode.FULL);
     }
 
     @Test
@@ -135,7 +162,7 @@ public class HandleValidatorTest {
     @Test
     public void multiLineInput() {
         try {
-            assertFalse(validator.isValid("10.1038/nphy/ns1170/n"));
+            assertFalse(validator.isValid("10.1038/nphys/n1170/n"));
         } catch (BadArgumentException ignored) {
         }
     }

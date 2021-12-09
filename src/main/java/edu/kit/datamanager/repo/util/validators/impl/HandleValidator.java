@@ -17,10 +17,11 @@ package edu.kit.datamanager.repo.util.validators.impl;
 
 import edu.kit.datamanager.exceptions.BadArgumentException;
 import edu.kit.datamanager.exceptions.ServiceUnavailableException;
+import edu.kit.datamanager.repo.util.ValidatorUtil;
+import edu.kit.datamanager.repo.util.validators.EValidatorMode;
 import edu.kit.datamanager.repo.util.validators.IIdentifierValidator;
 import lombok.SneakyThrows;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.regex.Matcher;
@@ -80,11 +81,13 @@ public class HandleValidator implements IIdentifierValidator {
     public boolean isValid(String input) {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(input);
+        boolean validRegex = matcher.find();
+        boolean result = false;
 
-        if (matcher.find()) {
+        if (ValidatorUtil.getSingleton().getMode() == EValidatorMode.OFF) result = true;
+        else if (ValidatorUtil.getSingleton().getMode() == EValidatorMode.SIMPLE) result = validRegex;
+        else if (ValidatorUtil.getSingleton().getMode() == EValidatorMode.FULL && validRegex) {
             if (matcher.group(3).contains("/n") || matcher.group(4).contains("/n")) {
-                LOGGER.debug(matcher.group(3));
-                LOGGER.debug(matcher.group(4));
                 LOGGER.error("Illegal line breaks in input '{}'", input);
                 throw new BadArgumentException("Illegal line breaks in input: " + input);
             }
@@ -100,13 +103,13 @@ public class HandleValidator implements IIdentifierValidator {
                 LOGGER.error("The input '{}' contains an invalid or uncomplete server address and is therefore invalid.", input);
                 throw new BadArgumentException("The input '" + input + "' contains an invalid or uncomplete server address and is therefore invalid.");
             }
+            LOGGER.debug("The input '{}' is a valid {}!", input, supportedType);
+            result = true;
         } else {
             LOGGER.error("The input '{}' does not meet the minimum requirements of the type {} and is therefore invalid!", input, supportedType);
             throw new BadArgumentException("The input '" + input + "' does not meet the minimum requirements of the type " + supportedType + " and is therefore invalid!");
         }
-
-        LOGGER.debug("The input '{}' is a valid {}!", input, supportedType);
-        return true;
+        return result;
     }
 
     /**

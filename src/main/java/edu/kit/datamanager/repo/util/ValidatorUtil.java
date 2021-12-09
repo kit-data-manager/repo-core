@@ -16,6 +16,7 @@
 package edu.kit.datamanager.repo.util;
 
 import edu.kit.datamanager.exceptions.UnsupportedMediaTypeException;
+import edu.kit.datamanager.repo.util.validators.EValidatorMode;
 import edu.kit.datamanager.repo.util.validators.IIdentifierValidator;
 import edu.kit.datamanager.repo.util.validators.impl.DOIValidator;
 import edu.kit.datamanager.repo.util.validators.impl.HandleValidator;
@@ -36,6 +37,7 @@ public class ValidatorUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(ValidatorUtil.class);
     private static final ValidatorUtil soleInstance = new ValidatorUtil();
     private static final Map<RelatedIdentifierType, IIdentifierValidator> validators;
+    private static EValidatorMode mode = EValidatorMode.FULL;
 
     static {
         Map<RelatedIdentifierType, IIdentifierValidator> validators1 = new HashMap<>();
@@ -76,6 +78,24 @@ public class ValidatorUtil {
         validators.forEach((key, value) -> result.add(key));
         LOGGER.debug("All available validator types: {}", result);
         return result;
+    }
+
+    /**
+     * This method is a setter for the validator mode.
+     * @param mode the new validator mode from the enum.
+     */
+    public void setMode(EValidatorMode mode) {
+        LOGGER.info("Changed validator mode to {}", mode);
+        if(mode == EValidatorMode.OFF) LOGGER.warn("You disabled the validation of identifiers. THIS IS NOT RECOMMENDED!");
+        ValidatorUtil.mode = mode;
+    }
+
+    /**
+     * This method is a setter for the validator mode.
+     * @return the actual validator mode.
+     */
+    public EValidatorMode getMode() {
+        return mode;
     }
 
     /**

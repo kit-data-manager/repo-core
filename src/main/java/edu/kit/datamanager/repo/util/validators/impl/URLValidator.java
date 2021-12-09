@@ -18,6 +18,8 @@ package edu.kit.datamanager.repo.util.validators.impl;
 import edu.kit.datamanager.exceptions.BadArgumentException;
 import edu.kit.datamanager.exceptions.CustomInternalServerError;
 import edu.kit.datamanager.exceptions.ServiceUnavailableException;
+import edu.kit.datamanager.repo.util.ValidatorUtil;
+import edu.kit.datamanager.repo.util.validators.EValidatorMode;
 import edu.kit.datamanager.repo.util.validators.IIdentifierValidator;
 import org.apache.http.HttpStatus;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
@@ -45,34 +47,40 @@ public class URLValidator implements IIdentifierValidator {
 
     @Override
     public boolean isValid(String input) {
+        String regex = "^(http|https):\\/\\/[-A-Za-z0-9+&@#\\/%?=~_|!:,.;]+[-A-Za-z0-9+&@#\\/%=~_|]$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(input);
+
         URL urlHandler;
         HttpURLConnection con;
         LOGGER.debug("URL: {}", input);
         int status;
-        String regex = "^(http|https):\\/\\/[-A-Za-z0-9+&@#\\/%?=~_|!:,.;]+[-A-Za-z0-9+&@#\\/%=~_|]$";
-        Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
-        Matcher matcher = pattern.matcher(input);
+        boolean validRegex = matcher.find();
+        boolean result = false;
 
-        if (!matcher.find()) {
+        if (ValidatorUtil.getSingleton().getMode() == EValidatorMode.OFF) result = true;
+        else if (ValidatorUtil.getSingleton().getMode() == EValidatorMode.SIMPLE) result = validRegex;
+        else if (ValidatorUtil.getSingleton().getMode() == EValidatorMode.FULL && validRegex) {
+            try {
+                urlHandler = new URL(input);
+                con = (HttpURLConnection) urlHandler.openConnection();
+                con.setRequestMethod("GET");
+                status = con.getResponseCode();
+                LOGGER.debug("HTTP status: {}", status);
+                if (status != HttpStatus.SC_OK) {
+                    LOGGER.error("Connection to URL '{}' fails with status '{}'", input, status);
+                    throw new ResponseStatusException(org.springframework.http.HttpStatus.valueOf(status));
+                }
+            } catch (IOException e) {
+                LOGGER.warn("No connection to the server '{}' possible. Do you have an internet connection?", input);
+                throw new ServiceUnavailableException("No connection to the server '" + input + "' possible. Do you have an internet connection?");
+            }
+            LOGGER.debug("The URL '{}' is valid!", input);
+            result = true;
+        } else if (!validRegex) {
             LOGGER.error("The URL '{}' does not match the pattern or contains illegal characters.", input);
             throw new BadArgumentException("The URL '" + input + "' does not match the pattern or contains illegal characters.");
         }
-
-        try {
-            urlHandler = new URL(input);
-            con = (HttpURLConnection) urlHandler.openConnection();
-            con.setRequestMethod("GET");
-            status = con.getResponseCode();
-            LOGGER.debug("HTTP status: {}", status);
-            if (status != HttpStatus.SC_OK) {
-                LOGGER.error("Connection to URL '{}' fails with status '{}'", input, status);
-                throw new ResponseStatusException(org.springframework.http.HttpStatus.valueOf(status));
-            }
-        } catch (IOException e) {
-            LOGGER.warn("No connection to the server '{}' possible. Do you have an internet connection?", input);
-            throw new ServiceUnavailableException("No connection to the server '" + input + "' possible. Do you have an internet connection?");
-        }
-        LOGGER.debug("The URL '{}' is valid!", input);
-        return true;
+        return result;
     }
 }

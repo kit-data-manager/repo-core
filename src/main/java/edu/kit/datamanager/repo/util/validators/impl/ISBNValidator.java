@@ -16,11 +16,14 @@
 package edu.kit.datamanager.repo.util.validators.impl;
 
 import edu.kit.datamanager.exceptions.BadArgumentException;
+import edu.kit.datamanager.repo.util.ValidatorUtil;
+import edu.kit.datamanager.repo.util.validators.EValidatorMode;
 import edu.kit.datamanager.repo.util.validators.IIdentifierValidator;
 import org.datacite.schema.kernel_4.RelatedIdentifierType;
 
 /**
  * This class validates ISBN10 and ISBN13.
+ *
  * @author maximilianiKIT
  */
 public class ISBNValidator implements IIdentifierValidator {
@@ -32,18 +35,23 @@ public class ISBNValidator implements IIdentifierValidator {
 
     @Override
     public boolean isValid(String input) {
-        boolean result;
-        if (input.length() == 10) result = isValidISBN10(input);
-        else if (input.length() == 13) result = isValidISBN13(input);
-        else {
-            LOGGER.error("Invalid input length. Please use a valid ISBN10 or ISBN13.");
-            throw new BadArgumentException("Invalid input length. Please use a valid ISBN10 or ISBN13.");
+        boolean result = false;
+
+        if (ValidatorUtil.getSingleton().getMode() == EValidatorMode.OFF) result = true;
+        else if (ValidatorUtil.getSingleton().getMode() == EValidatorMode.SIMPLE || ValidatorUtil.getSingleton().getMode() == EValidatorMode.FULL) {
+            if (input.length() == 10) result = isValidISBN10(input);
+            else if (input.length() == 13) result = isValidISBN13(input);
+            else {
+                LOGGER.error("Invalid input length. Please use a valid ISBN10 or ISBN13.");
+                throw new BadArgumentException("Invalid input length. Please use a valid ISBN10 or ISBN13.");
+            }
         }
         return result;
     }
 
     /**
      * This method validates ISBN-13
+     *
      * @param input ISBN13 to validate
      * @return true if valid
      * Throws a BadArgumentException if the input is invalid.
@@ -57,7 +65,7 @@ public class ISBNValidator implements IIdentifierValidator {
             sum += number;
             isOddIndex = !isOddIndex;
         }
-        if ((sum % 10) != 0){
+        if ((sum % 10) != 0) {
             LOGGER.error("Invalid input: {}", input);
             throw new BadArgumentException("Invalid input");
         }
@@ -67,6 +75,7 @@ public class ISBNValidator implements IIdentifierValidator {
 
     /**
      * This method validates ISBN-10
+     *
      * @param input ISBN10 to validate
      * @return true if valid
      * Throws a BadArgumentException if the input is invalid.
@@ -76,10 +85,10 @@ public class ISBNValidator implements IIdentifierValidator {
         for (int i = 0; i < 10; i++) {
             sum += input.charAt(i) * (10 - i);
         }
-        if ((sum % 11) == 0){
+        if ((sum % 11) == 0) {
             LOGGER.debug("The ISBN10 {} is valid", input);
             return true;
-        } else{
+        } else {
             LOGGER.error("Invalid input: {}", input);
             throw new BadArgumentException("Invalid input");
         }
