@@ -18,7 +18,7 @@ plugins {
     id "io.freefair.maven-publish-java" version "6.1.0"
     id "io.spring.dependency-management" version "1.0.8.RELEASE" 
     //id "com.github.kt3k.coveralls" version "2.8.1" 
-    id "org.owasp.dependencycheck" version "3.1.2"
+    id "org.owasp.dependencycheck" version "6.2.2"
     id "org.asciidoctor.jvm.convert" version "3.3.2"
     //id "org.ajoberstar.grgit" version "2.0.1"
     id "com.jfrog.bintray" version "1.7.3"
@@ -31,9 +31,9 @@ plugins {
     id 'maven-publish'
 }
 ext { 
-    springBootVersion = '2.4.10' 
+    springBootVersion = '2.4.13' 
     springDocVersion  = '1.5.6'
-    javersVersion     = '6.2.3'
+    javersVersion     = '6.5.3'
 }
 
 description = "Core module for data repositories based on metadata model of datacite."
@@ -94,14 +94,14 @@ dependencies {
     implementation "org.javers:javers-spring-boot-starter-sql:${javersVersion}"
     // Database
     implementation "com.h2database:h2:1.4.200"
-    implementation "org.postgresql:postgresql:42.2.1"
+    implementation "org.postgresql:postgresql:42.3.1"
     // XML
-    implementation "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.9.1"
-    implementation "com.fasterxml.jackson.module:jackson-module-afterburner:2.7.1"
-    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.6.5"
-    implementation "com.fasterxml.jackson.datatype:jackson-datatype-joda:2.4.0"
+    implementation "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.13.0"
+    implementation "com.fasterxml.jackson.module:jackson-module-afterburner:2.13.0"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.0"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-joda:2.13.0"
 
-    implementation "com.monitorjbl:spring-json-view:1.0.1"
+    //implementation "com.monitorjbl:spring-json-view:1.0.1"
 
     implementation "de.codecentric:spring-boot-admin-starter-client:2.1.6"
 
@@ -115,8 +115,8 @@ dependencies {
     implementation "edu.kit.datamanager:service-base:0.3.1"
     //implementation "edu.kit.datamanager:generic-message-consumer:0.2.0"
 
-    implementation "com.github.fge:json-patch:1.9"
-    implementation "net.sf.dozer:dozer:5.5.1"
+    implementation "com.github.java-json-tools:json-patch:1.13"
+    implementation "com.github.dozermapper:dozer-core:6.5.2"
 
     implementation "io.jsonwebtoken:jjwt:0.9.1"
 
