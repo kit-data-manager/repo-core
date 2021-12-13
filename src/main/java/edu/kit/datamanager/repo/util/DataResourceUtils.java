@@ -18,7 +18,6 @@ package edu.kit.datamanager.repo.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
-import com.google.common.base.Objects;
 import edu.kit.datamanager.controller.hateoas.event.PaginatedResultsRetrievedEvent;
 import edu.kit.datamanager.entities.Identifier;
 import edu.kit.datamanager.entities.PERMISSION;
@@ -44,6 +43,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import javax.servlet.http.HttpServletResponse;
@@ -615,7 +615,7 @@ public class DataResourceUtils {
     LOGGER.trace("Decoded resource identifier: {}", decodedIdentifier);
     DataResource resource = applicationProperties.getDataResourceService().findByAnyIdentifier(decodedIdentifier, version);
     //check if resource was found by resource identifier 
-    if (!Objects.equal(decodedIdentifier, resource.getId())) {
+    if (!Objects.equals(decodedIdentifier, resource.getId())) {
       //resource was found by another identifier...redirect
       String encodedIdentifier;
       try {
