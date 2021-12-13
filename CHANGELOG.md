@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - Update to jackson-module-afterburner 2.13.0
  - Update to jackson-datatype-jsr310 2.13.0
  - Update to jackson-datatype-joda 2.13.0
+ - Update to service-base 0.3.2
 
 ### Added
 - none
