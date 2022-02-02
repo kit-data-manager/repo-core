@@ -54,6 +54,11 @@ public class RepoBaseConfiguration {
    */
   private boolean auditEnabled;
   /**
+   * Limits the number of referenced entity shadows. 
+   * @See https://github.com/javers/javers/blob/master/javers-core/src/main/java/org/javers/repository/jql/QueryBuilder.java
+   */
+  private int maxJaversScope = 20;
+  /**
    * Versioning service for data resource.
    */
   private IRepoVersioningService versioningService;
@@ -259,6 +264,20 @@ public class RepoBaseConfiguration {
    */
   public void setAuthEnabled(boolean authEnabled) {
     this.authEnabled = authEnabled;
+  }
+
+  /**
+   * @return the maxJaversScope
+   */
+  public int getMaxJaversScope() {
+    return maxJaversScope;
+  }
+
+  /**
+   * @param maxJaversScope the maxJaversScope to set
+   */
+  public void setMaxJaversScope(int maxJaversScope) {
+    this.maxJaversScope = maxJaversScope;
   }
 
 }
