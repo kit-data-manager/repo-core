@@ -28,7 +28,7 @@ import java.net.URL;
 import org.springframework.context.ApplicationEventPublisher;
 
 /**
- * Holds all properties needed to manage data resources.
+ * Holds all properties needed to manage repositories and its data resources.
  */
 public class RepoBaseConfiguration {
 
@@ -53,6 +53,11 @@ public class RepoBaseConfiguration {
    * Versioning is supported or not.
    */
   private boolean auditEnabled;
+  /**
+   * Limits the number of referenced entity shadows. 
+   * @see https://github.com/javers/javers/blob/master/javers-core/src/main/java/org/javers/repository/jql/QueryBuilder.java
+   */
+  private int maxJaversScope = 20;
   /**
    * Versioning service for data resource.
    */
@@ -86,7 +91,7 @@ public class RepoBaseConfiguration {
    */
    private ApplicationEventPublisher eventPublisher;
  /**
-   * If versioning is available or not.
+   * Returns status of versioning.
    *
    * @return true or false.
    */
@@ -95,6 +100,7 @@ public class RepoBaseConfiguration {
   }
 
   /**
+   * Returns the local base path of the repository.
    * @return the basePath
    */
   public URL getBasepath() {
@@ -102,6 +108,7 @@ public class RepoBaseConfiguration {
   }
 
   /**
+   * Set the base base path of the repository.
    * @param basePath the basePath to set
    */
   public void setBasepath(URL basePath) {
@@ -122,6 +129,7 @@ public class RepoBaseConfiguration {
 //    this.hierarchy = hierarchy;
 //  }
   /**
+   * Returns status of the repository. writeable <-> readonly
    * @return the readOnly
    */
   public boolean isReadOnly() {
@@ -129,12 +137,14 @@ public class RepoBaseConfiguration {
   }
 
   /**
+   * Set the readonly status of repository.
    * @param readOnly the readOnly to set
    */
   public void setReadOnly(boolean readOnly) {
     this.readOnly = readOnly;
   }
   /**
+   * Returns the service used for auditing. 
    * @return the auditService
    */
   public IAuditService<DataResource> getAuditService() {
@@ -142,6 +152,7 @@ public class RepoBaseConfiguration {
   }
 
   /**
+   * Set audit service.
    * @param auditService the auditService to set
    */
   public void setAuditService(IAuditService<DataResource> auditService) {
@@ -149,6 +160,7 @@ public class RepoBaseConfiguration {
   }
 
   /**
+   * Returns the content information service. 
    * @return the contentInformationService
    */
   public ContentInformationAuditService getContentInformationAuditService() {
@@ -156,6 +168,7 @@ public class RepoBaseConfiguration {
   }
 
   /**
+   * Set the content information service.
    * @param contentInformationAuditService the contentInformationService to set
    */
   public void setContentInformationAuditService(ContentInformationAuditService contentInformationAuditService) {
@@ -163,6 +176,7 @@ public class RepoBaseConfiguration {
   }
 
   /**
+   * Returns the versioning service.
    * @return the versioningService
    */
   public IRepoVersioningService getVersioningService() {
@@ -170,6 +184,7 @@ public class RepoBaseConfiguration {
   }
 
   /**
+   * Set the versioning service.
    * @param versioningService the versioningService to set
    */
   public void setVersioningService(IRepoVersioningService versioningService) {
@@ -178,6 +193,7 @@ public class RepoBaseConfiguration {
  }
 
   /**
+   * Returns the storage service.
    * @return the storageService
    */
   public IRepoStorageService getStorageService() {
@@ -185,6 +201,7 @@ public class RepoBaseConfiguration {
   }
 
   /**
+   * Set the storage service. 
    * @param storageService the storageService to set
    */
   public void setStorageService(IRepoStorageService storageService) {
@@ -192,6 +209,7 @@ public class RepoBaseConfiguration {
   }
 
   /**
+   * Returns the dataresource service.
    * @return the dataResourceService
    */
   public IDataResourceService getDataResourceService() {
@@ -199,6 +217,7 @@ public class RepoBaseConfiguration {
   }
 
   /**
+   * Set the dataresource service.
    * @param dataResourceService the dataResourceService to set
    */
   public void setDataResourceService(IDataResourceService dataResourceService) {
@@ -206,6 +225,7 @@ public class RepoBaseConfiguration {
   }
 
   /**
+   * Returns the event publisher.
    * @return the eventPublisher
    */
   public ApplicationEventPublisher getEventPublisher() {
@@ -213,6 +233,7 @@ public class RepoBaseConfiguration {
   }
 
   /**
+   * Set the event publisher.
    * @param eventPublisher the eventPublisher to set
    */
   public void setEventPublisher(ApplicationEventPublisher eventPublisher) {
@@ -220,6 +241,7 @@ public class RepoBaseConfiguration {
   }
 
   /**
+   * Returns the contentinformation service.
    * @return the contentInformationService
    */
   public IContentInformationService getContentInformationService() {
@@ -227,6 +249,7 @@ public class RepoBaseConfiguration {
   }
 
   /**
+   * Set the content information service.
    * @param contentInformationService the contentInformationService to set
    */
   public void setContentInformationService(IContentInformationService contentInformationService) {
@@ -234,6 +257,7 @@ public class RepoBaseConfiguration {
   }
 
   /**
+   * Returns the JWT secret.
    * @return the jwtSecret
    */
   public String getJwtSecret() {
@@ -241,6 +265,7 @@ public class RepoBaseConfiguration {
   }
 
   /**
+   * Set the JWT secret.
    * @param jwtSecret the jwtSecret to set
    */
   public void setJwtSecret(String jwtSecret) {
@@ -248,6 +273,7 @@ public class RepoBaseConfiguration {
   }
 
   /**
+   * Returns the status of authorization.
    * @return the authEnabled
    */
   public boolean isAuthEnabled() {
@@ -255,10 +281,27 @@ public class RepoBaseConfiguration {
   }
 
   /**
+   * Set the authorization status.
    * @param authEnabled the authEnabled to set
    */
   public void setAuthEnabled(boolean authEnabled) {
     this.authEnabled = authEnabled;
+  }
+
+  /**
+   * Returns the maximum scope of deep shaddow queries.
+   * @return the maxJaversScope
+   */
+  public int getMaxJaversScope() {
+    return maxJaversScope;
+  }
+
+  /**
+   * Set the maximum scope of deep shaddow queries.
+   * @param maxJaversScope the maxJaversScope to set
+   */
+  public void setMaxJaversScope(int maxJaversScope) {
+    this.maxJaversScope = maxJaversScope;
   }
 
 }

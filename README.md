@@ -2,6 +2,7 @@
 
 [![build with gradle](https://github.com/kit-data-manager/repo-core/actions/workflows/gradle.yml/badge.svg)](https://github.com/kit-data-manager/repo-core/actions/workflows/gradle.yml)
 [![codecov](https://codecov.io/gh/kit-data-manager/repo-core/branch/master/graph/badge.svg)](https://codecov.io/gh/kit-data-manager/repo-core)
+[![CodeQL](https://github.com/kit-data-manager/repo-core/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/kit-data-manager/repo-core/actions/workflows/codeql-analysis.yml)
 ![License](https://img.shields.io/github/license/kit-data-manager/repo-core.svg)
 
 Library for building repos powered by KIT DM 2.0 services. It contains the core module 

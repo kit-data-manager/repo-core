@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- Fix problem regarding jaVers. Make javers scope for deep search configurable.
+
+## [0.9.2] - 2021-11-13
 
 ### Security
  - Fixed shipped log4j configuration to be invulnerable to CVE-2021-44228
@@ -17,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - Update to jackson-module-afterburner 2.13.0
  - Update to jackson-datatype-jsr310 2.13.0
  - Update to jackson-datatype-joda 2.13.0
+ - Update to service-base 0.3.2
 
 ### Added
 - none
@@ -59,6 +64,7 @@ Extracted from the 'base-repo' project.
 ### Removed
 - none
 
-[Unreleased]: https://github.com/kit-data-manager/service-base/compare/v0.9.1...HEAD
+[Unreleased]: https://github.com/kit-data-manager/service-base/compare/v0.9.2...HEAD
+[0.9.2]: https://github.com/kit-data-manager/service-base/compare/v0.9.1...0.9.2
 [0.9.1]: https://github.com/kit-data-manager/service-base/compare/v0.9.0...0.9.1
 [0.9.0]: https://github.com/kit-data-manager/service-base/releases/tag/v0.9.0
