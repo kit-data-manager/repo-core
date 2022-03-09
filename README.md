@@ -39,14 +39,14 @@ Instead of using a local build you may also use the most recent version from the
 <dependency>
     <groupId>edu.kit.datamanager</groupId>
     <artifactId>repo-core</artifactId>
-    <version>0.9.0</version>
+    <version>1.0.0</version>
 </dependency>
 ~~~~
 
 ### Gradle (short)
 
 ~~~~
-    implementation "edu.kit.datamanager:repo-core:0.9.0"
+    implementation "edu.kit.datamanager:repo-core:1.0.0"
 ~~~~
 
 ## License
