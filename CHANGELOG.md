@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
  - Update to service-base 1.0.0
  - Make mediatype detection in versioning services more reliable.
+ - Make tests compatible to JDK 17 
 
 ## [0.9.2] - 2021-11-13
 
