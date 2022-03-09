@@ -26,7 +26,6 @@ import org.javers.core.Javers;
 import org.javers.core.metamodel.object.CdoSnapshot;
 import org.javers.repository.jql.JqlQuery;
 import org.javers.repository.jql.QueryBuilder;
-import org.javers.repository.jql.ShadowScope;
 import org.javers.shadow.Shadow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,7 +80,11 @@ public class DataResourceAuditService implements IAuditService<DataResource> {
     Optional<DataResource> result = Optional.empty();
     if ((resourceId != null) && (version > 0)) {
       if (applicationProperties.isAuditEnabled()) {
-        JqlQuery query = QueryBuilder.byInstanceId(resourceId, DataResource.class).withVersion(version).withShadowScope(ShadowScope.DEEP_PLUS).build();
+        JqlQuery query = QueryBuilder.
+                byInstanceId(resourceId, DataResource.class).
+                withVersion(version).
+                withScopeDeepPlus(applicationProperties.getMaxJaversScope()).
+                build();
         LOGGER.trace("Obtaining shadows from Javers repository.");
         List<Shadow<DataResource>> shadows = javers.findShadows(query);
 
