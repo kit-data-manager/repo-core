@@ -5,8 +5,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+### Security
+
+### Changed
+
+### Added
+
+### Fixed
+
+### Deprecated
+
+### Removed
+
+## [1.0.0] - 2022-03-09
+
 ### Fixed
 - Fix problem regarding jaVers. Make javers scope for deep search configurable.
+
+### Changed
+ - Update to service-base 1.0.0
+ - Make mediatype detection in versioning services more reliable.
 
 ## [0.9.2] - 2021-11-13
 
