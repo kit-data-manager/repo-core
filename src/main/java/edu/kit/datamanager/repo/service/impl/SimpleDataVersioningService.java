@@ -64,8 +64,6 @@ public class SimpleDataVersioningService implements IRepoVersioningService{
 
   @Override
   public void write(String resourceId, String callerId, String path, InputStream stream, Map<String, String> map){
-    String contentUriString = map.get("contentUri");
-
     URI dataUri = PathUtils.getDataUri(DataResource.factoryNewDataResource(resourceId), path, applicationProperties);
     Path destination = Paths.get(dataUri);
     logger.trace("Preparing destination {} for storing user data.", destination);
