@@ -15,9 +15,8 @@
  */
 package edu.kit.datamanager.repo.configuration;
 
-import edu.kit.datamanager.repo.configuration.ApplicationProperties;
-import edu.kit.datamanager.security.filter.JwtAuthenticationFilter;
-import edu.kit.datamanager.security.filter.JwtAuthenticationProvider;
+import edu.kit.datamanager.security.filter.KeycloakTokenFilter;
+import edu.kit.datamanager.security.filter.KeycloakTokenValidator;
 import edu.kit.datamanager.security.filter.NoAuthenticationFilter;
 import edu.kit.datamanager.security.filter.NoopAuthenticationEventPublisher;
 import org.slf4j.Logger;
@@ -60,7 +59,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 
   @Override
   public void configure(AuthenticationManagerBuilder auth) throws Exception{
-    auth.authenticationEventPublisher(new NoopAuthenticationEventPublisher()).authenticationProvider(new JwtAuthenticationProvider(applicationProperties.getJwtSecret(), logger));
+//    auth.authenticationEventPublisher(new NoopAuthenticationEventPublisher()).authenticationProvider(new JwtAuthenticationProvider(applicationProperties.getJwtSecret(), logger));
   }
 
   @Override
@@ -70,11 +69,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
             .and()
             .csrf().disable()
             // .addFilterBefore(corsFilter(), SessionManagementFilter.class)
-            .addFilterAfter(new JwtAuthenticationFilter(authenticationManager()), BasicAuthenticationFilter.class);
-
+            .addFilterAfter(new KeycloakTokenFilter(KeycloakTokenValidator.builder()
+                .jwtLocalSecret(applicationProperties.getJwtSecret())
+                .build(null, null, null)), BasicAuthenticationFilter.class);
     if(!applicationProperties.isAuthEnabled()){
       logger.info("Authentication is DISABLED. Adding 'NoAuthenticationFilter' to authentication chain.");
-      httpSecurity = httpSecurity.addFilterAfter(new NoAuthenticationFilter(applicationProperties.getJwtSecret(), authenticationManager()), JwtAuthenticationFilter.class);
+      httpSecurity = httpSecurity.addFilterAfter(new NoAuthenticationFilter(applicationProperties.getJwtSecret(), authenticationManager()), KeycloakTokenFilter.class);
     } else{
       logger.info("Authentication is ENABLED.");
     }
