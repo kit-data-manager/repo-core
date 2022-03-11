@@ -34,6 +34,7 @@ import edu.kit.datamanager.repo.service.IDataResourceService;
 import edu.kit.datamanager.repo.service.impl.DataResourceAuditService;
 import edu.kit.datamanager.repo.service.impl.DateBasedStorageService;
 import edu.kit.datamanager.repo.service.impl.NoneDataVersioningService;
+import edu.kit.datamanager.repo.test.integration.DataResourceControllerTest;
 import edu.kit.datamanager.security.filter.JwtAuthenticationToken;
 import edu.kit.datamanager.util.AuthenticationHelper;
 import java.net.MalformedURLException;
@@ -316,7 +317,7 @@ public class DataResourceServiceTest {
             addSimpleClaim("lastname", "user").
             addSimpleClaim("email", "test@mail.org").
             addSimpleClaim("groupid", "USERS").
-            getJwtAuthenticationToken("test123");
+            getJwtAuthenticationToken(DataResourceControllerTest.KEYCLOAK_SECRET);
     PowerMockito.mockStatic(AuthenticationHelper.class);
     when(AuthenticationHelper.getAuthentication()).thenReturn(userToken);
     when(AuthenticationHelper.hasAuthority(RepoUserRole.ADMINISTRATOR.getValue())).thenCallRealMethod();

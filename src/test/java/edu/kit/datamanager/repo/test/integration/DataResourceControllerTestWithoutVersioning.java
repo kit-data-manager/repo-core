@@ -1710,7 +1710,7 @@ public class DataResourceControllerTestWithoutVersioning {
 
     javers.commit("admin", testVersioning);
     // Read all versions (only 1 version available)
-    this.mockMvc.perform(get("/api/v1/dataresources/" + testVersioning.getId()).header(HttpHeaders.AUTHORIZATION,
+    this.mockMvc.perform(get("/api/v1/dataresources/?id=" + testVersioning.getId()).header(HttpHeaders.AUTHORIZATION,
             "Bearer " + adminToken).header(HttpHeaders.ACCEPT, "application/json")).andDo(print()).andExpect(status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(1)));
 
     String etag = this.mockMvc.perform(get("/api/v1/dataresources/" + testVersioning.getId()).header(HttpHeaders.AUTHORIZATION,
@@ -1723,7 +1723,7 @@ public class DataResourceControllerTestWithoutVersioning {
     this.mockMvc.perform(get("/api/v1/dataresources/" + testVersioning.getId()).header(HttpHeaders.AUTHORIZATION,
             "Bearer " + adminToken)).andDo(print()).andExpect(status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$.publicationYear").value("2017"));
     // Get all versions (2?)
-    this.mockMvc.perform(get("/api/v1/dataresources/" + testVersioning.getId()).header(HttpHeaders.AUTHORIZATION,
+    this.mockMvc.perform(get("/api/v1/dataresources/?id=" + testVersioning.getId()).header(HttpHeaders.AUTHORIZATION,
             "Bearer " + adminToken).header(HttpHeaders.ACCEPT, "application/json")).andDo(print()).andExpect(status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(1)));
     // ETag for new version
     etag = this.mockMvc.perform(get("/api/v1/dataresources/" + testVersioning.getId()).header(HttpHeaders.AUTHORIZATION,
@@ -1736,7 +1736,7 @@ public class DataResourceControllerTestWithoutVersioning {
     this.mockMvc.perform(get("/api/v1/dataresources/" + testVersioning.getId()).header(HttpHeaders.AUTHORIZATION,
             "Bearer " + adminToken)).andDo(print()).andExpect(status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$.publicationYear").value("2016"));
     // Get all versions (3?)
-    this.mockMvc.perform(get("/api/v1/dataresources/" + testVersioning.getId()).header(HttpHeaders.AUTHORIZATION,
+    this.mockMvc.perform(get("/api/v1/dataresources/?id=" + testVersioning.getId()).header(HttpHeaders.AUTHORIZATION,
             "Bearer " + adminToken).header(HttpHeaders.ACCEPT, "application/json")).andDo(print()).andExpect(status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(1)));
 
   }
@@ -1745,20 +1745,20 @@ public class DataResourceControllerTestWithoutVersioning {
   public void testGetAllVersionsOfResourceWithOtherUsers() throws Exception {
     javers.commit("admin", fixedResource);
     // Read all versions (only 1 version available)
-    this.mockMvc.perform(get("/api/v1/dataresources/" + fixedResource.getId()).header(HttpHeaders.AUTHORIZATION,
+    this.mockMvc.perform(get("/api/v1/dataresources/?id=" + fixedResource.getId()).header(HttpHeaders.AUTHORIZATION,
             "Bearer " + adminToken).header(HttpHeaders.ACCEPT, "application/json")).andDo(print()).andExpect(status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(1)));
-    this.mockMvc.perform(get("/api/v1/dataresources/" + fixedResource.getId()).header(HttpHeaders.AUTHORIZATION,
+    this.mockMvc.perform(get("/api/v1/dataresources/?id=" + fixedResource.getId()).header(HttpHeaders.AUTHORIZATION,
             "Bearer " + userToken).header(HttpHeaders.ACCEPT, "application/json")).andDo(print()).andExpect(status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(1)));
-    this.mockMvc.perform(get("/api/v1/dataresources/" + fixedResource.getId()).header(HttpHeaders.AUTHORIZATION,
+    this.mockMvc.perform(get("/api/v1/dataresources/?id=" + fixedResource.getId()).header(HttpHeaders.AUTHORIZATION,
             "Bearer " + otherUserToken).header(HttpHeaders.ACCEPT, "application/json")).andDo(print()).andExpect(status().isForbidden());
-    this.mockMvc.perform(get("/api/v1/dataresources/" + fixedResource.getId()).header(HttpHeaders.AUTHORIZATION,
+    this.mockMvc.perform(get("/api/v1/dataresources/?id=" + fixedResource.getId()).header(HttpHeaders.AUTHORIZATION,
             "Bearer " + guestToken).header(HttpHeaders.ACCEPT, "application/json")).andDo(print()).andExpect(status().isForbidden());
   }
 
   @Test
   public void testGetAllVersionsOfResourceWithoutAuthentication() throws Exception {
     // Read all versions (only 1 version available)
-    this.mockMvc.perform(get("/api/v1/dataresources/" + sampleResource.getId()).header(HttpHeaders.ACCEPT, "application/json")).andDo(print()).andExpect(status().isForbidden());
+    this.mockMvc.perform(get("/api/v1/dataresources/?id=" + sampleResource.getId()).header(HttpHeaders.ACCEPT, "application/json")).andDo(print()).andExpect(status().isForbidden());
   }
 
   private ObjectMapper createObjectMapper() {

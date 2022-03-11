@@ -436,7 +436,7 @@ public class DataResourceController implements IDataResourceController {
   
   @Override
   public ResponseEntity<List<DataResource>> getAllVersions(
-          @PathVariable("id") String id,
+          @RequestParam(name = "id", required = true) String id,
           Pageable pgbl,
           WebRequest wr,
           HttpServletResponse hsr,

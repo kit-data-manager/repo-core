@@ -24,6 +24,7 @@ import edu.kit.datamanager.exceptions.AccessForbiddenException;
 import edu.kit.datamanager.exceptions.ResourceNotFoundException;
 import edu.kit.datamanager.repo.domain.DataResource;
 import edu.kit.datamanager.repo.domain.acl.AclEntry;
+import edu.kit.datamanager.repo.test.integration.DataResourceControllerTest;
 import edu.kit.datamanager.repo.util.DataResourceUtils;
 import edu.kit.datamanager.security.filter.JwtAuthenticationToken;
 import edu.kit.datamanager.security.filter.ScopedPermission;
@@ -311,7 +312,7 @@ public class DataResourceUtilsTest {
                 addSimpleClaim("lastname", "user").
                 addSimpleClaim("email", "test@mail.org").
                 addSimpleClaim("groupid", "USERS").
-                getJwtAuthenticationToken("test123");
+                getJwtAuthenticationToken(DataResourceControllerTest.KEYCLOAK_SECRET);
 
         PowerMockito.mockStatic(AuthenticationHelper.class, new Answer<Authentication>() {
             @Override
@@ -332,7 +333,7 @@ public class DataResourceUtilsTest {
     private void mockJwtServiceAuthentication(RepoServiceRole role) throws JsonProcessingException {
         JwtAuthenticationToken serviceToken = JwtBuilder.createServiceToken("metadata_extractor", role).
                 addSimpleClaim("groupid", "USERS").
-                getJwtAuthenticationToken("test123");
+                getJwtAuthenticationToken(DataResourceControllerTest.KEYCLOAK_SECRET);
 
         PowerMockito.mockStatic(AuthenticationHelper.class, new Answer<Authentication>() {
             @Override
@@ -352,7 +353,7 @@ public class DataResourceUtilsTest {
 
     private void mockJwtTemporaryAuthentication(ScopedPermission[] perms) throws JsonProcessingException {
         JwtAuthenticationToken temporaryToken = JwtBuilder.createTemporaryToken("test@mail.org", perms).
-                getJwtAuthenticationToken("test123");
+                getJwtAuthenticationToken(DataResourceControllerTest.KEYCLOAK_SECRET);
 
         PowerMockito.mockStatic(AuthenticationHelper.class, new Answer<Authentication>() {
             @Override
