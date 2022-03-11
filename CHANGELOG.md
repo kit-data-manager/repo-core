@@ -85,7 +85,8 @@ Extracted from the 'base-repo' project.
 ### Removed
 - none
 
-[Unreleased]: https://github.com/kit-data-manager/service-base/compare/v0.9.2...HEAD
-[0.9.2]: https://github.com/kit-data-manager/service-base/compare/v0.9.1...0.9.2
-[0.9.1]: https://github.com/kit-data-manager/service-base/compare/v0.9.0...0.9.1
-[0.9.0]: https://github.com/kit-data-manager/service-base/releases/tag/v0.9.0
+[Unreleased]: https://github.com/kit-data-manager/repo-core/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/kit-data-manager/repo-core/compare/v0.9.2...v1.0.0
+[0.9.2]: https://github.com/kit-data-manager/repo-core/compare/v0.9.1...v0.9.2
+[0.9.1]: https://github.com/kit-data-manager/repo-core/compare/v0.9.0...v0.9.1
+[0.9.0]: https://github.com/kit-data-manager/repo-core/releases/tag/v0.9.0
