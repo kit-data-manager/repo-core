@@ -112,13 +112,11 @@ dependencies {
     implementation "javax.activation:activation:1.1.1"
     implementation "org.javassist:javassist:3.28.0-GA"
     
-    implementation "edu.kit.datamanager:service-base:0.3.2"
+    implementation "edu.kit.datamanager:service-base:1.0.0"
     //implementation "edu.kit.datamanager:generic-message-consumer:0.2.0"
 
     implementation "com.github.java-json-tools:json-patch:1.13"
     implementation "com.github.dozermapper:dozer-core:6.5.2"
-
-    implementation "io.jsonwebtoken:jjwt:0.9.1"
 
     // Logging
     implementation "org.slf4j:slf4j-api:1.7.32"
@@ -146,8 +144,13 @@ test {
     // Allow access to internal methods used by powerMockito
     // Will fail with Java17
     if (!JavaVersion.current().isJava8()) {
+        println 'Allow access to private methods...'
         jvmArgs '--illegal-access=permit'
     }
+    if (JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_16)) {
+        println 'Allow access to private methods of package java.util.stream...'
+        jvmArgs '--add-opens=java.base/java.util.stream=ALL-UNNAMED'
+   }
     testLogging {
         outputs.upToDateWhen {false}
         showStandardStreams = true
