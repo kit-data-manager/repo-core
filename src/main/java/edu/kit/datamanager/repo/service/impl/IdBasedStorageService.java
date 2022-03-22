@@ -69,10 +69,10 @@ public class IdBasedStorageService implements IRepoStorageService {
     for (int index = 0; index < depth; index++) {
       pathElements[index] = createPathToRecord[index];
     }
-    String pattern = Paths.get(File.separator, pathElements).toString();
-
-    if (pattern.startsWith(File.separator)) {
-      pattern = pattern.substring(1);
+    String localDir = "." + File.separator;
+    String pattern = Paths.get(localDir, pathElements).toString();
+    if (pattern.startsWith(localDir)) {
+      pattern = pattern.substring(localDir.length());
     }
 
     return pattern;
