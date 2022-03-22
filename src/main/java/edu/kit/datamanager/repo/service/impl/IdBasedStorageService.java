@@ -21,6 +21,7 @@ import edu.kit.datamanager.repo.domain.DataResource;
 import edu.kit.datamanager.repo.service.IRepoStorageService;
 import java.nio.file.Paths;
 import org.apache.commons.text.StringSubstitutor;
+import org.javers.common.collections.Arrays;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -56,7 +57,6 @@ public class IdBasedStorageService implements IRepoStorageService {
     // Remove all '-' and split resulting string to substrings with 4 characters each.
     int charPerDirectory = applicationProperties.getCharPerDirectory();
     int maxDepth = applicationProperties.getMaxDepth();
-
     String[] createPathToRecord = resource.getId().replace("-", "").split("(?<=\\G.{" + charPerDirectory + "})");
     int depth = maxDepth < createPathToRecord.length ? maxDepth : createPathToRecord.length;
     String[] pathElements = new String[depth];

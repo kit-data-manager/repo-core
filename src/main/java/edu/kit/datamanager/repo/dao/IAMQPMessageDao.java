@@ -15,5 +15,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author Jejkal
  */
 public interface IAMQPMessageDao extends JpaRepository<AMQPMessage, Long> {
-
 }
