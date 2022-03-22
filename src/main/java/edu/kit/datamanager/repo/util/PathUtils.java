@@ -57,11 +57,17 @@ public class PathUtils {
   public static URI getDataUri(DataResource parentResource, String relativeDataPath, RepoBaseConfiguration properties) {
     try {
       String internalIdentifier = DataResourceUtils.getInternalIdentifier(parentResource);
-      if (internalIdentifier == null) {
+      if ((internalIdentifier == null) || (internalIdentifier.trim().isEmpty())) {
         String message = "Data integrity error. No internal identifier assigned to resource.";
         LOGGER.info(message);
         throw new CustomInternalServerError(message);
       }
+      // Remove all critical characters from identifier
+      String internalIdentifierPatched = internalIdentifier.replaceAll("[^A-Za-z0-9]", "");
+      if (internalIdentifierPatched.isEmpty()) {
+        internalIdentifierPatched = Integer.toString(Math.abs(internalIdentifier.hashCode()));
+      }
+      internalIdentifier = internalIdentifierPatched;
       LOGGER.trace("Getting data URI for resource with id {} and relative path {}.", internalIdentifier, relativeDataPath);
       // Fetching protocol
       URIBuilder uriBuilder = new URIBuilder(properties.getBasepath().toURI(), Charset.forName("UTF-8"));

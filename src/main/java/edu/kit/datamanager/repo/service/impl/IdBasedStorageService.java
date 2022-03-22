@@ -19,6 +19,7 @@ import edu.kit.datamanager.repo.configuration.IdBasedStorageProperties;
 import edu.kit.datamanager.repo.configuration.RepoBaseConfiguration;
 import edu.kit.datamanager.repo.domain.DataResource;
 import edu.kit.datamanager.repo.service.IRepoStorageService;
+import java.io.File;
 import java.nio.file.Paths;
 import org.apache.commons.text.StringSubstitutor;
 import org.slf4j.Logger;
@@ -29,7 +30,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class IdBasedStorageService implements IRepoStorageService {
-  
+
   public static final String SERVICE_NAME = "idBased";
 
   @Autowired
@@ -41,7 +42,7 @@ public class IdBasedStorageService implements IRepoStorageService {
   @Override
   public void configure(RepoBaseConfiguration applicationProperties) {
   }
-  
+
   public void configure(IdBasedStorageProperties applicationProperties) {
     this.applicationProperties = applicationProperties;
   }
@@ -56,16 +57,21 @@ public class IdBasedStorageService implements IRepoStorageService {
     // Remove all '-' and split resulting string to substrings with 4 characters each.
     int charPerDirectory = applicationProperties.getCharPerDirectory();
     int maxDepth = applicationProperties.getMaxDepth();
-
-    String[] createPathToRecord = resource.getId().replace("-", "").split("(?<=\\G.{" + charPerDirectory + "})");
+    StringBuilder builder = new StringBuilder();
+    // remove all possible invalid characters for a path from id. 
+    builder.append(resource.getId().replaceAll("[^A-Za-z0-9]", ""));
+    // to prevent an empty string.
+    builder.append(Integer.toString(Math.abs(resource.getId().hashCode())));
+    // split id in small pieces.
+    String[] createPathToRecord = builder.toString().split("(?<=\\G.{" + charPerDirectory + "})");
     int depth = maxDepth < createPathToRecord.length ? maxDepth : createPathToRecord.length;
     String[] pathElements = new String[depth];
     for (int index = 0; index < depth; index++) {
       pathElements[index] = createPathToRecord[index];
     }
-    String pattern = Paths.get("/", pathElements).toString();
+    String pattern = Paths.get(File.separator, pathElements).toString();
 
-    if (pattern.startsWith("/")) {
+    if (pattern.startsWith(File.separator)) {
       pattern = pattern.substring(1);
     }
 
