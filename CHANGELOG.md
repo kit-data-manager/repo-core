@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-## [1.0.0] - 2022-03-09
+## [1.0.0] - 2022-03-11
 
 ### Fixed
 - Fix problem regarding jaVers. Make javers scope for deep search configurable.
@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
  - Update to service-base 1.0.0
  - Make mediatype detection in versioning services more reliable.
+ - Make tests compatible to keycloak
  - Make tests compatible to JDK 17 
 
 ## [0.9.2] - 2021-11-13
@@ -84,7 +85,8 @@ Extracted from the 'base-repo' project.
 ### Removed
 - none
 
-[Unreleased]: https://github.com/kit-data-manager/service-base/compare/v0.9.2...HEAD
-[0.9.2]: https://github.com/kit-data-manager/service-base/compare/v0.9.1...0.9.2
-[0.9.1]: https://github.com/kit-data-manager/service-base/compare/v0.9.0...0.9.1
-[0.9.0]: https://github.com/kit-data-manager/service-base/releases/tag/v0.9.0
+[Unreleased]: https://github.com/kit-data-manager/repo-core/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/kit-data-manager/repo-core/compare/v0.9.2...v1.0.0
+[0.9.2]: https://github.com/kit-data-manager/repo-core/compare/v0.9.1...v0.9.2
+[0.9.1]: https://github.com/kit-data-manager/repo-core/compare/v0.9.0...v0.9.1
+[0.9.0]: https://github.com/kit-data-manager/repo-core/releases/tag/v0.9.0
