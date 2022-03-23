@@ -95,14 +95,194 @@ public class PathUtilsTest {
     props.setStorageService(idBasedStorageService);
     String result = PathUtils.getDataUri(resource, "folder/file.txt", props).toString();
     Assert.assertTrue(result + "<>file:/tmp/" + resource.getId().substring(0, charPerDirectory) + "/", result.startsWith("file:/tmp/" + resource.getId().substring(0, charPerDirectory) + "/"));
-    Assert.assertTrue(result, result.contains("/" + resource.getId() + "/folder/file.txt_"));
+    // Patch resourceId
+    String patchedResourceId = resource.getId().replaceAll("[^A-Za-z0-9]", "");
+    Assert.assertTrue(result + "expected: " + patchedResourceId, result.contains("/" + patchedResourceId + "/folder/file.txt_"));
     //test w/o trailing slash
-     
+
+    resource = DataResource.factoryNewDataResource(UUID.randomUUID().toString() + "/");
+    result = PathUtils.getDataUri(resource, "folder/file.txt", props).toString();
+    Assert.assertTrue(result, result.startsWith("file:/tmp/" + resource.getId().substring(0, charPerDirectory) + "/"));
+    // Attention only one slash after resource ID
+    patchedResourceId = resource.getId().replaceAll("[^A-Za-z0-9]", "");
+    Assert.assertTrue(result, result.contains("/" + patchedResourceId + "/folder/file.txt_"));
+  }
+
+  @Test
+  public void testGetDataUriWithIdBasedStorageWithValidId_1() throws Exception {
+    // Only execute these tests if OS is not windows.
+    assumeTrue(!SystemUtils.IS_OS_WINDOWS);
+    // get current year
+    String invalidResourceId = "http://localhost:8080/d1";
+    String expectedFirstPart = "http";
+    int charPerDirectory = 4;
+    int maxDepth = 3;
+
+    DataResource resource = DataResource.factoryNewDataResource(invalidResourceId);
+    RepoBaseConfiguration props = new RepoBaseConfiguration();
+    //test with trailing slash 
+    props.setBasepath(new URL("file:///tmp/"));
+    IdBasedStorageService idBasedStorageService = new IdBasedStorageService();
+    // configure service
+    IdBasedStorageProperties dbsp = new IdBasedStorageProperties();
+    dbsp.setCharPerDirectory(charPerDirectory);
+    dbsp.setMaxDepth(maxDepth);
+    idBasedStorageService.configure(dbsp);
+    // set storage service.
+    props.setStorageService(idBasedStorageService);
+    String result = PathUtils.getDataUri(resource, "folder/file.txt", props).toString();
+    Assert.assertTrue(result + "<>file:/tmp/" + expectedFirstPart + "/", result.startsWith("file:/tmp/" + expectedFirstPart + "/"));
+    // Patch resourceId
+    String patchedResourceId = resource.getId().replaceAll("[^A-Za-z0-9]", "");
+    Assert.assertTrue(result + "expected: " + patchedResourceId, result.contains("/" + patchedResourceId + "/folder/file.txt_"));
+    //test w/o trailing slash
+    resource = DataResource.factoryNewDataResource(UUID.randomUUID().toString() + "/");
+    result = PathUtils.getDataUri(resource, "folder/file.txt", props).toString();
+    Assert.assertTrue(result, result.startsWith("file:/tmp/" + resource.getId().substring(0, charPerDirectory) + "/"));
+    patchedResourceId = resource.getId().replaceAll("[^A-Za-z0-9]", "");
+    // Attention only one slash after resource ID
+    Assert.assertTrue(result, result.contains("/" + patchedResourceId + "/folder/file.txt_"));
+  }
+
+  @Test
+  public void testGetDataUriWithIdBasedStorageWithValidId_2() throws Exception {
+    // Only execute these tests if OS is not windows.
+    assumeTrue(!SystemUtils.IS_OS_WINDOWS);
+    // only invalid characters for file path
+    String invalidResourceId = "!§$%&/ ()=?";
+    int charPerDirectory = 4;
+    int maxDepth = 3;
+
+    DataResource resource = DataResource.factoryNewDataResource(invalidResourceId);
+    Assert.assertTrue(invalidResourceId.equals(resource.getId()));
+    RepoBaseConfiguration props = new RepoBaseConfiguration();
+    //test with trailing slash 
+    props.setBasepath(new URL("file:///tmp/"));
+    IdBasedStorageService idBasedStorageService = new IdBasedStorageService();
+    // configure service
+    IdBasedStorageProperties dbsp = new IdBasedStorageProperties();
+    dbsp.setCharPerDirectory(charPerDirectory);
+    dbsp.setMaxDepth(maxDepth);
+    idBasedStorageService.configure(dbsp);
+    // set storage service.
+    props.setStorageService(idBasedStorageService);
+    String result = PathUtils.getDataUri(resource, "folder/file.txt", props).toString();
+    Assert.assertFalse(result + "<>file:/tmp/" + resource.getId().substring(0, charPerDirectory) + "/", result.startsWith("file:/tmp/" + resource.getId().substring(0, charPerDirectory) + "/"));
+    // Patch resourceId
+    String patchedResourceId = Integer.toString(Math.abs(resource.getId().hashCode()));
+    Assert.assertTrue(result, result.contains("/" + patchedResourceId + "/folder/file.txt_"));
+  }
+
+  @Test
+  public void testGetDataUriWithIdBasedStorageWithValidId_3() throws Exception {
+    // Only execute these tests if OS is not windows.
+    assumeTrue(!SystemUtils.IS_OS_WINDOWS);
+    // mixture of allowed and disallowed characters
+    String invalidResourceId = " und\t los";
+    String expectedFirstPart = "undl";
+    int charPerDirectory = 4;
+    int maxDepth = 3;
+
+    DataResource resource = DataResource.factoryNewDataResource(invalidResourceId);
+    RepoBaseConfiguration props = new RepoBaseConfiguration();
+    //test with trailing slash 
+    props.setBasepath(new URL("file:///tmp/"));
+    IdBasedStorageService idBasedStorageService = new IdBasedStorageService();
+    // configure service
+    IdBasedStorageProperties dbsp = new IdBasedStorageProperties();
+    dbsp.setCharPerDirectory(charPerDirectory);
+    dbsp.setMaxDepth(maxDepth);
+    idBasedStorageService.configure(dbsp);
+    // set storage service.
+    props.setStorageService(idBasedStorageService);
+    String result = PathUtils.getDataUri(resource, "folder/file.txt", props).toString();
+    Assert.assertTrue(result + "<>file:/tmp/" + expectedFirstPart + "/", result.startsWith("file:/tmp/" + expectedFirstPart + "/"));
+    // Patch resourceId
+    String patchedResourceId = resource.getId().replaceAll("[^A-Za-z0-9]", "");
+    Assert.assertTrue(result + "expected: " + patchedResourceId, result.contains("/" + patchedResourceId + "/folder/file.txt_"));
+  }
+
+  @Test(expected = CustomInternalServerError.class)
+  public void testGetDataUriWithIdBasedStorageWithInvalidId_1() throws Exception {
+    // Only execute these tests if OS is not windows.
+    assumeTrue(!SystemUtils.IS_OS_WINDOWS);
+    // only whitespaces are not allowed
+    String invalidResourceId = " \t";
+    int charPerDirectory = 4;
+    int maxDepth = 3;
+
+    DataResource resource = DataResource.factoryNewDataResource(invalidResourceId);
+    RepoBaseConfiguration props = new RepoBaseConfiguration();
+    //test with trailing slash 
+    props.setBasepath(new URL("file:///tmp/"));
+    IdBasedStorageService idBasedStorageService = new IdBasedStorageService();
+    // configure service
+    IdBasedStorageProperties dbsp = new IdBasedStorageProperties();
+    dbsp.setCharPerDirectory(charPerDirectory);
+    dbsp.setMaxDepth(maxDepth);
+    idBasedStorageService.configure(dbsp);
+    // set storage service.
+    props.setStorageService(idBasedStorageService);
+    String result = PathUtils.getDataUri(resource, "folder/file.txt", props).toString();
+    Assert.assertTrue(result + "<>file:/tmp/" + resource.getId().substring(0, charPerDirectory) + "/", result.startsWith("file:/tmp/" + resource.getId().substring(0, charPerDirectory) + "/"));
+    // Patch resourceId
+    String patchedResourceId = resource.getId().replaceAll("[^A-Za-z0-9]", "");
+    Assert.assertTrue(result, result.contains("/" + patchedResourceId + "/folder/file.txt_"));
+    //test w/o trailing slash
+
     resource = DataResource.factoryNewDataResource(UUID.randomUUID().toString() + "/");
     result = PathUtils.getDataUri(resource, "folder/file.txt", props).toString();
     Assert.assertTrue(result, result.startsWith("file:/tmp/" + resource.getId().substring(0, charPerDirectory) + "/"));
     // Attention only one slash after resource ID
     Assert.assertTrue(result, result.contains("/" + resource.getId() + "/folder/file.txt_"));
+  }
+
+  @Test(expected = CustomInternalServerError.class)
+  public void testGetDataUriWithIdBasedStorageWithInvalidId_2() throws Exception {
+    // Only execute these tests if OS is not windows.
+    assumeTrue(!SystemUtils.IS_OS_WINDOWS);
+    // only whitespaces are not allowed
+    String invalidResourceId = " \t \t \t      ";
+    int charPerDirectory = 4;
+    int maxDepth = 3;
+
+    DataResource resource = DataResource.factoryNewDataResource(invalidResourceId);
+    RepoBaseConfiguration props = new RepoBaseConfiguration();
+    //test with trailing slash 
+    props.setBasepath(new URL("file:///tmp/"));
+    IdBasedStorageService idBasedStorageService = new IdBasedStorageService();
+    // configure service
+    IdBasedStorageProperties dbsp = new IdBasedStorageProperties();
+    dbsp.setCharPerDirectory(charPerDirectory);
+    dbsp.setMaxDepth(maxDepth);
+    idBasedStorageService.configure(dbsp);
+    // set storage service.
+    props.setStorageService(idBasedStorageService);
+    String result = PathUtils.getDataUri(resource, "folder/file.txt", props).toString();
+  }
+
+  @Test(expected = CustomInternalServerError.class)
+  public void testGetDataUriWithIdBasedStorageWithInvalidId_3() throws Exception {
+    // Only execute these tests if OS is not windows.
+    assumeTrue(!SystemUtils.IS_OS_WINDOWS);
+    // get current year
+    String invalidResourceId = "";
+    int charPerDirectory = 4;
+    int maxDepth = 3;
+
+    DataResource resource = DataResource.factoryNewDataResource(invalidResourceId);
+    RepoBaseConfiguration props = new RepoBaseConfiguration();
+    //test with trailing slash 
+    props.setBasepath(new URL("file:///tmp/"));
+    IdBasedStorageService idBasedStorageService = new IdBasedStorageService();
+    // configure service
+    IdBasedStorageProperties dbsp = new IdBasedStorageProperties();
+    dbsp.setCharPerDirectory(charPerDirectory);
+    dbsp.setMaxDepth(maxDepth);
+    idBasedStorageService.configure(dbsp);
+    // set storage service.
+    props.setStorageService(idBasedStorageService);
+    String result = PathUtils.getDataUri(resource, "folder/file.txt", props).toString();
   }
 
   @Test(expected = CustomInternalServerError.class)
