@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-## [1.0.2] - 2022-03-23
+## [1.0.2] - 2022-03-25
 
 ### Changed
  - Update to service-base 1.0.1
