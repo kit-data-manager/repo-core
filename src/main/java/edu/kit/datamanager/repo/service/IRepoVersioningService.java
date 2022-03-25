@@ -12,7 +12,8 @@ import java.util.Map;
 public interface IRepoVersioningService{
   /** 
    * Configure the service.
-   * @param applicationProperties
+   * 
+   * @param applicationProperties Properties of repo.
    */
   void configure(RepoBaseConfiguration applicationProperties);
 
@@ -28,7 +29,7 @@ public interface IRepoVersioningService{
   void write(String resourceId, String callerId, String path, InputStream data, Map<String, String> options);
 
   /**
-   * returns files of an object's version.
+   * Returns files of an object's version.
    *
    * @param resourceId identifier of the object
    * @param callerId name of the user
@@ -40,12 +41,13 @@ public interface IRepoVersioningService{
   void read(String resourceId, String callerId, String path, String versionId, OutputStream destination, Map<String, String> options);
 
   /**
-   * returns information for a specific resource
+   * Returns information for a specific resource
    *
    * @param resourceId identifier of the object
    * @param path path of the file
    * @param versionId Id of the version.
    * @param options contains three keys: finalize, token number and parent.
+   * 
    * @return Instance holding versioning information.
    */
   VersionInfo info(String resourceId, String path, String versionId, Map<String, String> options);

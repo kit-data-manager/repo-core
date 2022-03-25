@@ -19,9 +19,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import edu.kit.datamanager.configuration.RabbitMQConfiguration;
 import edu.kit.datamanager.entities.messaging.IAMQPSubmittable;
 import edu.kit.datamanager.repo.dao.IAMQPMessageDao;
+import edu.kit.datamanager.repo.dao.DummyAMQPMessageDao;
 import edu.kit.datamanager.repo.domain.AMQPMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import edu.kit.datamanager.service.IMessagingService;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.springframework.amqp.AmqpConnectException;
 import org.springframework.amqp.AmqpException;
@@ -40,7 +42,7 @@ public class RabbitMQMessagingService implements IMessagingService {
     @Autowired
     private RabbitMQConfiguration configuration;
     @Autowired
-    private IAMQPMessageDao messageDao;
+    private Optional<IAMQPMessageDao> messageDao;
     @Autowired
     private Logger logger;
 
@@ -73,7 +75,7 @@ public class RabbitMQMessagingService implements IMessagingService {
                 if (messagePreservationRequired) {
                     AMQPMessage messageToPersist = new AMQPMessage(exchangeName, msgRoute, msgString);
                     logger.trace("Persisting unsent AMQP message to database.");
-                    messageToPersist = messageDao.save(messageToPersist);
+                    messageToPersist = messageDao.orElse(new DummyAMQPMessageDao()).save(messageToPersist);
                     logger.trace("AMQP message successfully persisted with id {} for later submission.", messageToPersist.getId());
                 }
             }
@@ -88,14 +90,15 @@ public class RabbitMQMessagingService implements IMessagingService {
      */
     private void checkAndSendPreservedMessages() {
         logger.trace("Checking for unsubmitted messages.");
-        Page<AMQPMessage> messages = messageDao.findAll(PageRequest.of(0, 100));
+        Page<AMQPMessage> messages = messageDao.orElse(new DummyAMQPMessageDao()).findAll(PageRequest.of(0, 100));
+
         int count = messages.getContent().size();
         logger.trace("Found {} unsubmitted messages in database.", count);
         messages.getContent().stream().map(msg -> {
             logger.trace("Removing message #{} from database.", msg.getId());
             return msg;
         }).map(msg -> {
-            messageDao.delete(msg);
+            messageDao.orElse(new DummyAMQPMessageDao()).delete(msg);
             return msg;
         }).map(msg -> {
             logger.trace("Resending message.");
