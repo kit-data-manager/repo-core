@@ -17,7 +17,6 @@ package edu.kit.datamanager.repo.service.impl;
 
 import edu.kit.datamanager.repo.configuration.DateBasedStorageProperties;
 import edu.kit.datamanager.repo.configuration.RepoBaseConfiguration;
-import edu.kit.datamanager.repo.dao.IContentInformationDao;
 import edu.kit.datamanager.repo.domain.DataResource;
 import edu.kit.datamanager.repo.service.IRepoStorageService;
 import java.util.Calendar;

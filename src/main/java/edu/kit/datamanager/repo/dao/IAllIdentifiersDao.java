@@ -15,7 +15,6 @@
  */
 package edu.kit.datamanager.repo.dao;
 
-import edu.kit.datamanager.repo.domain.DataResource;
 import edu.kit.datamanager.repo.domain.DataResource.State;
 import java.util.List;
 import edu.kit.datamanager.repo.domain.AllIdentifiers;
