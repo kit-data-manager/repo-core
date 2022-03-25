@@ -17,15 +17,12 @@ package edu.kit.datamanager.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import edu.kit.datamanager.configuration.RabbitMQConfiguration;
-import edu.kit.datamanager.entities.messaging.DataResourceMessage;
 import edu.kit.datamanager.entities.messaging.IAMQPSubmittable;
 import edu.kit.datamanager.repo.dao.IAMQPMessageDao;
 import edu.kit.datamanager.repo.dao.DummyAMQPMessageDao;
 import edu.kit.datamanager.repo.domain.AMQPMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import edu.kit.datamanager.service.IMessagingService;
-import edu.kit.datamanager.util.AuthenticationHelper;
-import edu.kit.datamanager.util.ControllerUtils;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.springframework.amqp.AmqpConnectException;

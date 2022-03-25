@@ -15,7 +15,6 @@
  */
 package edu.kit.datamanager.repo.dao.spec.contentinformation;
 
-import edu.kit.datamanager.repo.domain.DataResource;
 import edu.kit.datamanager.repo.domain.acl.AclEntry;
 import edu.kit.datamanager.entities.PERMISSION;
 import edu.kit.datamanager.repo.domain.ContentInformation;

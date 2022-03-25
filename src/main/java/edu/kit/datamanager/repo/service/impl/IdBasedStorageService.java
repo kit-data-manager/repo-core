@@ -21,8 +21,6 @@ import edu.kit.datamanager.repo.domain.DataResource;
 import edu.kit.datamanager.repo.service.IRepoStorageService;
 import java.io.File;
 import java.nio.file.Paths;
-import org.apache.commons.text.StringSubstitutor;
-import org.javers.common.collections.Arrays;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -63,7 +61,10 @@ public class IdBasedStorageService implements IRepoStorageService {
     // remove all possible invalid characters for a path from id. 
     builder.append(resource.getId().replaceAll("[^A-Za-z0-9]", ""));
     // to prevent an empty string.
-    builder.append(Integer.toString(Math.abs(resource.getId().hashCode())));
+    if (builder.toString().isEmpty()) {
+     builder.append("hash");
+     builder.append(Integer.toString(Math.abs(resource.getId().hashCode())));
+    }
     // split id in small pieces.
     String[] createPathToRecord = builder.toString().split("(?<=\\G.{" + charPerDirectory + "})");
 
@@ -72,12 +73,12 @@ public class IdBasedStorageService implements IRepoStorageService {
     for (int index = 0; index < depth; index++) {
       pathElements[index] = createPathToRecord[index];
     }
+    // Add localDir due to mandatory first parameter.
     String localDir = "." + File.separator;
     String pattern = Paths.get(localDir, pathElements).toString();
-    if (pattern.startsWith(localDir)) {
-      pattern = pattern.substring(localDir.length());
-    }
-
+    // remove localDir from path
+    pattern = pattern.substring(localDir.length());
+    
     return pattern;
   }
 }

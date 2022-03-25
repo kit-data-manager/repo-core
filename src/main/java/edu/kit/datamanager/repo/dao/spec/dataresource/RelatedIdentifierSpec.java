@@ -15,7 +15,6 @@
  */
 package edu.kit.datamanager.repo.dao.spec.dataresource;
 
-import edu.kit.datamanager.entities.Identifier;
 import edu.kit.datamanager.repo.domain.DataResource;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;

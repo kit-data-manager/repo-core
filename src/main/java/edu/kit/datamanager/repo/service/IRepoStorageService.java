@@ -6,12 +6,16 @@ import edu.kit.datamanager.repo.domain.DataResource;
 public interface IRepoStorageService{
   /** 
    * Configure the service.
+   * @param applicationProperties Properties of repo.
    */
   void configure(RepoBaseConfiguration applicationProperties);
 
   /**
    * Create path from given resource
    * finalize, token
+   * @param resource Data resource.
+   * 
+   * @return Path of given resource.
    */
   String createPath(DataResource resource);
 
