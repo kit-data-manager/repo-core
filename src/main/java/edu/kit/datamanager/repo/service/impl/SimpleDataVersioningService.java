@@ -42,6 +42,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import edu.kit.datamanager.repo.service.IRepoVersioningService;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -50,8 +51,7 @@ import edu.kit.datamanager.repo.service.IRepoVersioningService;
 @Component
 public class SimpleDataVersioningService implements IRepoVersioningService{
 
-  @Autowired
-  private Logger logger;
+  private static final Logger logger = LoggerFactory.getLogger(SimpleDataVersioningService.class);
 
   private RepoBaseConfiguration applicationProperties;
 

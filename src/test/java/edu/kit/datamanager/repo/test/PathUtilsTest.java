@@ -19,6 +19,7 @@ import edu.kit.datamanager.exceptions.CustomInternalServerError;
 import edu.kit.datamanager.repo.configuration.DateBasedStorageProperties;
 import edu.kit.datamanager.repo.configuration.IdBasedStorageProperties;
 import edu.kit.datamanager.repo.configuration.RepoBaseConfiguration;
+import edu.kit.datamanager.repo.configuration.StorageServiceProperties;
 import edu.kit.datamanager.repo.domain.DataResource;
 import edu.kit.datamanager.repo.service.impl.DateBasedStorageService;
 import edu.kit.datamanager.repo.service.impl.IdBasedStorageService;
@@ -31,13 +32,16 @@ import org.apache.commons.lang3.SystemUtils;
 import org.junit.Assert;
 import static org.junit.Assume.assumeTrue;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
  * @author jejkal
  */
 public class PathUtilsTest {
-
+ @Autowired
+   private StorageServiceProperties storageServiceProperties;
+ 
   @Test
   public void testGetDataUri() throws Exception {
     // get current year
@@ -49,7 +53,7 @@ public class PathUtilsTest {
     props.setBasepath(new URL("file:///tmp/"));
     DateBasedStorageService dateBasedStorageService = new DateBasedStorageService();
     // configure service
-    DateBasedStorageProperties dbsp = new DateBasedStorageProperties();
+    StorageServiceProperties dbsp = new StorageServiceProperties();
     dbsp.setPathPattern("@{year}");
     dateBasedStorageService.configure(dbsp);
     // set storage service.
@@ -87,7 +91,7 @@ public class PathUtilsTest {
     props.setBasepath(new URL("file:///tmp/"));
     IdBasedStorageService idBasedStorageService = new IdBasedStorageService();
     // configure service
-    IdBasedStorageProperties dbsp = new IdBasedStorageProperties();
+    StorageServiceProperties dbsp = new StorageServiceProperties();
     dbsp.setCharPerDirectory(charPerDirectory);
     dbsp.setMaxDepth(maxDepth);
     idBasedStorageService.configure(dbsp);
@@ -124,7 +128,7 @@ public class PathUtilsTest {
     props.setBasepath(new URL("file:///tmp/"));
     IdBasedStorageService idBasedStorageService = new IdBasedStorageService();
     // configure service
-    IdBasedStorageProperties dbsp = new IdBasedStorageProperties();
+    StorageServiceProperties dbsp = new StorageServiceProperties();
     dbsp.setCharPerDirectory(charPerDirectory);
     dbsp.setMaxDepth(maxDepth);
     idBasedStorageService.configure(dbsp);
@@ -160,7 +164,7 @@ public class PathUtilsTest {
     props.setBasepath(new URL("file:///tmp/"));
     IdBasedStorageService idBasedStorageService = new IdBasedStorageService();
     // configure service
-    IdBasedStorageProperties dbsp = new IdBasedStorageProperties();
+    StorageServiceProperties dbsp = new StorageServiceProperties();
     dbsp.setCharPerDirectory(charPerDirectory);
     dbsp.setMaxDepth(maxDepth);
     idBasedStorageService.configure(dbsp);
@@ -189,7 +193,7 @@ public class PathUtilsTest {
     props.setBasepath(new URL("file:///tmp/"));
     IdBasedStorageService idBasedStorageService = new IdBasedStorageService();
     // configure service
-    IdBasedStorageProperties dbsp = new IdBasedStorageProperties();
+    StorageServiceProperties dbsp = new StorageServiceProperties();
     dbsp.setCharPerDirectory(charPerDirectory);
     dbsp.setMaxDepth(maxDepth);
     idBasedStorageService.configure(dbsp);
@@ -217,7 +221,7 @@ public class PathUtilsTest {
     props.setBasepath(new URL("file:///tmp/"));
     IdBasedStorageService idBasedStorageService = new IdBasedStorageService();
     // configure service
-    IdBasedStorageProperties dbsp = new IdBasedStorageProperties();
+    StorageServiceProperties dbsp = new StorageServiceProperties();
     dbsp.setCharPerDirectory(charPerDirectory);
     dbsp.setMaxDepth(maxDepth);
     idBasedStorageService.configure(dbsp);
@@ -252,7 +256,7 @@ public class PathUtilsTest {
     props.setBasepath(new URL("file:///tmp/"));
     IdBasedStorageService idBasedStorageService = new IdBasedStorageService();
     // configure service
-    IdBasedStorageProperties dbsp = new IdBasedStorageProperties();
+    StorageServiceProperties dbsp = new StorageServiceProperties();
     dbsp.setCharPerDirectory(charPerDirectory);
     dbsp.setMaxDepth(maxDepth);
     idBasedStorageService.configure(dbsp);
@@ -276,7 +280,7 @@ public class PathUtilsTest {
     props.setBasepath(new URL("file:///tmp/"));
     IdBasedStorageService idBasedStorageService = new IdBasedStorageService();
     // configure service
-    IdBasedStorageProperties dbsp = new IdBasedStorageProperties();
+    StorageServiceProperties dbsp = new StorageServiceProperties();
     dbsp.setCharPerDirectory(charPerDirectory);
     dbsp.setMaxDepth(maxDepth);
     idBasedStorageService.configure(dbsp);

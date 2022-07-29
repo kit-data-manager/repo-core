@@ -23,6 +23,8 @@ import edu.kit.datamanager.repo.configuration.ApplicationProperties;
 import edu.kit.datamanager.repo.configuration.DateBasedStorageProperties;
 import edu.kit.datamanager.repo.configuration.IdBasedStorageProperties;
 import edu.kit.datamanager.repo.configuration.RepoBaseConfiguration;
+import edu.kit.datamanager.repo.configuration.StorageServiceProperties;
+import edu.kit.datamanager.repo.dao.IAllIdentifiersDao;
 import edu.kit.datamanager.repo.dao.IDataResourceDao;
 import edu.kit.datamanager.repo.domain.ContentInformation;
 import edu.kit.datamanager.repo.domain.DataResource;
@@ -34,6 +36,7 @@ import edu.kit.datamanager.repo.service.IRepoVersioningService;
 import edu.kit.datamanager.repo.service.impl.ContentInformationAuditService;
 import edu.kit.datamanager.repo.service.impl.ContentInformationService;
 import edu.kit.datamanager.repo.service.impl.DataResourceAuditService;
+import edu.kit.datamanager.repo.service.impl.DateBasedStorageService;
 import edu.kit.datamanager.service.IAuditService;
 import edu.kit.datamanager.service.IMessagingService;
 import edu.kit.datamanager.service.impl.RabbitMQMessagingService;
@@ -71,23 +74,22 @@ public class Application {
     private Javers javers;
     @Autowired
     private ApplicationEventPublisher eventPublisher;
-    @Autowired
-    private ApplicationProperties applicationProperties;
+    /* @Autowired
+    private ApplicationProperties applicationProperties;*/
     @Autowired
     private IRepoVersioningService[] versioningServices;
     @Autowired
     private IRepoStorageService[] storageServices;
 
     @Autowired
+    private IAllIdentifiersDao allIdentifiersDao;
+
+    @Autowired
     private IDataResourceDao dataResourceDao;
 
     @Autowired
-    private IDataResourceService dataResourceService;
-    @Autowired
-    private IContentInformationService contentInformationService;
+    private Optional<IMessagingService> messagingService;
 
-//  @Autowired
-//  private RequestMappingHandlerAdapter requestMappingHandlerAdapter;  
     @Bean
     @Scope("prototype")
     public Logger logger(InjectionPoint injectionPoint) {
@@ -149,6 +151,11 @@ public class Application {
     }
 
     @Bean
+    public StorageServiceProperties storageServiceProperties() {
+        return new StorageServiceProperties();
+    }
+
+    @Bean
     @ConditionalOnProperty(prefix = "repo.messaging", name = "enabled", havingValue = "true")
     public IMessagingService messagingService() {
         return new RabbitMQMessagingService();
@@ -156,35 +163,35 @@ public class Application {
 
     @Bean
     public RepoBaseConfiguration repositoryConfig() {
-
         IAuditService<DataResource> auditServiceDataResource;
         IAuditService<ContentInformation> contentAuditService;
         RepoBaseConfiguration rbc = new RepoBaseConfiguration();
-        rbc.setBasepath(this.applicationProperties.getBasepath());
-        rbc.setReadOnly(this.applicationProperties.isReadOnly());
-        rbc.setDataResourceService(dataResourceService);
-        rbc.setContentInformationService(contentInformationService);
+        rbc.setBasepath(applicationProperties().getBasepath());
+        rbc.setReadOnly(applicationProperties().isReadOnly());
+        rbc.setDataResourceService(dataResourceService());
+        rbc.setContentInformationService(contentInformationService());
         rbc.setEventPublisher(eventPublisher);
-        rbc.setJwtSecret(this.applicationProperties.getJwtSecret());
-        rbc.setAuthEnabled(this.applicationProperties.isAuthEnabled());
+        rbc.setJwtSecret(applicationProperties().getJwtSecret());
+        rbc.setAuthEnabled(applicationProperties().isAuthEnabled());
         for (IRepoVersioningService versioningService : this.versioningServices) {
-            if (applicationProperties.getDefaultVersioningService().equals(versioningService.getServiceName())) {
+            if (applicationProperties().getDefaultVersioningService().equals(versioningService.getServiceName())) {
                 LOG.info("Set versioning service: {}", versioningService.getServiceName());
                 rbc.setVersioningService(versioningService);
                 break;
             }
         }
         for (IRepoStorageService storageService : this.storageServices) {
-            if (applicationProperties.getDefaultStorageService().equals(storageService.getServiceName())) {
+            if (applicationProperties().getDefaultStorageService().equals(storageService.getServiceName())) {
                 LOG.info("Set storage service: {}", storageService.getServiceName());
+                storageService.configure(storageServiceProperties());
                 rbc.setStorageService(storageService);
                 break;
             }
         }
         auditServiceDataResource = new DataResourceAuditService(this.javers, rbc);
         contentAuditService = new ContentInformationAuditService(this.javers, rbc);
-        dataResourceService.configure(rbc);
-        contentInformationService.configure(rbc);
+        dataResourceService().configure(rbc);
+        contentInformationService().configure(rbc);
         rbc.setAuditService(auditServiceDataResource);
         LOG.trace("Show Config: {}", rbc);
         LOG.trace("getBasepath {}", rbc.getBasepath());
