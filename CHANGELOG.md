@@ -10,6 +10,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Update to service-base 1.0.3
+- Update to io.freefair.lombok 6.5.0.3
+- Update to org.owasp.dependencycheck 7.1.1
+- Update to net.researchgate.release 3.0.0
+- Update to spring-boot 2.7.2
+- Update to spring-doc 1.6.9
+- Update to spring-messaging 5.3.22
+- Update to spring-restdocs-mockmvc 2.0.6.RELEASE
+- Update to postgresql 42.3.3
+
 ### Added
 
 ### Fixed
