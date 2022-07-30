@@ -10,7 +10,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Update to service-base 1.0.3
+### Added
+
+### Fixed
+
+### Deprecated
+
+### Removed
+
+## [1.0.3] - 2022-07-31
+
+### Changed
+- Update to service-base 1.0.4
 - Update to io.freefair.lombok 6.5.0.3
 - Update to org.owasp.dependencycheck 7.1.1
 - Update to net.researchgate.release 3.0.0
@@ -19,14 +30,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update to spring-messaging 5.3.22
 - Update to spring-restdocs-mockmvc 2.0.6.RELEASE
 - Update to postgresql 42.3.3
-
-### Added
-
-### Fixed
-
-### Deprecated
-
-### Removed
 
 ## [1.0.2] - 2022-03-25
 
@@ -106,7 +109,8 @@ Extracted from the 'base-repo' project.
 ### Removed
 - none
 
-[Unreleased]: https://github.com/kit-data-manager/repo-core/compare/v1.0.2...HEAD
+[Unreleased]: https://github.com/kit-data-manager/repo-core/compare/v1.0.3...HEAD
+[1.0.3]: https://github.com/kit-data-manager/repo-core/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/kit-data-manager/repo-core/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/kit-data-manager/repo-core/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/kit-data-manager/repo-core/compare/v0.9.2...v1.0.0

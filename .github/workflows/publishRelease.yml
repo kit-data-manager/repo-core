@@ -11,6 +11,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 11
+          distribution: zulu
       - name: Publish package
         run: gradle -Prelease publishToSonatype closeAndReleaseSonatypeStagingRepository
         env:
