@@ -38,7 +38,7 @@ release {
     versionProperties = ['version', 'mainversion']
     git {
         //branch from where to release (default: master)
-        requireBranch = 'master'
+        requireBranch.set('master')
     }
 }
 

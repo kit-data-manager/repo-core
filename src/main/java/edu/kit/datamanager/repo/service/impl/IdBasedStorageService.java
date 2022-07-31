@@ -16,13 +16,13 @@
 package edu.kit.datamanager.repo.service.impl;
 
 import edu.kit.datamanager.repo.configuration.IdBasedStorageProperties;
-import edu.kit.datamanager.repo.configuration.RepoBaseConfiguration;
+import edu.kit.datamanager.repo.configuration.StorageServiceProperties;
 import edu.kit.datamanager.repo.domain.DataResource;
 import edu.kit.datamanager.repo.service.IRepoStorageService;
 import java.io.File;
 import java.nio.file.Paths;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -32,19 +32,15 @@ public class IdBasedStorageService implements IRepoStorageService {
 
   public static final String SERVICE_NAME = "idBased";
 
-  @Autowired
-  private Logger logger;
+  private static final Logger logger = LoggerFactory.getLogger(IdBasedStorageService.class);
 
-  @Autowired
-  private IdBasedStorageProperties applicationProperties;
+  private StorageServiceProperties applicationProperties;
 
   @Override
-  public void configure(RepoBaseConfiguration applicationProperties) {
+  public void configure(StorageServiceProperties applicationProperties) {
+       this.applicationProperties = applicationProperties;
   }
 
-  public void configure(IdBasedStorageProperties applicationProperties) {
-    this.applicationProperties = applicationProperties;
-  }
 
   @Override
   public String getServiceName() {

@@ -116,7 +116,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
   TransactionalTestExecutionListener.class,
   WithSecurityContextTestExecutionListener.class})
 @TestPropertySource(properties = {"repo.plugin.versioning=none"})
-@TestPropertySource(properties = {"spring.datasource.url=jdbc:h2:mem:db_withoutVersioning;DB_CLOSE_DELAY=-1"})
+@TestPropertySource(properties = {"spring.datasource.url=jdbc:h2:mem:db_withoutVersioning;DB_CLOSE_DELAY=-1;MODE=LEGACY;NON_KEYWORDS=VALUE"})
 @ActiveProfiles("test")
 public class DataResourceControllerTestWithoutVersioning {
 

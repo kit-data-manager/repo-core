@@ -21,10 +21,12 @@ import edu.kit.datamanager.entities.messaging.IAMQPSubmittable;
 import edu.kit.datamanager.repo.dao.IAMQPMessageDao;
 import edu.kit.datamanager.repo.dao.DummyAMQPMessageDao;
 import edu.kit.datamanager.repo.domain.AMQPMessage;
+import edu.kit.datamanager.repo.service.impl.DataResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import edu.kit.datamanager.service.IMessagingService;
 import java.util.Optional;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.AmqpConnectException;
 import org.springframework.amqp.AmqpException;
 import org.springframework.boot.actuate.health.Health;
@@ -43,8 +45,7 @@ public class RabbitMQMessagingService implements IMessagingService {
     private RabbitMQConfiguration configuration;
     @Autowired
     private Optional<IAMQPMessageDao> messageDao;
-    @Autowired
-    private Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(RabbitMQMessagingService.class);
 
     @Override
     public void send(IAMQPSubmittable msg) {

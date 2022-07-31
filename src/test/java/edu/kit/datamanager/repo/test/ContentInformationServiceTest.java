@@ -20,6 +20,7 @@ import edu.kit.datamanager.exceptions.CustomInternalServerError;
 import edu.kit.datamanager.exceptions.ResourceNotFoundException;
 import edu.kit.datamanager.repo.configuration.DateBasedStorageProperties;
 import edu.kit.datamanager.repo.configuration.RepoBaseConfiguration;
+import edu.kit.datamanager.repo.configuration.StorageServiceProperties;
 import edu.kit.datamanager.repo.dao.IAllIdentifiersDao;
 import edu.kit.datamanager.repo.dao.IContentInformationDao;
 import edu.kit.datamanager.repo.dao.IDataResourceDao;
@@ -70,113 +71,117 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestExecutionListeners(listeners = {
-  DependencyInjectionTestExecutionListener.class,
-  TransactionalTestExecutionListener.class
+    DependencyInjectionTestExecutionListener.class,
+    TransactionalTestExecutionListener.class
 })
 @ActiveProfiles("test")
 public class ContentInformationServiceTest {
-  
-  @Autowired
-  private IContentInformationService service;
-  @Autowired
-  private IContentInformationDao dao;
-  @Autowired
-  private IDataResourceService dataResourceService;
-  @Autowired
-  private IDataResourceDao dataResourceDao;
-  @Autowired
-  private IAllIdentifiersDao allIdentifiersDao;
-  
-  private DataResource parentResource = null;
-  
-  @Before
-  public void prepare() throws MalformedURLException {
-    //configure service
-    RepoBaseConfiguration rbc = new RepoBaseConfiguration();
-    rbc.setBasepath(new URL("file:///tmp/repo-base"));
-    rbc.setVersioningService(new NoneDataVersioningService());
-    rbc.setStorageService(new DateBasedStorageService());
-    rbc.setReadOnly(false);
-    Javers javers = JaversBuilder.javers().build();
-    rbc.setAuditService(new DataResourceAuditService(javers, rbc));
-    rbc.setContentInformationAuditService(new ContentInformationAuditService(javers, rbc));
-    DateBasedStorageService dateBasedStorageService = new DateBasedStorageService();
-    // configure service
-    DateBasedStorageProperties dbsp = new DateBasedStorageProperties();
-    dbsp.setPathPattern("@{year}");
-    dateBasedStorageService.configure(dbsp);
-    rbc.setStorageService(dateBasedStorageService);
-    
-    service.configure(rbc);
-    dataResourceService.configure(rbc);
-    
-    DataResource resource = createResourceWithoutDoi("test123", "Test Title", "Test");
-    parentResource = dataResourceService.create(resource, AuthenticationHelper.ANONYMOUS_USER_PRINCIPAL);
-  }
-  
-  @After
-  public void cleanDb() {
-    dao.deleteAll();
-    dataResourceDao.deleteAll();
-    allIdentifiersDao.deleteAll();
-  }
-  
-  @Test
-  public void testFindById() {
-    ContentInformation info = createContentInformation("test123", "file.txt", "tag1");
-    
-    ByteArrayInputStream in = new ByteArrayInputStream("test123".getBytes());
-    
-    info = service.create(info, parentResource, "file.txt", in, false);
-    ContentInformation found = service.findById(Long.toString(info.getId()));
-    Assert.assertNotNull(found);
-    Assert.assertEquals(info.getId(), found.getId());
-  }
-  
-  @Test(expected = ResourceNotFoundException.class)
-  public void testFindByUnknownId() {
-    ContentInformation found = service.findById("256712");
-    Assert.fail("Test should have already failed.");
-  }
-  
-  @Test(expected = CustomInternalServerError.class)
-  public void testFindAllWithoutResourceId() {
-    ContentInformation info = createContentInformation("test123", "file.txt", "tag1");
-    info.setParentResource(null);
-    Page<ContentInformation> found = service.findAll(info, PageRequest.of(0, 10));
-    Assert.fail("Test should have already failed.");
-  }
-  
-  @Test(expected = BadArgumentException.class)
-  public void testCreateWithFileUri() {
-    ContentInformation info = createContentInformation("test123", "file2.txt", "tag1");
-    info.setContentUri("file:///Users/data/dummy.txt");
-    info = service.create(info, parentResource, "file.txt", null, false);
-    Assert.fail("Test should have already failed.");
-  }
-  
-  @Test(expected = BadArgumentException.class)
-  public void testCreateWithoutFileAndContentUri() {
-    ContentInformation info = createContentInformation("test123", "file2.txt", "tag1");
-    info = service.create(info, parentResource, "file.txt", null, false);
-    Assert.fail("Test should have already failed.");
-  }
-  
-  private ContentInformation createContentInformation(String id, String path, String... tags) {
-    return ContentInformation.createContentInformation(id, path, tags);
-  }
-  
-  private DataResource createResourceWithoutDoi(String iid, String title, String type) {
-    DataResource resource;
-    
-    resource = DataResource.factoryNewDataResource(iid);
-    
-    if (title != null) {
-      resource.getTitles().add(Title.factoryTitle(title, Title.TYPE.TRANSLATED_TITLE));
+
+    @Autowired
+    private IContentInformationService service;
+    @Autowired
+    private IContentInformationDao dao;
+    @Autowired
+    private IDataResourceService dataResourceService;
+    @Autowired
+    private IDataResourceDao dataResourceDao;
+    @Autowired
+    private IAllIdentifiersDao allIdentifiersDao;
+    @Autowired
+    private StorageServiceProperties storageServiceProperties;
+
+    private DataResource parentResource = null;
+
+    @Before
+    public void prepare() throws MalformedURLException {
+        //configure service
+        RepoBaseConfiguration rbc = new RepoBaseConfiguration();
+        rbc.setBasepath(new URL("file:///tmp/repo-base"));
+        rbc.setVersioningService(new NoneDataVersioningService());
+        DateBasedStorageService s = new DateBasedStorageService();
+        s.configure(storageServiceProperties);
+        rbc.setStorageService(s);
+        rbc.setReadOnly(false);
+        Javers javers = JaversBuilder.javers().build();
+        rbc.setAuditService(new DataResourceAuditService(javers, rbc));
+        rbc.setContentInformationAuditService(new ContentInformationAuditService(javers, rbc));
+        DateBasedStorageService dateBasedStorageService = new DateBasedStorageService();
+        // configure service
+        StorageServiceProperties dbsp = new StorageServiceProperties();
+        dbsp.setPathPattern("@{year}");
+        dateBasedStorageService.configure(dbsp);
+        rbc.setStorageService(dateBasedStorageService);
+
+        service.configure(rbc);
+        dataResourceService.configure(rbc);
+
+        DataResource resource = createResourceWithoutDoi("test123", "Test Title", "Test");
+        parentResource = dataResourceService.create(resource, AuthenticationHelper.ANONYMOUS_USER_PRINCIPAL);
     }
-    if (type != null) {
-      resource.setResourceType(ResourceType.createResourceType(type));
+
+    @After
+    public void cleanDb() {
+        dao.deleteAll();
+        dataResourceDao.deleteAll();
+        allIdentifiersDao.deleteAll();
     }
-    return resource;
-  }
+
+    @Test
+    public void testFindById() {
+        ContentInformation info = createContentInformation("test123", "file.txt", "tag1");
+
+        ByteArrayInputStream in = new ByteArrayInputStream("test123".getBytes());
+
+        info = service.create(info, parentResource, "file.txt", in, false);
+        ContentInformation found = service.findById(Long.toString(info.getId()));
+        Assert.assertNotNull(found);
+        Assert.assertEquals(info.getId(), found.getId());
+    }
+
+    @Test(expected = ResourceNotFoundException.class)
+    public void testFindByUnknownId() {
+        ContentInformation found = service.findById("256712");
+        Assert.fail("Test should have already failed.");
+    }
+
+    @Test(expected = CustomInternalServerError.class)
+    public void testFindAllWithoutResourceId() {
+        ContentInformation info = createContentInformation("test123", "file.txt", "tag1");
+        info.setParentResource(null);
+        Page<ContentInformation> found = service.findAll(info, PageRequest.of(0, 10));
+        Assert.fail("Test should have already failed.");
+    }
+
+    @Test(expected = BadArgumentException.class)
+    public void testCreateWithFileUri() {
+        ContentInformation info = createContentInformation("test123", "file2.txt", "tag1");
+        info.setContentUri("file:///Users/data/dummy.txt");
+        info = service.create(info, parentResource, "file.txt", null, false);
+        Assert.fail("Test should have already failed.");
+    }
+
+    @Test(expected = BadArgumentException.class)
+    public void testCreateWithoutFileAndContentUri() {
+        ContentInformation info = createContentInformation("test123", "file2.txt", "tag1");
+        info = service.create(info, parentResource, "file.txt", null, false);
+        Assert.fail("Test should have already failed.");
+    }
+
+    private ContentInformation createContentInformation(String id, String path, String... tags) {
+        return ContentInformation.createContentInformation(id, path, tags);
+    }
+
+    private DataResource createResourceWithoutDoi(String iid, String title, String type) {
+        DataResource resource;
+
+        resource = DataResource.factoryNewDataResource(iid);
+
+        if (title != null) {
+            resource.getTitles().add(Title.factoryTitle(title, Title.TYPE.TRANSLATED_TITLE));
+        }
+        if (type != null) {
+            resource.setResourceType(ResourceType.createResourceType(type));
+        }
+        return resource;
+    }
 }

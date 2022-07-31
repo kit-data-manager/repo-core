@@ -51,7 +51,6 @@ import edu.kit.datamanager.repo.service.IRepoVersioningService;
 @Component
 public class NoneDataVersioningService implements IRepoVersioningService{
 
-
   private static final Logger logger = LoggerFactory.getLogger(NoneDataVersioningService.class);
 
   private RepoBaseConfiguration applicationProperties;

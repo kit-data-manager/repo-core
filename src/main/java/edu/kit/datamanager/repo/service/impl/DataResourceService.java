@@ -75,16 +75,16 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public class DataResourceService implements IDataResourceService {
 
+   
     @Autowired
     private IDataResourceDao dao;
-
     @Autowired
     private IAllIdentifiersDao allIdentifiersDao;
 
     private static final Logger logger = LoggerFactory.getLogger(DataResourceService.class);
-
+    
     private RepoBaseConfiguration applicationProperties;
-
+    
     /**
      * Optional messagingService bean may or may not be available, depending on
      * a service's configuration. If messaging capabilities are disabled, this
@@ -95,6 +95,14 @@ public class DataResourceService implements IDataResourceService {
 
     @PersistenceContext
     private EntityManager em;
+
+      
+   /* @Autowired
+    public DataResourceService(IDataResourceDao dao, IAllIdentifiersDao allIdentifiersDao, Optional<IMessagingService> messagingService) {
+        this.dao = dao;
+        this.allIdentifiersDao = allIdentifiersDao;
+        this.messagingService = messagingService;
+    }*/
 
     /**
      * Default constructor.

@@ -15,8 +15,7 @@
  */
 package edu.kit.datamanager.repo.service.impl;
 
-import edu.kit.datamanager.repo.configuration.DateBasedStorageProperties;
-import edu.kit.datamanager.repo.configuration.RepoBaseConfiguration;
+import edu.kit.datamanager.repo.configuration.StorageServiceProperties;
 import edu.kit.datamanager.repo.domain.DataResource;
 import edu.kit.datamanager.repo.service.IRepoStorageService;
 import java.util.Calendar;
@@ -24,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.text.StringSubstitutor;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -32,42 +31,37 @@ import org.springframework.stereotype.Component;
 @Component
 public class DateBasedStorageService implements IRepoStorageService {
 
-  @Autowired
-  private Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(DateBasedStorageService.class);
 
-  @Autowired
-  private DateBasedStorageProperties applicationProperties;
+    private StorageServiceProperties applicationProperties;
 
-  @Override
-  public void configure(RepoBaseConfiguration applicationProperties) {
-  }
-  
-  public void configure(DateBasedStorageProperties applicationProperties) {
-    this.applicationProperties = applicationProperties;
-  }
-
-  @Override
-  public String getServiceName() {
-    return "dateBased";
-  }
-
-  @Override
-  public String createPath(DataResource resource) {
-    Map<String, String> data = new HashMap<>();
-    // ToDo: Get create date of data resource.
-    data.put("year", Integer.toString(Calendar.getInstance().get(Calendar.YEAR)));
-    data.put("month", Integer.toString(Calendar.getInstance().get(Calendar.MONTH)));
-    data.put("day", Integer.toString(Calendar.getInstance().get(Calendar.DAY_OF_MONTH)));
-    data.put("hour", Integer.toString(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)));
-    data.put("minute", Integer.toString(Calendar.getInstance().get(Calendar.MINUTE)));
-
-    String pattern = applicationProperties.getPathPattern().replaceAll("\\@", "\\$");
-    if (pattern.startsWith("/")) {
-      pattern = pattern.substring(1);
+    @Override
+    public void configure(StorageServiceProperties applicationProperties) {
+         this.applicationProperties = applicationProperties;
     }
-    if (pattern.endsWith("/")) {
-      pattern = pattern.substring(0, pattern.length() - 1);
+
+    @Override
+    public String getServiceName() {
+        return "dateBased";
     }
-    return StringSubstitutor.replace(pattern, data);
-  }
+
+    @Override
+    public String createPath(DataResource resource) {
+        Map<String, String> data = new HashMap<>();
+        // ToDo: Get create date of data resource.
+        data.put("year", Integer.toString(Calendar.getInstance().get(Calendar.YEAR)));
+        data.put("month", Integer.toString(Calendar.getInstance().get(Calendar.MONTH)));
+        data.put("day", Integer.toString(Calendar.getInstance().get(Calendar.DAY_OF_MONTH)));
+        data.put("hour", Integer.toString(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)));
+        data.put("minute", Integer.toString(Calendar.getInstance().get(Calendar.MINUTE)));
+
+        String pattern = applicationProperties.getPathPattern().replaceAll("\\@", "\\$");
+        if (pattern.startsWith("/")) {
+            pattern = pattern.substring(1);
+        }
+        if (pattern.endsWith("/")) {
+            pattern = pattern.substring(0, pattern.length() - 1);
+        }
+        return StringSubstitutor.replace(pattern, data);
+    }
 }

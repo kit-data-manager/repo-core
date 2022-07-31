@@ -46,7 +46,7 @@ public interface IDataResourceDao extends JpaRepository<DataResource, String>, J
   public List<DataResource> findByStateNotAndAclsSidInAndAclsPermissionGreaterThanEqual(State state, List<String> sids, PERMISSION permission);
 
   /**
-   * Find data resources NOT having the provided state, having at least one of
+   * Find data resources NOT having the provided state, having at least one off
    * the provided sids in their ACL list with the provided permission in a
    * paginated form.
    *

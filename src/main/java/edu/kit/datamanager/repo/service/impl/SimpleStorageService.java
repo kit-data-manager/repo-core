@@ -16,9 +16,11 @@
 package edu.kit.datamanager.repo.service.impl;
 
 import edu.kit.datamanager.repo.configuration.RepoBaseConfiguration;
+import edu.kit.datamanager.repo.configuration.StorageServiceProperties;
 import edu.kit.datamanager.repo.domain.DataResource;
 import edu.kit.datamanager.repo.service.IRepoStorageService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,11 +29,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class SimpleStorageService implements IRepoStorageService {
 
-  @Autowired
-  private Logger logger;
+  private static final Logger logger = LoggerFactory.getLogger(SimpleStorageService.class);
 
   @Override
-  public void configure(RepoBaseConfiguration applicationProperties) {
+  public void configure(StorageServiceProperties applicationProperties) {
   }
 
   @Override
