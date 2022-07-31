@@ -33,7 +33,7 @@ plugins {
 ext { 
     springBootVersion = '2.7.2' 
     springDocVersion  = '1.6.9'
-    javersVersion     = '6.5.3'
+    javersVersion     = '6.6.5'
 }
 
 description = "Core module for data repositories based on metadata model of datacite."
@@ -93,7 +93,7 @@ dependencies {
     implementation "com.google.code.gson:gson:2.8.8"
 
     // Database
-    implementation "com.h2database:h2:1.4.200"
+    implementation "com.h2database:h2:2.1.214"
     implementation "org.postgresql:postgresql:42.3.3"
     // XML
     implementation "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.13.0"
