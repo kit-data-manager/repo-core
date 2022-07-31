@@ -118,7 +118,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
   WithSecurityContextTestExecutionListener.class})
 @ActiveProfiles("test")
 @TestPropertySource(properties = {"repo.readonly=true"})
-@TestPropertySource(properties = {"spring.datasource.url=jdbc:h2:mem:db_readonly;DB_CLOSE_DELAY=-1"})
+@TestPropertySource(properties = {"spring.datasource.url=jdbc:h2:mem:db_readonly;DB_CLOSE_DELAY=-1;MODE=LEGACY;NON_KEYWORDS=VALUE"})
 public class DataResourceControllerTestReadOnly {
 
   @Autowired

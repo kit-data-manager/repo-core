@@ -115,7 +115,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
   DirtiesContextTestExecutionListener.class,
   TransactionalTestExecutionListener.class,
   WithSecurityContextTestExecutionListener.class})
-@TestPropertySource(properties = {"spring.datasource.url=jdbc:h2:mem:db_javers;DB_CLOSE_DELAY=-1"})
+@TestPropertySource(properties = {"spring.datasource.url=jdbc:h2:mem:db_javers;DB_CLOSE_DELAY=-1;MODE=LEGACY;NON_KEYWORDS=VALUE"})
 @ActiveProfiles("test")
 public class DataResourceControllerTest {
   public static String KEYCLOAK_SECRET = "SomeReallyVeryVeryLongAndSuperExtraSecureSecret";
