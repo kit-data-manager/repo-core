@@ -24,7 +24,7 @@ public class StorageServiceProperties {
     @Value("${repo.plugin.storage.id.charPerDirectory:4}")
     private int charPerDirectory;
 
-    @Value("${repo.plugin.storage.id.pathPattern:8}")
+    @Value("${repo.plugin.storage.id.maxDepth:8}")
     private int maxDepth;
 
     /**
