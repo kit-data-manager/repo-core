@@ -43,6 +43,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import edu.kit.datamanager.repo.service.IRepoVersioningService;
+import org.apache.tika.metadata.TikaCoreProperties;
 
 /**
  *
@@ -124,7 +125,7 @@ public class NoneDataVersioningService implements IRepoVersioningService{
           AutoDetectParser parser = new AutoDetectParser();
           Detector detector = parser.getDetector();
           Metadata md1 = new Metadata();
-          md1.add(Metadata.RESOURCE_NAME_KEY, destination.getFileName().toString());
+          md1.add(TikaCoreProperties.RESOURCE_NAME_KEY, destination.getFileName().toString());
           org.apache.tika.mime.MediaType mediaType = detector.detect(bis, md1);
           map.put("mediaType", mediaType.toString());
           logger.trace("Assigned media type {} to content information.", map.get("mediaType"));
