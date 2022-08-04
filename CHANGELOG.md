@@ -9,11 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 ### Changed
+- Update to logback-classic 1.2.11
+- Update to tika-core 2.4.1 
+- Update to com.jfrog.bintray 1.8.5 
+- Update to jackson-datatype-joda 2.13.3
+- Update to slf4j-api 1.7.36 
 
 ### Added
 
 ### Fixed
-
+- Fixed typo of property repo.plugin.storage.id.maxDepth
+ 
 ### Deprecated
 
 ### Removed
