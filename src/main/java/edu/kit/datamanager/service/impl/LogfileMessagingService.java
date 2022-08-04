@@ -24,7 +24,7 @@ import org.springframework.boot.actuate.health.Health;
 
 /**
  *
- * @author Torridity
+ * @author jejkal
  */
 public class LogfileMessagingService implements IMessagingService {
 
