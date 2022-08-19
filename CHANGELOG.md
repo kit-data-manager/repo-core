@@ -14,11 +14,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update to com.jfrog.bintray 1.8.5 
 - Update to jackson-datatype-joda 2.13.3
 - Update to slf4j-api 1.7.36 
+- Update to io.freefair.maven-publish-java 6.5.0.3
+- Update to io.spring.dependency-management 1.0.13.RELEASE
+- Update to gson 2.9.1
+- Update to postgresql 42.4.1
+- Update to jackson-jaxrs-json-provider 2.13.3
+- Update to jackson-module-afterburner 2.13.3
+- Update to jackson-datatype-joda 2.13.3
+- Update to spring-boot-admin-starter-client 2.7.4
+- Update to jaxb-core 4.0.0
+- Update to javassist 3.29.1-GA
+- 
 
 ### Added
 
 ### Fixed
 - Fixed typo of property repo.plugin.storage.id.maxDepth
+- Fixed authorization issue where users were able to access previous versions of resources even if for the current version all permissions were revoked
  
 ### Deprecated
 
