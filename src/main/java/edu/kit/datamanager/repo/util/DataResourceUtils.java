@@ -614,6 +614,7 @@ public class DataResourceUtils {
     }
     LOGGER.trace("Decoded resource identifier: {}", decodedIdentifier);
     DataResource resource = applicationProperties.getDataResourceService().findByAnyIdentifier(decodedIdentifier, version);
+    
     //check if resource was found by resource identifier 
     if (!Objects.equals(decodedIdentifier, resource.getId())) {
       //resource was found by another identifier...redirect

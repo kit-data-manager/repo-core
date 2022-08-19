@@ -377,6 +377,10 @@ public class DataResourceService implements IDataResourceService {
         // first of all try to get resourceID
         long nano1 = System.nanoTime() / 1000000;
         DataResource resource = findById(resourceIdentifier);
+        //perform read check for most recent version of resource
+        //if not access allowed, already stop here
+        DataResourceUtils.performPermissionCheck(resource, PERMISSION.READ);
+        
         String correctResourceId = resource.getId();
         long nano2 = System.nanoTime() / 1000000;
         if (Objects.nonNull(version)) {
