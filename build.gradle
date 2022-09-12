@@ -33,7 +33,7 @@ plugins {
 ext { 
     springBootVersion = '2.7.3' 
     springDocVersion  = '1.6.11'
-    javersVersion     = '6.6.5'
+    javersVersion     = '6.7.0'
 }
 
 description = "Core module for data repositories based on metadata model of datacite."
