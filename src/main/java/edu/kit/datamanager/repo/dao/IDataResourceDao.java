@@ -32,20 +32,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 public interface IDataResourceDao extends JpaRepository<DataResource, String>, JpaSpecificationExecutor<DataResource>{
 
   /**
-   * Find all data resources NOT having the provided state, having at least one
-   * of the provided sids in their ACL list with the provided permission.
-   *
-   * @param state The state the resource should NOT have.
-   * @param sids A list of sids from which at least one sid must be in a
-   * matching resource's ACL.
-   * @param permission The permission a matching sid must be allowed to access
-   * the resource with.
-   *
-   * @return A list of data resources or an empty list.
-   */
-  public List<DataResource> findByStateNotAndAclsSidInAndAclsPermissionGreaterThanEqual(State state, List<String> sids, PERMISSION permission);
-
-  /**
    * Find data resources NOT having the provided state, having at least one off
    * the provided sids in their ACL list with the provided permission in a
    * paginated form.
