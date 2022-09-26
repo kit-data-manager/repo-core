@@ -111,7 +111,7 @@ dependencies {
     implementation "com.sun.xml.bind:jaxb-core:4.0.0"
     implementation "com.sun.xml.bind:jaxb-impl:4.0.0"
     implementation "javax.activation:activation:1.1.1"
-    implementation "org.javassist:javassist:3.29.1-GA"
+    implementation "org.javassist:javassist:3.29.2-GA"
     
     implementation "edu.kit.datamanager:service-base:1.0.4"
     //implementation "edu.kit.datamanager:generic-message-consumer:0.2.0"
