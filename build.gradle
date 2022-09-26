@@ -97,7 +97,7 @@ dependencies {
     implementation "org.postgresql:postgresql:42.5.0"
     // XML
     implementation "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.13.4"
-    implementation "com.fasterxml.jackson.module:jackson-module-afterburner:2.13.3"
+    implementation "com.fasterxml.jackson.module:jackson-module-afterburner:2.13.4"
 
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.4"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-joda:2.13.3"
