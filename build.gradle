@@ -97,10 +97,10 @@ dependencies {
     implementation "org.postgresql:postgresql:42.5.0"
     // XML
     implementation "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.13.4"
-    implementation "com.fasterxml.jackson.module:jackson-module-afterburner:2.13.3"
+    implementation "com.fasterxml.jackson.module:jackson-module-afterburner:2.13.4"
 
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.4"
-    implementation "com.fasterxml.jackson.datatype:jackson-datatype-joda:2.13.3"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-joda:2.13.4"
 
     //implementation "com.monitorjbl:spring-json-view:1.0.1"
 
@@ -111,7 +111,7 @@ dependencies {
     implementation "com.sun.xml.bind:jaxb-core:4.0.0"
     implementation "com.sun.xml.bind:jaxb-impl:4.0.0"
     implementation "javax.activation:activation:1.1.1"
-    implementation "org.javassist:javassist:3.29.1-GA"
+    implementation "org.javassist:javassist:3.29.2-GA"
     
     implementation "edu.kit.datamanager:service-base:1.0.4"
     //implementation "edu.kit.datamanager:generic-message-consumer:0.2.0"
