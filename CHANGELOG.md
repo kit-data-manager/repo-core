@@ -18,6 +18,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+## [1.0.4] - 2022-10-13
+
+### Changed
+
+- Update to com.jfrog.bintray 1.8.5 
+- Update to io.freefair.lombok 6.5.1
+- Update to org.owasp.dependencycheck 7.2.1
+- Update to io.freefair.maven-publish-java 6.5.1
+- Update to io.spring.dependency-management 1.0.13.RELEASE
+- Update to net.researchgate.release 3.0.2
+- Update to logback-classic 1.2.11
+- Update to gson 2.9.1
+- Update to slf4j-api 1.7.36 
+- Update to spring-boot 2.7.4
+- Update to spring-doc 1.6.11
+- Update to spring-messaging 5.3.23
+- Update to javers 6.7.1
+- Update to tika-core 2.5.0 
+- Update to jackson-datatype-joda 2.13.3
+- Update to postgresql 42.4.1
+- Update to jackson-jaxrs-json-provider 2.13.3
+- Update to jackson-module-afterburner 2.13.3
+- Update to jackson-datatype-joda 2.13.3
+- Update to spring-boot-admin-starter-client 2.7.4
+- Update to jaxb-core 4.0.0
+- Update to javassist 3.29.1-GA
+- Update to service-base 1.0.5
+
+### Fixed
+- Fixed typo of property repo.plugin.storage.id.maxDepth
+- Fixed authorization issue where users were able to access previous versions of resources even if for the current version all permissions were revoked
+ 
 ## [1.0.3] - 2022-07-31
 
 ### Changed
@@ -109,7 +141,8 @@ Extracted from the 'base-repo' project.
 ### Removed
 - none
 
-[Unreleased]: https://github.com/kit-data-manager/repo-core/compare/v1.0.3...HEAD
+[Unreleased]: https://github.com/kit-data-manager/repo-core/compare/v1.0.4...HEAD
+[1.0.4]: https://github.com/kit-data-manager/repo-core/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/kit-data-manager/repo-core/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/kit-data-manager/repo-core/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/kit-data-manager/repo-core/compare/v1.0.0...v1.0.1
