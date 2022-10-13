@@ -113,7 +113,7 @@ dependencies {
     implementation "javax.activation:activation:1.1.1"
     implementation "org.javassist:javassist:3.29.2-GA"
     
-    implementation "edu.kit.datamanager:service-base:1.0.4"
+    implementation "edu.kit.datamanager:service-base:1.0.5"
     //implementation "edu.kit.datamanager:generic-message-consumer:0.2.0"
 
     implementation "com.github.java-json-tools:json-patch:1.13"
