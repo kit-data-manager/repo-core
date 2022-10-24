@@ -104,7 +104,7 @@ dependencies {
 
     //implementation "com.monitorjbl:spring-json-view:1.0.1"
 
-    implementation "de.codecentric:spring-boot-admin-starter-client:2.7.5"
+    implementation "de.codecentric:spring-boot-admin-starter-client:2.7.6"
 
     //Java 11 Support 
     implementation "javax.xml.bind:jaxb-api:2.3.1"
