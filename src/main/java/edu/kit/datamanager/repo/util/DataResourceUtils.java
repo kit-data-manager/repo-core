@@ -523,6 +523,7 @@ public class DataResourceUtils {
             servicePermission = PERMISSION.READ;
         }
 
+        
         //quick check for temporary roles
         edu.kit.datamanager.entities.PERMISSION permission = AuthenticationHelper.getScopedPermission(DataResource.class.getSimpleName(), resource.getId());
         if (permission.atLeast(edu.kit.datamanager.entities.PERMISSION.READ)) {
