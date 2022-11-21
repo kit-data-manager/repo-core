@@ -23,6 +23,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import lombok.Data;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
  *
@@ -31,23 +33,26 @@ import lombok.Data;
 @Entity
 @Data
 @Schema(description = "A scheme mapping consisting of namespace (schemeId) and schemeUri.")
-public class Scheme{
+public class Scheme {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
-  @SecureUpdate({"FORBIDDEN"})
-  @Searchable
-  private Long id;
-  @Schema(example = "ORCID", required = true)
-  private String schemeId;
-  @Schema(example = "http://orcid.org/", required = false)
-  private String schemeUri;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
+    @SecureUpdate({"FORBIDDEN"})
+    @Searchable
+    @Field(index = false)
+    private Long id;
+    @Schema(example = "ORCID", required = true)
+    @Field(type = FieldType.Keyword, name = "schemeId")
+    private String schemeId;
+    @Schema(example = "http://orcid.org/", required = false)
+    @Field(type = FieldType.Keyword, name = "schemeUri")
+    private String schemeUri;
 
-  public static Scheme factoryScheme(String schemeId, String schemeUri){
-    Scheme result = new Scheme();
-    result.schemeId = schemeId;
-    result.schemeUri = schemeUri;
-    return result;
-  }
+    public static Scheme factoryScheme(String schemeId, String schemeUri) {
+        Scheme result = new Scheme();
+        result.schemeId = schemeId;
+        result.schemeUri = schemeUri;
+        return result;
+    }
 }
