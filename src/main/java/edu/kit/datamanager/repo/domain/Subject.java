@@ -24,6 +24,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import lombok.Data;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
  *
@@ -32,40 +34,45 @@ import lombok.Data;
 @Entity
 @Data
 @Schema(description = "A subject of a resource, which can either be free text or a value URI.")
-public class Subject{
+public class Subject {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
-  @SecureUpdate({"FORBIDDEN"})
-  @Searchable
-  private Long id;
-  @Schema(description = "The subject value.", required = false)
-  private String value;
-  @Schema(required = false)
-  @OneToOne(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
-  private Scheme scheme;
-  @Schema(example = "http://udcdata.info/037278", required = false)
-  private String valueUri;
-  @Schema(example = "en", required = false)
-  private String lang;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
+    @SecureUpdate({"FORBIDDEN"})
+    @Searchable
+    @Field(index = false)
+    private Long id;
+    @Schema(description = "The subject value.", required = false)
+    @Field(type = FieldType.Text, name = "value")
+    private String value;
+    @Schema(required = false)
+    @OneToOne(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
+    @Field(type = FieldType.Nested, includeInParent = true)
+    private Scheme scheme;
+    @Schema(example = "http://udcdata.info/037278", required = false)
+    @Field(type = FieldType.Keyword, name = "valueUri")
+    private String valueUri;
+    @Schema(example = "en", required = false)
+    @Field(type = FieldType.Keyword, name = "lang")
+    private String lang;
 
-  /**
-   * Basic factory method.
-   *
-   * @param value The subject value
-   * @param valueUri The subject value uri
-   * @param lang The subject value language
-   * @param scheme The relation scheme
-   *
-   * @return A new instance of RelatedIdentifier
-   */
-  public static Subject factorySubject(String value, String valueUri, String lang, Scheme scheme){
-    Subject result = new Subject();
-    result.setValue(value);
-    result.setValueUri(valueUri);
-    result.setLang(lang);
-    result.setScheme(scheme);
-    return result;
-  }
+    /**
+     * Basic factory method.
+     *
+     * @param value The subject value
+     * @param valueUri The subject value uri
+     * @param lang The subject value language
+     * @param scheme The relation scheme
+     *
+     * @return A new instance of RelatedIdentifier
+     */
+    public static Subject factorySubject(String value, String valueUri, String lang, Scheme scheme) {
+        Subject result = new Subject();
+        result.setValue(value);
+        result.setValueUri(valueUri);
+        result.setLang(lang);
+        result.setScheme(scheme);
+        return result;
+    }
 }

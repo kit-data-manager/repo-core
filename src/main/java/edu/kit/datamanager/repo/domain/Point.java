@@ -24,6 +24,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import lombok.Data;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
  *
@@ -32,31 +34,34 @@ import lombok.Data;
 @Entity
 @Data
 @Schema(description = "Geo location information as point.")
-public class Point{
+public class Point {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
-  @SecureUpdate({"FORBIDDEN"})
-  @Searchable
-  private Long id;
-  @Schema(example = "-180 <= longitude <= 180", required = true)
-  private float longitude;
-  @Schema(example = "-90 <= latitude <= 90", required = true)
-  private float latitude;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
+    @SecureUpdate({"FORBIDDEN"})
+    @Searchable
+    @Field(index = false)
+    private Long id;
+    @Schema(example = "-180 <= longitude <= 180", required = true)
+    @Field(type = FieldType.Float, name = "longitude")
+    private float longitude;
+    @Schema(example = "-90 <= latitude <= 90", required = true)
+    @Field(type = FieldType.Float, name = "latitude")
+    private float latitude;
 
-  /**
-   * Basic factory method.
-   *
-   * @param longitute The longitude
-   * @param latitude The latitude
-   *
-   * @return A new instance of Point
-   */
-  public static Point factoryPoint(float longitute, float latitude){
-    Point result = new Point();
-    result.setLongitude(longitute);
-    result.setLatitude(latitude);
-    return result;
-  }
+    /**
+     * Basic factory method.
+     *
+     * @param longitute The longitude
+     * @param latitude The latitude
+     *
+     * @return A new instance of Point
+     */
+    public static Point factoryPoint(float longitute, float latitude) {
+        Point result = new Point();
+        result.setLongitude(longitute);
+        result.setLatitude(latitude);
+        return result;
+    }
 }

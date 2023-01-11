@@ -28,6 +28,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import lombok.Data;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
  *
@@ -36,89 +38,93 @@ import lombok.Data;
 @Entity
 @Schema(description = "A description entry of a resource.")
 @Data
-public class Description{
+public class Description {
 
-  public enum TYPE implements BaseEnum{
-    ABSTRACT("Abstract"),
-    METHODS("Methods"),
-    SERIES_INFORMATION("SeriesInformation"),
-    TABLE_OF_CONTENTS("TableOfContents"),
-    TECHNICAL_INFO("TechnicalInfo"),
-    OTHER("Other");
+    public enum TYPE implements BaseEnum {
+        ABSTRACT("Abstract"),
+        METHODS("Methods"),
+        SERIES_INFORMATION("SeriesInformation"),
+        TABLE_OF_CONTENTS("TableOfContents"),
+        TECHNICAL_INFO("TechnicalInfo"),
+        OTHER("Other");
 
-    private final String value;
+        private final String value;
 
-    private TYPE(String value){
-      this.value = value;
+        private TYPE(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String getValue() {
+            return value;
+        }
+    }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
+    @SecureUpdate({"FORBIDDEN"})
+    @Searchable
+    @Field(index = false)
+    private Long id;
+    @Schema(description = "The actual description as full text.", required = true)
+    @Field(type = FieldType.Text, name = "description")
+    private String description;
+    //vocab, e.g. Abstract
+    @Schema(description = "Controlled vocabulary value describing the description type.", required = true)
+    @Enumerated(EnumType.STRING)
+    @Field(type = FieldType.Keyword, name = "type")
+    private TYPE type;
+    @Schema(description = "Description language.", required = false)
+    @Field(type = FieldType.Keyword, name = "lang")
+    private String lang;
+
+    public static Description factoryDescription(String description, TYPE type, String lang) {
+        Description result = new Description();
+        result.description = description;
+        result.type = type;
+        result.lang = lang;
+        return result;
+    }
+
+    public static Description factoryDescription(String description, TYPE type) {
+        Description result = new Description();
+        result.description = description;
+        result.type = type;
+        return result;
     }
 
     @Override
-    public String getValue(){
-      return value;
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Description other = (Description) obj;
+        if (!Objects.equals(this.description, other.description)) {
+            return false;
+        }
+        if (!Objects.equals(this.lang, other.lang)) {
+            return false;
+        }
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        return EnumUtils.equals(this.type, other.type);
     }
-  }
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
-  @SecureUpdate({"FORBIDDEN"})
-  @Searchable
-  private Long id;
-  @Schema(description = "The actual description as full text.", required = true)
-  private String description;
-  //vocab, e.g. Abstract
-  @Schema(description = "Controlled vocabulary value describing the description type.", required = true)
-  @Enumerated(EnumType.STRING)
-  private TYPE type;
-  @Schema(description = "Description language.", required = false)
-  private String lang;
-
-  public static Description factoryDescription(String description, TYPE type, String lang){
-    Description result = new Description();
-    result.description = description;
-    result.type = type;
-    result.lang = lang;
-    return result;
-  }
-
-  public static Description factoryDescription(String description, TYPE type){
-    Description result = new Description();
-    result.description = description;
-    result.type = type;
-    return result;
-  }
-
-  @Override
-  public boolean equals(Object obj){
-    if(this == obj){
-      return true;
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 97 * hash + Objects.hashCode(this.id);
+        hash = 97 * hash + Objects.hashCode(this.description);
+        hash = 97 * hash + EnumUtils.hashCode(this.type);
+        hash = 97 * hash + Objects.hashCode(this.lang);
+        return hash;
     }
-    if(obj == null){
-      return false;
-    }
-    if(getClass() != obj.getClass()){
-      return false;
-    }
-    final Description other = (Description) obj;
-    if(!Objects.equals(this.description, other.description)){
-      return false;
-    }
-    if(!Objects.equals(this.lang, other.lang)){
-      return false;
-    }
-    if(!Objects.equals(this.id, other.id)){
-      return false;
-    }
-    return EnumUtils.equals(this.type, other.type);
-  }
-
-  @Override
-  public int hashCode(){
-    int hash = 3;
-    hash = 97 * hash + Objects.hashCode(this.id);
-    hash = 97 * hash + Objects.hashCode(this.description);
-    hash = 97 * hash + EnumUtils.hashCode(this.type);
-    hash = 97 * hash + Objects.hashCode(this.lang);
-    return hash;
-  }
 }

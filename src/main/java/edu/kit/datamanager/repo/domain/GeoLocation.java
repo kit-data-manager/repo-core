@@ -24,6 +24,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import lombok.Data;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
  *
@@ -32,71 +34,76 @@ import lombok.Data;
 @Entity
 @Schema(description = "Geo location information for a resource.")
 @Data
-public class GeoLocation{
+public class GeoLocation {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
-  @SecureUpdate({"FORBIDDEN"})
-  @Searchable
-  private Long id;
-  @OneToOne(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
-  private Point point;
-  @OneToOne(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
-  private Box box;
-  @OneToOne(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
-  private Polygon polygon;
-  private String place;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
+    @SecureUpdate({"FORBIDDEN"})
+    @Searchable
+    @Field(index = false)
+    private Long id;
+    @OneToOne(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
+    @Field(type = FieldType.Nested, includeInParent = true)
+    private Point point;
+    @OneToOne(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
+    @Field(type = FieldType.Nested, includeInParent = true)
+    private Box box;
+    @OneToOne(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
+    @Field(type = FieldType.Nested, includeInParent = true)
+    private Polygon polygon;
+    @Field(type = FieldType.Text, name = "place")
+    private String place;
 
-  /**
-   * Basic factory method.
-   *
-   * @param point A point location
-   *
-   * @return A new instance of GeoLocation
-   */
-  public static GeoLocation factoryGeoLocation(Point point){
-    GeoLocation result = new GeoLocation();
-    result.setPoint(point);
-    return result;
-  }
+    /**
+     * Basic factory method.
+     *
+     * @param point A point location
+     *
+     * @return A new instance of GeoLocation
+     */
+    public static GeoLocation factoryGeoLocation(Point point) {
+        GeoLocation result = new GeoLocation();
+        result.setPoint(point);
+        return result;
+    }
 
-  /**
-   * Basic factory method.
-   *
-   * @param box A box location
-   *
-   * @return A new instance of GeoLocation
-   */
-  public static GeoLocation factoryGeoLocation(Box box){
-    GeoLocation result = new GeoLocation();
-    result.setBox(box);
-    return result;
-  }
+    /**
+     * Basic factory method.
+     *
+     * @param box A box location
+     *
+     * @return A new instance of GeoLocation
+     */
+    public static GeoLocation factoryGeoLocation(Box box) {
+        GeoLocation result = new GeoLocation();
+        result.setBox(box);
+        return result;
+    }
 
-  /**
-   * Basic factory method.
-   *
-   * @param polygon A polygon location
-   *
-   * @return A new instance of GeoLocation
-   */
-  public static GeoLocation factoryGeoLocation(Polygon polygon){
-    GeoLocation result = new GeoLocation();
-    result.setPolygon(polygon);
-    return result;
-  }
+    /**
+     * Basic factory method.
+     *
+     * @param polygon A polygon location
+     *
+     * @return A new instance of GeoLocation
+     */
+    public static GeoLocation factoryGeoLocation(Polygon polygon) {
+        GeoLocation result = new GeoLocation();
+        result.setPolygon(polygon);
+        return result;
+    }
 
-  /**
-   * Basic factory method.
-   *
-   * @param place A place location
-   *
-   * @return A new instance of GeoLocation
-   */
-  public static GeoLocation factoryGeoLocation(String place){
-    GeoLocation result = new GeoLocation();
-    result.setPlace(place);
-    return result;
-  }
+    /**
+     * Basic factory method.
+     *
+     * @param place A place location
+     *
+     * @return A new instance of GeoLocation
+     */
+    public static GeoLocation factoryGeoLocation(String place) {
+        GeoLocation result = new GeoLocation();
+        result.setPlace(place);
+        return result;
+    }
 }

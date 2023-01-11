@@ -26,6 +26,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import lombok.Data;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
  *
@@ -35,32 +37,38 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Schema(description = "A resource's funding information.")
 @Data
-public class FundingReference{
+public class FundingReference {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
-  @SecureUpdate({"FORBIDDEN"})
-  @Searchable
-  private Long id;
-  @Schema(required = true)
-  private String funderName;
-  //use identifier?
-  @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-  private FunderIdentifier funderIdentifier;
-  @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-  private Scheme awardNumber;
-  private String awardUri;
-  private String awardTitle;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
+    @SecureUpdate({"FORBIDDEN"})
+    @Searchable
+    @Field(index = false)
+    private Long id;
+    @Schema(required = true)
+    @Field(type = FieldType.Text, name = "funderName")
+    private String funderName;
+    //use identifier?
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @Field(type = FieldType.Nested, includeInParent = true)
+    private FunderIdentifier funderIdentifier;
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @Field(type = FieldType.Nested, includeInParent = true)
+    private Scheme awardNumber;
+    @Field(type = FieldType.Keyword, name = "awardUri")
+    private String awardUri;
+    @Field(type = FieldType.Text, name = "awardTitle")
+    private String awardTitle;
 
-  public static FundingReference factoryFundingReference(String funderName, FunderIdentifier funderIdentifier, Scheme awardNumber, String awardUri, String awardTitle){
-    FundingReference result = new FundingReference();
-    result.funderName = funderName;
-    result.funderIdentifier = funderIdentifier;
-    result.awardNumber = awardNumber;
-    result.awardUri = awardUri;
-    result.awardTitle = awardTitle;
-    return result;
-  }
+    public static FundingReference factoryFundingReference(String funderName, FunderIdentifier funderIdentifier, Scheme awardNumber, String awardUri, String awardTitle) {
+        FundingReference result = new FundingReference();
+        result.funderName = funderName;
+        result.funderIdentifier = funderIdentifier;
+        result.awardNumber = awardNumber;
+        result.awardUri = awardUri;
+        result.awardTitle = awardTitle;
+        return result;
+    }
 
 }

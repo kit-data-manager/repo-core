@@ -51,11 +51,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.mockito.ArgumentMatchers.any;
-import org.powermock.api.mockito.PowerMockito;
-import static org.powermock.api.mockito.PowerMockito.when;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.internal.verification.VerificationModeFactory;
+import org.mockito.verification.VerificationMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -71,9 +70,9 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
  * @author jejkal
  */
 @RunWith(SpringRunner.class)
-@PowerMockRunnerDelegate(SpringJUnit4ClassRunner.class)
+/*@PowerMockRunnerDelegate(SpringJUnit4ClassRunner.class)
 @PowerMockIgnore({"javax.crypto.*", "javax.management.*"})
-@PrepareForTest(AuthenticationHelper.class)
+@PrepareForTest(AuthenticationHelper.class)*/
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestExecutionListeners(listeners = {
@@ -278,7 +277,8 @@ public class DataResourceServiceTest {
         Assert.assertEquals(1, resource.getAcls().size());
         Assert.assertEquals("tester", resource.getAcls().toArray(new AclEntry[]{})[0].getSid());
         Assert.assertEquals(PERMISSION.ADMINISTRATE, resource.getAcls().toArray(new AclEntry[]{})[0].getPermission());
-        PowerMockito.verifyStatic(AuthenticationHelper.class);
+        Mockito.verify(AuthenticationHelper.class);
+       // PowerMockito.verifyStatic(AuthenticationHelper.class);
     }
 
     @Test(expected = BadArgumentException.class)
@@ -317,6 +317,7 @@ public class DataResourceServiceTest {
     }
 
     private void mockJwtUserAuthentication() throws JsonProcessingException {
+        
         JwtAuthenticationToken userToken = edu.kit.datamanager.util.JwtBuilder.
                 createUserToken("tester", RepoUserRole.ADMINISTRATOR).
                 addSimpleClaim("firstname", "test").
@@ -324,13 +325,26 @@ public class DataResourceServiceTest {
                 addSimpleClaim("email", "test@mail.org").
                 addSimpleClaim("groupid", "USERS").
                 getJwtAuthenticationToken(DataResourceControllerTest.KEYCLOAK_SECRET);
-        PowerMockito.mockStatic(AuthenticationHelper.class);
+          try (MockedStatic<AuthenticationHelper> utilities = Mockito.mockStatic(AuthenticationHelper.class)) {
+        utilities.when(AuthenticationHelper::getAuthentication).thenReturn(userToken);
+         /*utilities.when(AuthenticationHelper::hasAuthority).thenCallRealMethod;
+        when(AuthenticationHelper.getAuthentication()).thenReturn(userToken);
+        when(AuthenticationHelper.hasAuthority(any(String.class))).thenCallRealMethod();
+        when(AuthenticationHelper.hasIdentity(any(String.class))).thenCallRealMethod();
+        when(AuthenticationHelper.getPrincipal()).thenCallRealMethod();
+        when(AuthenticationHelper.getAuthorizationIdentities()).thenCallRealMethod();
+        when(AuthenticationHelper.getScopedPermission(any(String.class), any(String.class))).thenCallRealMethod();*/
+        
+
+        }
+          
+        /*PowerMockito.mockStatic(AuthenticationHelper.class);
         when(AuthenticationHelper.getAuthentication()).thenReturn(userToken);
         when(AuthenticationHelper.hasAuthority(RepoUserRole.ADMINISTRATOR.getValue())).thenCallRealMethod();
         when(AuthenticationHelper.getFirstname()).thenCallRealMethod();
         when(AuthenticationHelper.getLastname()).thenCallRealMethod();
         when(AuthenticationHelper.getPrincipal()).thenCallRealMethod();
         when(AuthenticationHelper.getAuthorizationIdentities()).thenCallRealMethod();
-        when(AuthenticationHelper.getScopedPermission(any(String.class), any(String.class))).thenCallRealMethod();
+        when(AuthenticationHelper.getScopedPermission(any(String.class), any(String.class))).thenCallRealMethod();*/
     }
 }

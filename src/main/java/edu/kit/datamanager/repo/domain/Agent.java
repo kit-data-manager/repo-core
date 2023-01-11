@@ -28,6 +28,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import lombok.Data;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
  *
@@ -37,35 +39,39 @@ import lombok.Data;
 @Schema(description = "An agent related to the creation or modification of a resource, e.g. the creator or a contributor.")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-public class Agent{
+public class Agent {
 
-  @Id
-  @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @SecureUpdate({"FORBIDDEN"})
-  @Searchable
-  private Long id;
-  @Schema(description = "Family name of the user.", example = "Doe", required = false)
-  private String familyName;
-  @Schema(description = "Given name of the user.", example = "John", required = false)
-  private String givenName;
-  @Schema(description = "Affiliation of the user, e.g. home institution.", example = "Karlsruhe Institute of Techology", required = false)
-  @ElementCollection
-  private Set<String> affiliations = new HashSet<>();
+    @Id
+    @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SecureUpdate({"FORBIDDEN"})
+    @Searchable
+    @Field(index = false)
+    private Long id;
+    @Schema(description = "Family name of the user.", example = "Doe", required = false)
+    @Field(type = FieldType.Keyword, name = "familyName")
+    private String familyName;
+    @Schema(description = "Given name of the user.", example = "John", required = false)
+    @Field(type = FieldType.Keyword, name = "givenName")
+    private String givenName;
+    @Schema(description = "Affiliation of the user, e.g. home institution.", example = "Karlsruhe Institute of Techology", required = false)
+    @ElementCollection
+    @Field(type = FieldType.Nested, includeInParent = true)
+    private Set<String> affiliations = new HashSet<>();
 
-  public static Agent factoryAgent(String givenName, String familyName, String[] affiliations){
-    Agent result = new Agent();
-    result.familyName = familyName;
-    result.givenName = givenName;
-    result.affiliations.addAll(Arrays.asList(affiliations));
-    return result;
-  }
+    public static Agent factoryAgent(String givenName, String familyName, String[] affiliations) {
+        Agent result = new Agent();
+        result.familyName = familyName;
+        result.givenName = givenName;
+        result.affiliations.addAll(Arrays.asList(affiliations));
+        return result;
+    }
 
-  public static Agent factoryAgent(String givenName, String familyName){
-    Agent result = new Agent();
-    result.familyName = familyName;
-    result.givenName = givenName;
-    return result;
-  }
+    public static Agent factoryAgent(String givenName, String familyName) {
+        Agent result = new Agent();
+        result.familyName = familyName;
+        result.givenName = givenName;
+        return result;
+    }
 
 }
