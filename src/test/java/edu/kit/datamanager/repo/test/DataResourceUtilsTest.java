@@ -31,33 +31,16 @@ import edu.kit.datamanager.security.filter.ScopedPermission;
 import edu.kit.datamanager.util.AuthenticationHelper;
 import edu.kit.datamanager.util.JwtBuilder;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import static org.mockito.ArgumentMatchers.any;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.powermock.api.mockito.PowerMockito;
-import static org.powermock.api.mockito.PowerMockito.when;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.security.core.Authentication;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 /**
  *
  * @author jejkal
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(AuthenticationHelper.class)
-@PowerMockIgnore({"javax.crypto.*", "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.dom.*"})
 public class DataResourceUtilsTest {
-
-    @Before
-    public void setup() {
-        mockJwtUserAuthentication(RepoUserRole.USER);
-    }
 
     @Test
     public void testGetInternalIdentifier() {
@@ -81,23 +64,28 @@ public class DataResourceUtilsTest {
         DataResource res = DataResource.factoryNewDataResource();
         res.getAcls().add(new AclEntry("tester", PERMISSION.WRITE));
         //check normal permission from ACL entry
-        Assert.assertEquals(PERMISSION.WRITE, DataResourceUtils.getAccessPermission(res));
 
-        res.getAcls().clear();
-        //check NONE permission if no ACL entry exists
-        Assert.assertEquals(PERMISSION.NONE, DataResourceUtils.getAccessPermission(res));
+        try (MockedStatic<AuthenticationHelper> utilities = Mockito.mockStatic(AuthenticationHelper.class)) {
+            setupUtilities(utilities, mockJwtUserAuthentication(RepoUserRole.USER));
+            Assert.assertEquals(PERMISSION.WRITE, DataResourceUtils.getAccessPermission(res));
+            res.getAcls().clear();
+           
+            //check NONE permission if no ACL entry exists
+            Assert.assertEquals(PERMISSION.NONE, DataResourceUtils.getAccessPermission(res));
 
-        //add NONE permission for user and test for NONE access via ACL
-        res.getAcls().add(new AclEntry("tester", PERMISSION.NONE));
-        Assert.assertEquals(PERMISSION.NONE, DataResourceUtils.getAccessPermission(res));
-
-        res.getAcls().clear();
+            //add NONE permission for user and test for NONE access via ACL
+            res.getAcls().add(new AclEntry("tester", PERMISSION.NONE));
+            Assert.assertEquals(PERMISSION.NONE, DataResourceUtils.getAccessPermission(res));
+            res.getAcls().clear();
+        }
 
         //check as ADMIN without ACL entry
         //first, assign ADMINISTRATOR role by authorization
-        mockJwtUserAuthentication(RepoUserRole.ADMINISTRATOR);
         //permission are now ADMINISTRATE, ACL entries are ignored
-        Assert.assertEquals(PERMISSION.ADMINISTRATE, DataResourceUtils.getAccessPermission(res));
+        try (MockedStatic<AuthenticationHelper> utilities = Mockito.mockStatic(AuthenticationHelper.class)) {
+            setupUtilities(utilities, mockJwtUserAuthentication(RepoUserRole.ADMINISTRATOR));
+            Assert.assertEquals(PERMISSION.ADMINISTRATE, DataResourceUtils.getAccessPermission(res));
+        }
     }
 
     @Test
@@ -106,27 +94,33 @@ public class DataResourceUtilsTest {
         //mock authorization helper
         DataResource res = DataResource.factoryNewDataResource();
         res.getAcls().add(new AclEntry("tester", PERMISSION.WRITE));
-        //check normal permission from ACL entry
-        Assert.assertFalse(DataResourceUtils.hasPermission(res, PERMISSION.ADMINISTRATE));
-        Assert.assertTrue(DataResourceUtils.hasPermission(res, PERMISSION.WRITE));
-        Assert.assertTrue(DataResourceUtils.hasPermission(res, PERMISSION.READ));
-        Assert.assertTrue(DataResourceUtils.hasPermission(res, PERMISSION.NONE));
 
-        res.getAcls().clear();
-        //check NONE permission if no ACL entry exists
-        Assert.assertFalse(DataResourceUtils.hasPermission(res, PERMISSION.ADMINISTRATE));
-        Assert.assertFalse(DataResourceUtils.hasPermission(res, PERMISSION.WRITE));
-        Assert.assertFalse(DataResourceUtils.hasPermission(res, PERMISSION.READ));
-        Assert.assertTrue(DataResourceUtils.hasPermission(res, PERMISSION.NONE));
+        try (MockedStatic<AuthenticationHelper> utilities = Mockito.mockStatic(AuthenticationHelper.class)) {
+            setupUtilities(utilities, mockJwtUserAuthentication(RepoUserRole.USER));
+            //check normal permission from ACL entry
+            Assert.assertFalse(DataResourceUtils.hasPermission(res, PERMISSION.ADMINISTRATE));
+            Assert.assertTrue(DataResourceUtils.hasPermission(res, PERMISSION.WRITE));
+            Assert.assertTrue(DataResourceUtils.hasPermission(res, PERMISSION.READ));
+            Assert.assertTrue(DataResourceUtils.hasPermission(res, PERMISSION.NONE));
 
+            res.getAcls().clear();
+            //check NONE permission if no ACL entry exists
+            Assert.assertFalse(DataResourceUtils.hasPermission(res, PERMISSION.ADMINISTRATE));
+            Assert.assertFalse(DataResourceUtils.hasPermission(res, PERMISSION.WRITE));
+            Assert.assertFalse(DataResourceUtils.hasPermission(res, PERMISSION.READ));
+            Assert.assertTrue(DataResourceUtils.hasPermission(res, PERMISSION.NONE));
+        }
         //check as ADMIN without ACL entry
         //first, assign ADMINISTRATOR role by authorization
-        mockJwtUserAuthentication(RepoUserRole.ADMINISTRATOR);
-        //permission are now ADMINISTRATE, ACL entries are ignored
-        Assert.assertTrue(DataResourceUtils.hasPermission(res, PERMISSION.ADMINISTRATE));
-        Assert.assertTrue(DataResourceUtils.hasPermission(res, PERMISSION.WRITE));
-        Assert.assertTrue(DataResourceUtils.hasPermission(res, PERMISSION.READ));
-        Assert.assertTrue(DataResourceUtils.hasPermission(res, PERMISSION.NONE));
+
+        try (MockedStatic<AuthenticationHelper> utilities = Mockito.mockStatic(AuthenticationHelper.class)) {
+            setupUtilities(utilities, mockJwtUserAuthentication(RepoUserRole.ADMINISTRATOR));
+            //permission are now ADMINISTRATE, ACL entries are ignored
+            Assert.assertTrue(DataResourceUtils.hasPermission(res, PERMISSION.ADMINISTRATE));
+            Assert.assertTrue(DataResourceUtils.hasPermission(res, PERMISSION.WRITE));
+            Assert.assertTrue(DataResourceUtils.hasPermission(res, PERMISSION.READ));
+            Assert.assertTrue(DataResourceUtils.hasPermission(res, PERMISSION.NONE));
+        }
     }
 
     @Test
@@ -134,18 +128,26 @@ public class DataResourceUtilsTest {
         DataResource res = DataResource.factoryNewDataResource();
         res.setState(DataResource.State.VOLATILE);
         res.getAcls().add(new AclEntry("tester", PERMISSION.WRITE));
-        DataResourceUtils.performPermissionCheck(res, PERMISSION.WRITE);
-        DataResourceUtils.performPermissionCheck(res, PERMISSION.READ);
-        DataResourceUtils.performPermissionCheck(res, PERMISSION.NONE);
+
+        try (MockedStatic<AuthenticationHelper> utilities = Mockito.mockStatic(AuthenticationHelper.class)) {
+            setupUtilities(utilities, mockJwtUserAuthentication(RepoUserRole.USER));
+            DataResourceUtils.performPermissionCheck(res, PERMISSION.WRITE);
+            DataResourceUtils.performPermissionCheck(res, PERMISSION.READ);
+            DataResourceUtils.performPermissionCheck(res, PERMISSION.NONE);
+        }
     }
 
     @Test
     public void testPermissionCheckWithoutState() {
         DataResource res = DataResource.factoryNewDataResource();
         res.getAcls().add(new AclEntry("tester", PERMISSION.WRITE));
-        DataResourceUtils.performPermissionCheck(res, PERMISSION.WRITE);
-        DataResourceUtils.performPermissionCheck(res, PERMISSION.READ);
-        DataResourceUtils.performPermissionCheck(res, PERMISSION.NONE);
+
+        try (MockedStatic<AuthenticationHelper> utilities = Mockito.mockStatic(AuthenticationHelper.class)) {
+            setupUtilities(utilities, mockJwtUserAuthentication(RepoUserRole.USER));
+            DataResourceUtils.performPermissionCheck(res, PERMISSION.WRITE);
+            DataResourceUtils.performPermissionCheck(res, PERMISSION.READ);
+            DataResourceUtils.performPermissionCheck(res, PERMISSION.NONE);
+        }
     }
 
     @Test(expected = AccessForbiddenException.class)
@@ -153,7 +155,11 @@ public class DataResourceUtilsTest {
         DataResource res = DataResource.factoryNewDataResource();
         res.setState(DataResource.State.VOLATILE);
         res.getAcls().add(new AclEntry("tester", PERMISSION.WRITE));
-        DataResourceUtils.performPermissionCheck(res, PERMISSION.ADMINISTRATE);
+       
+        try (MockedStatic<AuthenticationHelper> utilities = Mockito.mockStatic(AuthenticationHelper.class)) {
+            setupUtilities(utilities, mockJwtUserAuthentication(RepoUserRole.USER));
+            DataResourceUtils.performPermissionCheck(res, PERMISSION.ADMINISTRATE);
+        }
     }
 
     @Test(expected = AccessForbiddenException.class)
@@ -162,7 +168,12 @@ public class DataResourceUtilsTest {
         res.setState(DataResource.State.FIXED);
         //user has WRITE permissions, resource is fixed, requesting WRITE permissions should fail
         res.getAcls().add(new AclEntry("tester", PERMISSION.WRITE));
-        DataResourceUtils.performPermissionCheck(res, PERMISSION.WRITE);
+       
+        try (MockedStatic<AuthenticationHelper> utilities = Mockito.mockStatic(AuthenticationHelper.class)) {
+            setupUtilities(utilities, mockJwtUserAuthentication(RepoUserRole.USER));
+
+            DataResourceUtils.performPermissionCheck(res, PERMISSION.WRITE);
+        }
     }
 
     @Test
@@ -171,7 +182,11 @@ public class DataResourceUtilsTest {
         res.setState(DataResource.State.FIXED);
         //user has READ permissions, resource is fixed, requesting READ permissions should succeed
         res.getAcls().add(new AclEntry("tester", PERMISSION.READ));
-        DataResourceUtils.performPermissionCheck(res, PERMISSION.READ);
+
+        try (MockedStatic<AuthenticationHelper> utilities = Mockito.mockStatic(AuthenticationHelper.class)) {
+            setupUtilities(utilities, mockJwtUserAuthentication(RepoUserRole.USER));
+            DataResourceUtils.performPermissionCheck(res, PERMISSION.READ);
+        }
     }
 
     @Test
@@ -180,7 +195,11 @@ public class DataResourceUtilsTest {
         res.setState(DataResource.State.FIXED);
         //user has ADMINISTRATE permissions, resource is fixed, requesting WRITE permissions should succeed
         res.getAcls().add(new AclEntry("tester", PERMISSION.ADMINISTRATE));
-        DataResourceUtils.performPermissionCheck(res, PERMISSION.WRITE);
+       
+        try (MockedStatic<AuthenticationHelper> utilities = Mockito.mockStatic(AuthenticationHelper.class)) {
+            setupUtilities(utilities, mockJwtUserAuthentication(RepoUserRole.USER));
+            DataResourceUtils.performPermissionCheck(res, PERMISSION.WRITE);
+        }
     }
 
     @Test
@@ -189,8 +208,11 @@ public class DataResourceUtilsTest {
         res.setState(DataResource.State.FIXED);
         //user has READ permissions but has also role ADMINISTRATOR, resource is fixed, requesting WRITE permissions should succeed
         res.getAcls().add(new AclEntry("tester", PERMISSION.READ));
-        mockJwtUserAuthentication(RepoUserRole.ADMINISTRATOR);
-        DataResourceUtils.performPermissionCheck(res, PERMISSION.WRITE);
+
+        try (MockedStatic<AuthenticationHelper> utilities = Mockito.mockStatic(AuthenticationHelper.class)) {
+            setupUtilities(utilities, mockJwtUserAuthentication(RepoUserRole.ADMINISTRATOR));
+            DataResourceUtils.performPermissionCheck(res, PERMISSION.WRITE);
+        }
     }
 
     @Test(expected = ResourceNotFoundException.class)
@@ -199,7 +221,11 @@ public class DataResourceUtilsTest {
         res.setState(DataResource.State.REVOKED);
         //user has WRITE permissions, resource is revoked, requesting READ permissions should fail, resource should not be found
         res.getAcls().add(new AclEntry("tester", PERMISSION.WRITE));
-        DataResourceUtils.performPermissionCheck(res, PERMISSION.READ);
+
+        try (MockedStatic<AuthenticationHelper> utilities = Mockito.mockStatic(AuthenticationHelper.class)) {
+            setupUtilities(utilities, mockJwtUserAuthentication(RepoUserRole.USER));
+            DataResourceUtils.performPermissionCheck(res, PERMISSION.READ);
+        }
     }
 
     @Test
@@ -208,7 +234,10 @@ public class DataResourceUtilsTest {
         res.setState(DataResource.State.REVOKED);
         //user has ADMINISTRATE permissions, resource is revoked, requesting READ permissions should succeed
         res.getAcls().add(new AclEntry("tester", PERMISSION.ADMINISTRATE));
-        DataResourceUtils.performPermissionCheck(res, PERMISSION.READ);
+        try (MockedStatic<AuthenticationHelper> utilities = Mockito.mockStatic(AuthenticationHelper.class)) {
+            setupUtilities(utilities, mockJwtUserAuthentication(RepoUserRole.USER));
+            DataResourceUtils.performPermissionCheck(res, PERMISSION.READ);
+        }
     }
 
     @Test
@@ -217,8 +246,11 @@ public class DataResourceUtilsTest {
         res.setState(DataResource.State.REVOKED);
         //user has READ permissions but has also role ADMINISTRATOR, resource is revoked, requesting READ permissions should succeed
         res.getAcls().add(new AclEntry("tester", PERMISSION.READ));
-        mockJwtUserAuthentication(RepoUserRole.ADMINISTRATOR);
-        DataResourceUtils.performPermissionCheck(res, PERMISSION.READ);
+
+        try (MockedStatic<AuthenticationHelper> utilities = Mockito.mockStatic(AuthenticationHelper.class)) {
+            setupUtilities(utilities, mockJwtUserAuthentication(RepoUserRole.ADMINISTRATOR));
+            DataResourceUtils.performPermissionCheck(res, PERMISSION.READ);
+        }
     }
 
     @Test
@@ -226,23 +258,42 @@ public class DataResourceUtilsTest {
         DataResource res = DataResource.factoryNewDataResource();
         res.getAcls().add(new AclEntry("tester", PERMISSION.WRITE));
 
-        mockJwtServiceAuthentication(RepoServiceRole.SERVICE_READ);
-        Assert.assertEquals(PERMISSION.READ, DataResourceUtils.getAccessPermission(res));
-        Assert.assertTrue(DataResourceUtils.hasPermission(res, PERMISSION.READ));
-        Assert.assertFalse(DataResourceUtils.hasPermission(res, PERMISSION.WRITE));
-        Assert.assertFalse(DataResourceUtils.hasPermission(res, PERMISSION.ADMINISTRATE));
+        JwtAuthenticationToken serviceToken = mockJwtServiceAuthentication(RepoServiceRole.SERVICE_READ);
+        try (MockedStatic<AuthenticationHelper> utilities = Mockito.mockStatic(AuthenticationHelper.class)) {
+            setupUtilities(utilities, serviceToken);
+            Assert.assertEquals(PERMISSION.READ, DataResourceUtils.getAccessPermission(res));
+            Assert.assertTrue(DataResourceUtils.hasPermission(res, PERMISSION.READ));
+            Assert.assertFalse(DataResourceUtils.hasPermission(res, PERMISSION.WRITE));
+            Assert.assertFalse(DataResourceUtils.hasPermission(res, PERMISSION.ADMINISTRATE));
+        }
 
-        mockJwtServiceAuthentication(RepoServiceRole.SERVICE_WRITE);
-        Assert.assertEquals(PERMISSION.WRITE, DataResourceUtils.getAccessPermission(res));
-        Assert.assertTrue(DataResourceUtils.hasPermission(res, PERMISSION.READ));
-        Assert.assertTrue(DataResourceUtils.hasPermission(res, PERMISSION.WRITE));
-        Assert.assertFalse(DataResourceUtils.hasPermission(res, PERMISSION.ADMINISTRATE));
+        serviceToken = mockJwtServiceAuthentication(RepoServiceRole.SERVICE_WRITE);
+        try (MockedStatic<AuthenticationHelper> utilities = Mockito.mockStatic(AuthenticationHelper.class)) {
+            setupUtilities(utilities, serviceToken);
+            Assert.assertEquals(PERMISSION.WRITE, DataResourceUtils.getAccessPermission(res));
+            Assert.assertTrue(DataResourceUtils.hasPermission(res, PERMISSION.READ));
+            Assert.assertTrue(DataResourceUtils.hasPermission(res, PERMISSION.WRITE));
+            Assert.assertFalse(DataResourceUtils.hasPermission(res, PERMISSION.ADMINISTRATE));
+        }
 
-        mockJwtServiceAuthentication(RepoServiceRole.SERVICE_ADMINISTRATOR);
-        Assert.assertEquals(PERMISSION.ADMINISTRATE, DataResourceUtils.getAccessPermission(res));
-        Assert.assertTrue(DataResourceUtils.hasPermission(res, PERMISSION.READ));
-        Assert.assertTrue(DataResourceUtils.hasPermission(res, PERMISSION.WRITE));
-        Assert.assertTrue(DataResourceUtils.hasPermission(res, PERMISSION.ADMINISTRATE));
+        serviceToken = mockJwtServiceAuthentication(RepoServiceRole.SERVICE_ADMINISTRATOR);
+        try (MockedStatic<AuthenticationHelper> utilities = Mockito.mockStatic(AuthenticationHelper.class)) {
+            setupUtilities(utilities, serviceToken);
+            Assert.assertEquals(PERMISSION.ADMINISTRATE, DataResourceUtils.getAccessPermission(res));
+            Assert.assertTrue(DataResourceUtils.hasPermission(res, PERMISSION.READ));
+            Assert.assertTrue(DataResourceUtils.hasPermission(res, PERMISSION.WRITE));
+            Assert.assertTrue(DataResourceUtils.hasPermission(res, PERMISSION.ADMINISTRATE));
+        }
+    }
+
+    private void setupUtilities(MockedStatic<AuthenticationHelper> utilities, JwtAuthenticationToken token) {
+        utilities.when(AuthenticationHelper::getAuthentication).thenReturn(token);
+        utilities.when(() -> AuthenticationHelper.getScopedPermission(any(String.class), any(String.class)))
+                .thenCallRealMethod();
+        utilities.when(() -> AuthenticationHelper.hasAuthority(any(String.class))).thenCallRealMethod();
+        utilities.when(() -> AuthenticationHelper.hasIdentity(any(String.class))).thenCallRealMethod();
+        utilities.when(() -> AuthenticationHelper.getPrincipal()).thenCallRealMethod();
+        utilities.when(() -> AuthenticationHelper.getAuthorizationIdentities()).thenCallRealMethod();
     }
 
     @Test
@@ -258,21 +309,30 @@ public class DataResourceUtilsTest {
             ScopedPermission.factoryScopedPermission("DataResource", "res2", PERMISSION.WRITE),
             ScopedPermission.factoryScopedPermission("DataResource", "res3", PERMISSION.ADMINISTRATE)};
 
-        mockJwtTemporaryAuthentication(perms);
-        Assert.assertEquals(PERMISSION.READ, DataResourceUtils.getAccessPermission(res1));
-        Assert.assertTrue(DataResourceUtils.hasPermission(res1, PERMISSION.READ));
-        Assert.assertFalse(DataResourceUtils.hasPermission(res1, PERMISSION.WRITE));
-        Assert.assertFalse(DataResourceUtils.hasPermission(res1, PERMISSION.ADMINISTRATE));
+        JwtAuthenticationToken temporaryToken = mockJwtTemporaryAuthentication(perms);
+        try (MockedStatic<AuthenticationHelper> utilities = Mockito.mockStatic(AuthenticationHelper.class)) {
+            utilities.when(AuthenticationHelper::getAuthentication).thenReturn(temporaryToken);
+            utilities.when(() -> AuthenticationHelper.getScopedPermission(any(String.class), any(String.class)))
+                    .thenCallRealMethod();
+            utilities.when(() -> AuthenticationHelper.hasAuthority(any(String.class))).thenCallRealMethod();
+            utilities.when(() -> AuthenticationHelper.hasIdentity(any(String.class))).thenCallRealMethod();
+            utilities.when(() -> AuthenticationHelper.getPrincipal()).thenCallRealMethod();
+            utilities.when(() -> AuthenticationHelper.getAuthorizationIdentities()).thenCallRealMethod();
+            Assert.assertEquals(PERMISSION.READ, DataResourceUtils.getAccessPermission(res1));
+            Assert.assertTrue(DataResourceUtils.hasPermission(res1, PERMISSION.READ));
+            Assert.assertFalse(DataResourceUtils.hasPermission(res1, PERMISSION.WRITE));
+            Assert.assertFalse(DataResourceUtils.hasPermission(res1, PERMISSION.ADMINISTRATE));
 
-        Assert.assertEquals(PERMISSION.WRITE, DataResourceUtils.getAccessPermission(res2));
-        Assert.assertTrue(DataResourceUtils.hasPermission(res2, PERMISSION.READ));
-        Assert.assertTrue(DataResourceUtils.hasPermission(res2, PERMISSION.WRITE));
-        Assert.assertFalse(DataResourceUtils.hasPermission(res2, PERMISSION.ADMINISTRATE));
+            Assert.assertEquals(PERMISSION.WRITE, DataResourceUtils.getAccessPermission(res2));
+            Assert.assertTrue(DataResourceUtils.hasPermission(res2, PERMISSION.READ));
+            Assert.assertTrue(DataResourceUtils.hasPermission(res2, PERMISSION.WRITE));
+            Assert.assertFalse(DataResourceUtils.hasPermission(res2, PERMISSION.ADMINISTRATE));
 
-        Assert.assertEquals(PERMISSION.ADMINISTRATE, DataResourceUtils.getAccessPermission(res3));
-        Assert.assertTrue(DataResourceUtils.hasPermission(res3, PERMISSION.READ));
-        Assert.assertTrue(DataResourceUtils.hasPermission(res3, PERMISSION.WRITE));
-        Assert.assertTrue(DataResourceUtils.hasPermission(res3, PERMISSION.ADMINISTRATE));
+            Assert.assertEquals(PERMISSION.ADMINISTRATE, DataResourceUtils.getAccessPermission(res3));
+            Assert.assertTrue(DataResourceUtils.hasPermission(res3, PERMISSION.READ));
+            Assert.assertTrue(DataResourceUtils.hasPermission(res3, PERMISSION.WRITE));
+            Assert.assertTrue(DataResourceUtils.hasPermission(res3, PERMISSION.ADMINISTRATE));
+        }
     }
 
     @Test
@@ -306,68 +366,27 @@ public class DataResourceUtilsTest {
         DataResourceUtils.areAclsEqual(null, null);
     }
 
-    private void mockJwtUserAuthentication(RepoUserRole role) {
+    private JwtAuthenticationToken mockJwtUserAuthentication(RepoUserRole role) {
         JwtAuthenticationToken userToken = JwtBuilder.createUserToken("tester", role).
                 addSimpleClaim("firstname", "test").
                 addSimpleClaim("lastname", "user").
                 addSimpleClaim("email", "test@mail.org").
                 addSimpleClaim("groupid", "USERS").
                 getJwtAuthenticationToken(DataResourceControllerTest.KEYCLOAK_SECRET);
+        return userToken;
 
-        PowerMockito.mockStatic(AuthenticationHelper.class, new Answer<Authentication>() {
-            @Override
-            public Authentication answer(InvocationOnMock invocation) throws Throwable {
-                return userToken;
-            }
-        });
-
-        PowerMockito.mockStatic(AuthenticationHelper.class);
-        when(AuthenticationHelper.getAuthentication()).thenReturn(userToken);
-        when(AuthenticationHelper.hasAuthority(any(String.class))).thenCallRealMethod();
-        when(AuthenticationHelper.hasIdentity(any(String.class))).thenCallRealMethod();
-        when(AuthenticationHelper.getPrincipal()).thenCallRealMethod();
-        when(AuthenticationHelper.getAuthorizationIdentities()).thenCallRealMethod();
-        when(AuthenticationHelper.getScopedPermission(any(String.class), any(String.class))).thenCallRealMethod();
     }
 
-    private void mockJwtServiceAuthentication(RepoServiceRole role) throws JsonProcessingException {
+    private JwtAuthenticationToken mockJwtServiceAuthentication(RepoServiceRole role) throws JsonProcessingException {
         JwtAuthenticationToken serviceToken = JwtBuilder.createServiceToken("metadata_extractor", role).
                 addSimpleClaim("groupid", "USERS").
                 getJwtAuthenticationToken(DataResourceControllerTest.KEYCLOAK_SECRET);
-
-        PowerMockito.mockStatic(AuthenticationHelper.class, new Answer<Authentication>() {
-            @Override
-            public Authentication answer(InvocationOnMock invocation) throws Throwable {
-                return serviceToken;
-            }
-        });
-
-        PowerMockito.mockStatic(AuthenticationHelper.class);
-        when(AuthenticationHelper.getAuthentication()).thenReturn(serviceToken);
-        when(AuthenticationHelper.hasAuthority(any(String.class))).thenCallRealMethod();
-        when(AuthenticationHelper.hasIdentity(any(String.class))).thenCallRealMethod();
-        when(AuthenticationHelper.getPrincipal()).thenCallRealMethod();
-        when(AuthenticationHelper.getAuthorizationIdentities()).thenCallRealMethod();
-        when(AuthenticationHelper.getScopedPermission(any(String.class), any(String.class))).thenCallRealMethod();
+        return serviceToken;
     }
 
-    private void mockJwtTemporaryAuthentication(ScopedPermission[] perms) throws JsonProcessingException {
+    private JwtAuthenticationToken mockJwtTemporaryAuthentication(ScopedPermission[] perms) throws JsonProcessingException {
         JwtAuthenticationToken temporaryToken = JwtBuilder.createTemporaryToken("test@mail.org", perms).
                 getJwtAuthenticationToken(DataResourceControllerTest.KEYCLOAK_SECRET);
-
-        PowerMockito.mockStatic(AuthenticationHelper.class, new Answer<Authentication>() {
-            @Override
-            public Authentication answer(InvocationOnMock invocation) throws Throwable {
-                return temporaryToken;
-            }
-        });
-
-        PowerMockito.mockStatic(AuthenticationHelper.class);
-        when(AuthenticationHelper.getAuthentication()).thenReturn(temporaryToken);
-        when(AuthenticationHelper.hasAuthority(any(String.class))).thenCallRealMethod();
-        when(AuthenticationHelper.hasIdentity(any(String.class))).thenCallRealMethod();
-        when(AuthenticationHelper.getPrincipal()).thenCallRealMethod();
-        when(AuthenticationHelper.getAuthorizationIdentities()).thenCallRealMethod();
-        when(AuthenticationHelper.getScopedPermission(any(String.class), any(String.class))).thenCallRealMethod();
+        return temporaryToken;
     }
 }

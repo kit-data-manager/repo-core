@@ -38,7 +38,6 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
 import org.springframework.http.MediaType;
 import org.springframework.web.server.UnsupportedMediaTypeStatusException;
 
@@ -97,7 +96,7 @@ public class FileArchiveContentCollectionProviderTest{
     //@TODO re-activate using mocking of ServletResponse
 
     FileArchiveContentCollectionProvider provider = new FileArchiveContentCollectionProvider();
-    HttpServletResponse response = PowerMockito.mock(HttpServletResponse.class);
+    HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
     ByteArrayOutputStream bout = new ByteArrayOutputStream();
     Mockito.when(response.getOutputStream()).thenReturn(new ServletOutputStream(){
       @Override

@@ -35,6 +35,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import lombok.Data;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
  *
@@ -43,94 +46,97 @@ import lombok.Data;
 @Entity
 @Schema(description = "A data entry of a resource.")
 @Data
-public class Date{
+public class Date {
 
-  //Date types
-  public enum DATE_TYPE implements BaseEnum{
-    ACCEPTED("Accepted"),
-    AVAILABLE("Available"),
-    COLLECTED("Collected"),
-    COPYRIGHTED("Copyrighted"),
-    CREATED("Created"),
-    ISSUED("Issued"),
-    SUBMITTED("Submitted"),
-    UPDATED("Updated"),
-    VALID("Valid"),
-    REVOKED("Revoked");
+    //Date types
+    public enum DATE_TYPE implements BaseEnum {
+        ACCEPTED("Accepted"),
+        AVAILABLE("Available"),
+        COLLECTED("Collected"),
+        COPYRIGHTED("Copyrighted"),
+        CREATED("Created"),
+        ISSUED("Issued"),
+        SUBMITTED("Submitted"),
+        UPDATED("Updated"),
+        VALID("Valid"),
+        REVOKED("Revoked");
 
-    private final String value;
+        private final String value;
 
-    DATE_TYPE(String value){
-      this.value = value;
+        DATE_TYPE(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String getValue() {
+            return value;
+        }
+    }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
+    @SecureUpdate({"FORBIDDEN"})
+    @Searchable
+    @Field(index = false)
+    private Long id;
+    //ISO format
+    @Schema(description = "The actual date of the entry.", example = "2017-05-10T10:41:00Z", required = true)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
+    @JsonDeserialize(using = CustomInstantDeserializer.class)
+    @JsonSerialize(using = CustomInstantSerializer.class)
+    @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
+    Instant value;
+    //vocab, e.g. Created, Issued...
+    @Schema(description = "Controlled vocabulary value describing the date type.", required = true)
+    @Enumerated(EnumType.STRING)
+    @Field(type = FieldType.Keyword, name = "type")
+    DATE_TYPE type;
+
+    public static Date factoryDate(Instant value, DATE_TYPE type) {
+        Date result = new Date();
+        result.setValue(value);
+        result.type = type;
+        return result;
+    }
+
+    public void setValue(Instant value) {
+        this.value = Objects.requireNonNull(value).truncatedTo(ChronoUnit.SECONDS);
+    }
+
+    public Instant getValue() {
+        return value;
     }
 
     @Override
-    public String getValue(){
-      return value;
-    }
-  }
-
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
-  @SecureUpdate({"FORBIDDEN"})
-  @Searchable
-  private Long id;
-  //ISO format
-  @Schema(description = "The actual date of the entry.", example = "2017-05-10T10:41:00Z", required = true)
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
-  @JsonDeserialize(using = CustomInstantDeserializer.class)
-  @JsonSerialize(using = CustomInstantSerializer.class)
-  Instant value;
-  //vocab, e.g. Created, Issued...
-  @Schema(description = "Controlled vocabulary value describing the date type.", required = true)
-  @Enumerated(EnumType.STRING)
-  DATE_TYPE type;
-
-  public static Date factoryDate(Instant value, DATE_TYPE type){
-    Date result = new Date();
-    result.setValue(value);
-    result.type = type;
-    return result;
-  }
-
-  public void setValue(Instant value){
-    this.value = Objects.requireNonNull(value).truncatedTo(ChronoUnit.SECONDS);
-  }
-
-  public Instant getValue(){
-    return value;
-  }
-
-  @Override
-  public int hashCode(){
-    int hash = 7;
-    hash = 89 * hash + Objects.hashCode(this.id);
-    hash = 89 * hash + Objects.hashCode(this.value);
-    hash = 89 * hash + EnumUtils.hashCode(this.type);
-    return hash;
-  }
-
-  @Override
-  public boolean equals(Object obj){
-    if(this == obj){
-      return true;
-    }
-    if(obj == null){
-      return false;
-    }
-    if(getClass() != obj.getClass()){
-      return false;
-    }
-    final Date other = (Date) obj;
-    if(!Objects.equals(this.id, other.id)){
-      return false;
+    public int hashCode() {
+        int hash = 7;
+        hash = 89 * hash + Objects.hashCode(this.id);
+        hash = 89 * hash + Objects.hashCode(this.value);
+        hash = 89 * hash + EnumUtils.hashCode(this.type);
+        return hash;
     }
 
-    if(!Objects.equals(this.value, other.value)){
-      return false;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Date other = (Date) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+
+        if (!Objects.equals(this.value, other.value)) {
+            return false;
+        }
+        return EnumUtils.equals(this.type, other.type);
     }
-    return EnumUtils.equals(this.type, other.type);
-  }
 
 }

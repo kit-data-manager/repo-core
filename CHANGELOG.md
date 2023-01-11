@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 ### Changed
+- Listing resources now keeps ACL information in resources, on which the caller has ADMINISTRATE permissions
 
 ### Added
 

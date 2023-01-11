@@ -23,6 +23,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import lombok.Data;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
  *
@@ -31,57 +33,62 @@ import lombok.Data;
 @Entity
 @Schema(description = "Geo location information as box.")
 @Data
-public class Box{
+public class Box {
 
-  @Id
-  @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @SecureUpdate({"FORBIDDEN"})
-  @Searchable
-  private Long id;
-  @Schema(description = "-67.302", example = "-180 <= westLongitude <= 180", required = true)
-  private float westLongitude;
-  @Schema(description = "-67.302", example = "-180 <= eastLongitude <= 180", required = true)
-  private float eastLongitude;
-  @Schema(description = "31.233", example = "-90 <= southLatitude <= 90", required = true)
-  private float southLatitude;
-  @Schema(description = "31.233", example = "-90 <= northLatitude <= 90", required = true)
-  private float northLatitude;
+    @Id
+    @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SecureUpdate({"FORBIDDEN"})
+    @Searchable
+    @Field(index = false)
+    private Long id;
+    @Schema(description = "-67.302", example = "-180 <= westLongitude <= 180", required = true)
+    @Field(type = FieldType.Float, name = "westLongitude")
+    private float westLongitude;
+    @Schema(description = "-67.302", example = "-180 <= eastLongitude <= 180", required = true)
+    @Field(type = FieldType.Float, name = "eastLongitude")
+    private float eastLongitude;
+    @Schema(description = "31.233", example = "-90 <= southLatitude <= 90", required = true)
+    @Field(type = FieldType.Float, name = "southLatitude")
+    private float southLatitude;
+    @Schema(description = "31.233", example = "-90 <= northLatitude <= 90", required = true)
+    @Field(type = FieldType.Float, name = "northLatitude")
+    private float northLatitude;
 
-  /**
-   * Basic factory method.
-   *
-   * @param westLongitude The west longitude
-   * @param eastLongitude The east longitude
-   * @param southLatitude The east latitude
-   * @param northLatitude The east latitude
-   *
-   * @return A new instance of Box
-   */
-  public static Box factoryBox(float westLongitude, float eastLongitude, float southLatitude, float northLatitude){
-    Box result = new Box();
-    result.setWestLongitude(westLongitude);
-    result.setEastLongitude(eastLongitude);
-    result.setNorthLatitude(northLatitude);
-    result.setSouthLatitude(southLatitude);
-    return result;
-  }
+    /**
+     * Basic factory method.
+     *
+     * @param westLongitude The west longitude
+     * @param eastLongitude The east longitude
+     * @param southLatitude The east latitude
+     * @param northLatitude The east latitude
+     *
+     * @return A new instance of Box
+     */
+    public static Box factoryBox(float westLongitude, float eastLongitude, float southLatitude, float northLatitude) {
+        Box result = new Box();
+        result.setWestLongitude(westLongitude);
+        result.setEastLongitude(eastLongitude);
+        result.setNorthLatitude(northLatitude);
+        result.setSouthLatitude(southLatitude);
+        return result;
+    }
 
-  /**
-   * Basic factory method.
-   *
-   * @param upperLeftCoordinate The upper left coordinate
-   * @param lowerRightCoordinate The lower right coordinate
-   *
-   * @return A new instance of Box
-   */
-  public static Box factoryBox(Point upperLeftCoordinate, Point lowerRightCoordinate){
-    Box result = new Box();
-    result.setWestLongitude(upperLeftCoordinate.getLongitude());
-    result.setEastLongitude(lowerRightCoordinate.getLongitude());
-    result.setNorthLatitude(upperLeftCoordinate.getLatitude());
-    result.setSouthLatitude(lowerRightCoordinate.getLatitude());
-    return result;
-  }
+    /**
+     * Basic factory method.
+     *
+     * @param upperLeftCoordinate The upper left coordinate
+     * @param lowerRightCoordinate The lower right coordinate
+     *
+     * @return A new instance of Box
+     */
+    public static Box factoryBox(Point upperLeftCoordinate, Point lowerRightCoordinate) {
+        Box result = new Box();
+        result.setWestLongitude(upperLeftCoordinate.getLongitude());
+        result.setEastLongitude(lowerRightCoordinate.getLongitude());
+        result.setNorthLatitude(upperLeftCoordinate.getLatitude());
+        result.setSouthLatitude(lowerRightCoordinate.getLatitude());
+        return result;
+    }
 
 }
