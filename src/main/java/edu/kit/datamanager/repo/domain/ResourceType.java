@@ -75,7 +75,6 @@ public class ResourceType {
     @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
     @SecureUpdate({"FORBIDDEN"})
     @Searchable
-    @Field(index = false)
     private Long id;
     @Schema(description = "Measurement Data", required = true)
     @Field(type = FieldType.Text, name = "value")

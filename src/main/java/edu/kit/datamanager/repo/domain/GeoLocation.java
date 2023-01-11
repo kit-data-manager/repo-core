@@ -41,7 +41,6 @@ public class GeoLocation {
     @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
     @SecureUpdate({"FORBIDDEN"})
     @Searchable
-    @Field(index = false)
     private Long id;
     @OneToOne(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
     @Field(type = FieldType.Nested, includeInParent = true)

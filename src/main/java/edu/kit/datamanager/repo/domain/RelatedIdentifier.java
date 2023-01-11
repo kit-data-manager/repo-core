@@ -86,7 +86,6 @@ public class RelatedIdentifier {
     @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
     @SecureUpdate({"FORBIDDEN"})
     @Searchable
-    @Field(index = false)
     private Long id;
     @Schema(description = "Controlled vocabulary, e.g. INTERNAL or DOI.", required = true)
     @Enumerated(EnumType.STRING)

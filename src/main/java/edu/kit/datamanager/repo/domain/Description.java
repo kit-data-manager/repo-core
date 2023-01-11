@@ -65,7 +65,6 @@ public class Description {
     @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
     @SecureUpdate({"FORBIDDEN"})
     @Searchable
-    @Field(index = false)
     private Long id;
     @Schema(description = "The actual description as full text.", required = true)
     @Field(type = FieldType.Text, name = "description")

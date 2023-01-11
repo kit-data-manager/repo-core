@@ -41,7 +41,6 @@ public class Subject {
     @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
     @SecureUpdate({"FORBIDDEN"})
     @Searchable
-    @Field(index = false)
     private Long id;
     @Schema(description = "The subject value.", required = false)
     @Field(type = FieldType.Text, name = "value")

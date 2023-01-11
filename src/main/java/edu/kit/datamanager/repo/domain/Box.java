@@ -40,7 +40,6 @@ public class Box {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @SecureUpdate({"FORBIDDEN"})
     @Searchable
-    @Field(index = false)
     private Long id;
     @Schema(description = "-67.302", example = "-180 <= westLongitude <= 180", required = true)
     @Field(type = FieldType.Float, name = "westLongitude")

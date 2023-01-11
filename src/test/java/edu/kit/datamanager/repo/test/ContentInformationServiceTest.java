@@ -132,6 +132,7 @@ public class ContentInformationServiceTest {
         ContentInformation found = service.findById(Long.toString(info.getId()));
         Assert.assertNotNull(found);
         Assert.assertEquals(info.getId(), found.getId());
+        System.out.println(found);
     }
 
     @Test(expected = ResourceNotFoundException.class)

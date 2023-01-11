@@ -78,7 +78,6 @@ public class Date {
     @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
     @SecureUpdate({"FORBIDDEN"})
     @Searchable
-    @Field(index = false)
     private Long id;
     //ISO format
     @Schema(description = "The actual date of the entry.", example = "2017-05-10T10:41:00Z", required = true)

@@ -64,7 +64,6 @@ public class Title {
     @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
     @SecureUpdate({"FORBIDDEN"})
     @Searchable
-    @Field(index = false)
     private Long id;
     @Schema(example = "My sample resource", required = true)
     @Field(type = FieldType.Text, name = "value")

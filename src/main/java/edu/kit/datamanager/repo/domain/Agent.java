@@ -46,7 +46,6 @@ public class Agent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @SecureUpdate({"FORBIDDEN"})
     @Searchable
-    @Field(index = false)
     private Long id;
     @Schema(description = "Family name of the user.", example = "Doe", required = false)
     @Field(type = FieldType.Keyword, name = "familyName")
@@ -56,7 +55,7 @@ public class Agent {
     private String givenName;
     @Schema(description = "Affiliation of the user, e.g. home institution.", example = "Karlsruhe Institute of Techology", required = false)
     @ElementCollection
-    @Field(type = FieldType.Nested, includeInParent = true)
+    @Field(type = FieldType.Text)
     private Set<String> affiliations = new HashSet<>();
 
     public static Agent factoryAgent(String givenName, String familyName, String[] affiliations) {

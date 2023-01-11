@@ -41,7 +41,6 @@ public class Point {
     @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
     @SecureUpdate({"FORBIDDEN"})
     @Searchable
-    @Field(index = false)
     private Long id;
     @Schema(example = "-180 <= longitude <= 180", required = true)
     @Field(type = FieldType.Float, name = "longitude")
