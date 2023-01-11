@@ -30,10 +30,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -42,12 +38,12 @@ import org.springframework.http.ResponseEntity;
  *
  * @author jejkal
  */
-@RunWith(PowerMockRunner.class)
+/*@RunWith(PowerMockRunner.class)
 @PowerMockIgnore("javax.net.ssl.*")
-@PrepareForTest({HttpClients.class})
+@PrepareForTest({HttpClients.class})*/
 public class HttpContentProviderTest{
 
-  private final CloseableHttpClient mock = PowerMockito.mock(CloseableHttpClient.class);
+  private final CloseableHttpClient mock = Mockito.mock(CloseableHttpClient.class);
   private final CloseableHttpResponse response = mock(CloseableHttpResponse.class);
   private final StatusLine line = mock(StatusLine.class);
   private final Header header = mock(Header.class);
@@ -109,7 +105,7 @@ public class HttpContentProviderTest{
   }
 
   private void mockFailingHttpClient() throws Exception{
-    PowerMockito.when(mock.execute(Mockito.any(HttpGet.class))).thenThrow(new IOException("This should fail for testing reasons."));
+    Mockito.when(mock.execute(Mockito.any(HttpGet.class))).thenThrow(new IOException("This should fail for testing reasons."));
   }
 
   private void mockHttpClient(HttpStatus expectedStatus) throws Exception{
@@ -117,21 +113,21 @@ public class HttpContentProviderTest{
   }
 
   private void mockHttpClient(HttpStatus expectedStatus, String location) throws Exception{
-    PowerMockito.when(response.getStatusLine()).thenReturn(line);
+    Mockito.when(response.getStatusLine()).thenReturn(line);
     if(location != null){
-      PowerMockito.when(header.getName()).thenReturn("Location");
-      PowerMockito.when(header.getValue()).thenReturn(location);
-      PowerMockito.when(response.getFirstHeader("Location")).thenReturn(header);
+      Mockito.when(header.getName()).thenReturn("Location");
+      Mockito.when(header.getValue()).thenReturn(location);
+      Mockito.when(response.getFirstHeader("Location")).thenReturn(header);
     } else{
-      PowerMockito.when(response.getFirstHeader("Location")).thenReturn(null);
+      Mockito.when(response.getFirstHeader("Location")).thenReturn(null);
     }
 
     if(expectedStatus != null){
-      PowerMockito.when(line.getStatusCode()).thenReturn(expectedStatus.value());
+      Mockito.when(line.getStatusCode()).thenReturn(expectedStatus.value());
     } else{
-      PowerMockito.when(line.getStatusCode()).thenReturn(12345);
+      Mockito.when(line.getStatusCode()).thenReturn(12345);
     }
 
-    PowerMockito.when(mock.execute(Mockito.any(HttpGet.class))).thenReturn(response);
+    Mockito.when(mock.execute(Mockito.any(HttpGet.class))).thenReturn(response);
   }
 }

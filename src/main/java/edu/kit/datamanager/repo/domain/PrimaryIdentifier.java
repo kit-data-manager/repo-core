@@ -24,6 +24,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import lombok.Data;
 import lombok.NonNull;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
  *
@@ -31,47 +33,50 @@ import lombok.NonNull;
  */
 @Entity
 @Data
-public class PrimaryIdentifier{
+public class PrimaryIdentifier {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
-  @SecureUpdate({"FORBIDDEN"})
-  @Searchable
-  private Long id;
-  @Schema(example = "10.1234/foo", required = true)
-  private String value;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
+    @SecureUpdate({"FORBIDDEN"})
+    @Searchable
+    @Field(index = false)
+    private Long id;
+    @Schema(example = "10.1234/foo", required = true)
+    @Field(type = FieldType.Text, name = "value")
+    private String value;
 
-  private String identifierType = "DOI";
+    @Field(type = FieldType.Keyword, name = "identifierType")
+    private String identifierType = "DOI";
 
-  public static PrimaryIdentifier factoryPrimaryIdentifier(){
-    return factoryPrimaryIdentifier(UnknownInformationConstants.TO_BE_ASSIGNED_OR_ANNOUNCED_LATER.getValue());
-  }
-
-  public static PrimaryIdentifier factoryPrimaryIdentifier(@NonNull String doiOrTbaConstant){
-    PrimaryIdentifier result = new PrimaryIdentifier();
-    result.setValue(doiOrTbaConstant);
-    return result;
-  }
-
-  public static PrimaryIdentifier factoryPrimaryIdentifier(@NonNull UnknownInformationConstants unknownInformationConstant){
-    return factoryPrimaryIdentifier(unknownInformationConstant.getValue());
-  }
-
-  /**
-   * Check if the value of this identifier is any of the available
-   * UnknownInformationConstants. If this is the case, FALSE is returned.
-   * Otherwise, TRUE is returned.
-   *
-   * @return TRUE if the value is none of the values defined as
-   * UnknownInformationConstants, FALSE if one value matches.
-   */
-  public boolean hasDoi(){
-    for(UnknownInformationConstants constant : UnknownInformationConstants.values()){
-      if(constant.getValue().equals(getValue())){
-        return false;
-      }
+    public static PrimaryIdentifier factoryPrimaryIdentifier() {
+        return factoryPrimaryIdentifier(UnknownInformationConstants.TO_BE_ASSIGNED_OR_ANNOUNCED_LATER.getValue());
     }
-    return true;
-  }
+
+    public static PrimaryIdentifier factoryPrimaryIdentifier(@NonNull String doiOrTbaConstant) {
+        PrimaryIdentifier result = new PrimaryIdentifier();
+        result.setValue(doiOrTbaConstant);
+        return result;
+    }
+
+    public static PrimaryIdentifier factoryPrimaryIdentifier(@NonNull UnknownInformationConstants unknownInformationConstant) {
+        return factoryPrimaryIdentifier(unknownInformationConstant.getValue());
+    }
+
+    /**
+     * Check if the value of this identifier is any of the available
+     * UnknownInformationConstants. If this is the case, FALSE is returned.
+     * Otherwise, TRUE is returned.
+     *
+     * @return TRUE if the value is none of the values defined as
+     * UnknownInformationConstants, FALSE if one value matches.
+     */
+    public boolean hasDoi() {
+        for (UnknownInformationConstants constant : UnknownInformationConstants.values()) {
+            if (constant.getValue().equals(getValue())) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

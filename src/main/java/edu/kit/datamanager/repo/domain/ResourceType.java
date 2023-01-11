@@ -28,6 +28,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import lombok.Data;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
  *
@@ -36,93 +38,96 @@ import lombok.Data;
 @Entity
 @Data
 @Schema(description = "The type of a resource.")
-public class ResourceType{
+public class ResourceType {
 
-  public enum TYPE_GENERAL implements BaseEnum{
+    public enum TYPE_GENERAL implements BaseEnum {
 
-    AUDIOVISUAL("Audiovisual"),
-    COLLECTION("Collection"),
-    DATASET("Dataset"),
-    EVENT("Event"),
-    IMAGE("Image"),
-    INTERACTIVE_RESOURCE("InteractiveResource"),
-    MODEL("Model"),
-    PHYSICAL_OBJECT("PhysicalObject"),
-    SERVICE("Service"),
-    SOFTWARE("Software"),
-    SOUND("Sound"),
-    TEXT("Text"),
-    WORKFLOW("Workflow"),
-    OTHER("Other");
+        AUDIOVISUAL("Audiovisual"),
+        COLLECTION("Collection"),
+        DATASET("Dataset"),
+        EVENT("Event"),
+        IMAGE("Image"),
+        INTERACTIVE_RESOURCE("InteractiveResource"),
+        MODEL("Model"),
+        PHYSICAL_OBJECT("PhysicalObject"),
+        SERVICE("Service"),
+        SOFTWARE("Software"),
+        SOUND("Sound"),
+        TEXT("Text"),
+        WORKFLOW("Workflow"),
+        OTHER("Other");
 
-    private final String value;
+        private final String value;
 
-    private TYPE_GENERAL(String value){
-      this.value = value;
+        private TYPE_GENERAL(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String getValue() {
+            return value;
+        }
+
+    }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
+    @SecureUpdate({"FORBIDDEN"})
+    @Searchable
+    @Field(index = false)
+    private Long id;
+    @Schema(description = "Measurement Data", required = true)
+    @Field(type = FieldType.Text, name = "value")
+    private String value;
+    //vocab, e.g. Dataset, Image....
+    @Schema(example = "DATASET", required = true)
+    @Enumerated(EnumType.STRING)
+    @Field(type = FieldType.Keyword, name = "typeGeneral")
+    private TYPE_GENERAL typeGeneral;
+
+    public static ResourceType createResourceType(String value) {
+        ResourceType type = new ResourceType();
+        type.value = value;
+        type.typeGeneral = TYPE_GENERAL.DATASET;
+        return type;
+    }
+
+    public static ResourceType createResourceType(String value, TYPE_GENERAL typeGeneral) {
+        ResourceType type = new ResourceType();
+        type.value = value;
+        type.typeGeneral = typeGeneral;
+        return type;
     }
 
     @Override
-    public String getValue(){
-      return value;
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ResourceType other = (ResourceType) obj;
+        if (!Objects.equals(this.value, other.value)) {
+            return false;
+        }
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        return EnumUtils.equals(this.typeGeneral, other.typeGeneral);
     }
 
-  }
-
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
-  @SecureUpdate({"FORBIDDEN"})
-  @Searchable
-  private Long id;
-  @Schema(description = "Measurement Data", required = true)
-  private String value;
-  //vocab, e.g. Dataset, Image....
-  @Schema(example = "DATASET", required = true)
-  @Enumerated(EnumType.STRING)
-  private TYPE_GENERAL typeGeneral;
-
-  public static ResourceType createResourceType(String value){
-    ResourceType type = new ResourceType();
-    type.value = value;
-    type.typeGeneral = TYPE_GENERAL.DATASET;
-    return type;
-  }
-
-  public static ResourceType createResourceType(String value, TYPE_GENERAL typeGeneral){
-    ResourceType type = new ResourceType();
-    type.value = value;
-    type.typeGeneral = typeGeneral;
-    return type;
-  }
-
-  @Override
-  public boolean equals(Object obj){
-    if(this == obj){
-      return true;
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 89 * hash + Objects.hashCode(this.id);
+        hash = 89 * hash + Objects.hashCode(this.value);
+        hash = 89 * hash + EnumUtils.hashCode(this.typeGeneral);
+        return hash;
     }
-    if(obj == null){
-      return false;
-    }
-    if(getClass() != obj.getClass()){
-      return false;
-    }
-    final ResourceType other = (ResourceType) obj;
-    if(!Objects.equals(this.value, other.value)){
-      return false;
-    }
-    if(!Objects.equals(this.id, other.id)){
-      return false;
-    }
-    return EnumUtils.equals(this.typeGeneral, other.typeGeneral);
-  }
-
-  @Override
-  public int hashCode(){
-    int hash = 7;
-    hash = 89 * hash + Objects.hashCode(this.id);
-    hash = 89 * hash + Objects.hashCode(this.value);
-    hash = 89 * hash + EnumUtils.hashCode(this.typeGeneral);
-    return hash;
-  }
 
 }

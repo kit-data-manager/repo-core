@@ -23,6 +23,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
  *
@@ -32,41 +34,41 @@ import lombok.EqualsAndHashCode;
 @DiscriminatorValue("FunderIdentifier")
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class FunderIdentifier extends Identifier{
+public class FunderIdentifier extends Identifier {
 
-  public enum FUNDER_TYPE implements BaseEnum{
-    ISNI("ISNI"),
-    GRID("GRID"),
-    CROSSREF_FUNDER_ID("Crossref Funder ID"),
-    OTHER("Other");
+    public enum FUNDER_TYPE implements BaseEnum {
+        ISNI("ISNI"),
+        GRID("GRID"),
+        CROSSREF_FUNDER_ID("Crossref Funder ID"),
+        OTHER("Other");
+        @Field(type = FieldType.Text, name = "value")
+        private final String value;
 
-    private final String value;
+        private FUNDER_TYPE(String value) {
+            this.value = value;
+        }
 
-    private FUNDER_TYPE(String value){
-      this.value = value;
+        @Override
+        public String getValue() {
+            return value;
+        }
+    }
+    @Enumerated(EnumType.STRING)
+    private FUNDER_TYPE type;
+
+    public static FunderIdentifier factoryIdentifier(String value, FUNDER_TYPE type) {
+        FunderIdentifier result = new FunderIdentifier(type);
+        result.setValue(value);
+        return result;
     }
 
-    @Override
-    public String getValue(){
-      return value;
+    FunderIdentifier() {
+        super();
     }
-  }
-  @Enumerated(EnumType.STRING)
-  private FUNDER_TYPE type;
 
-  public static FunderIdentifier factoryIdentifier(String value, FUNDER_TYPE type){
-    FunderIdentifier result = new FunderIdentifier(type);
-    result.setValue(value);
-    return result;
-  }
-
-  FunderIdentifier(){
-    super();
-  }
-
-  public FunderIdentifier(FUNDER_TYPE type){
-    this.type = type;
-  }
+    public FunderIdentifier(FUNDER_TYPE type) {
+        this.type = type;
+    }
 //
 //  @Override
 //  public boolean equals(Object obj){
