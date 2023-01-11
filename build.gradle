@@ -30,10 +30,12 @@ plugins {
     id "io.github.gradle-nexus.publish-plugin" version "1.1.0"
     id 'maven-publish'
 }
-ext { 
-    springBootVersion = '2.7.5' 
-    springDocVersion  = '1.6.12'
-    javersVersion     = '6.8.0'
+
+ext {
+    // versions of dependencies
+    springBootVersion = '2.7.7'
+    springDocVersion  = '1.6.14'
+    javersVersion     = '6.8.2'
 }
 
 description = "Core module for data repositories based on metadata model of datacite."
@@ -50,6 +52,7 @@ jar {
 println "Building ${name} version: ${version}"
 println "Running gradle version: $gradle.gradleVersion"
 println "JDK version: ${JavaVersion.current()}"
+println "Spring Boot version: ${springBootVersion}"
 
 repositories {
     mavenLocal() 
@@ -98,7 +101,7 @@ dependencies {
     implementation "com.h2database:h2:2.1.214"
     implementation "org.postgresql:postgresql:42.5.1"
     // XML
-    implementation "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.14.0"
+    implementation "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.14.1"
     implementation "com.fasterxml.jackson.module:jackson-module-afterburner:2.13.4"
 
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.4"
@@ -106,7 +109,7 @@ dependencies {
 
     //implementation "com.monitorjbl:spring-json-view:1.0.1"
 
-    implementation "de.codecentric:spring-boot-admin-starter-client:2.7.7"
+    implementation "de.codecentric:spring-boot-admin-starter-client:2.7.10"
 
     //Java 11 Support 
     implementation "javax.xml.bind:jaxb-api:2.3.1"
@@ -115,15 +118,11 @@ dependencies {
     implementation "javax.activation:activation:1.1.1"
     implementation "org.javassist:javassist:3.29.2-GA"
     
-    implementation "edu.kit.datamanager:service-base:1.0.7"
+    implementation "edu.kit.datamanager:service-base:1.1.0"
     //implementation "edu.kit.datamanager:generic-message-consumer:0.2.0"
 
     implementation "com.github.java-json-tools:json-patch:1.13"
     implementation "com.github.dozermapper:dozer-core:6.5.2"
-
-    // Logging
-    implementation "org.slf4j:slf4j-api:1.7.36"
-    implementation "ch.qos.logback:logback-classic:1.2.11"
 
     testImplementation "junit:junit:4.13.2"
     testImplementation "org.springframework:spring-test"

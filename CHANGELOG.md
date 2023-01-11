@@ -9,7 +9,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 ### Changed
+
+### Added
+
+### Fixed
+
+### Deprecated
+
+### Removed
+
+## [1.1.0] - 2023-01-11
+
+### Security
+
+### Changed
 - Listing resources now keeps ACL information in resources, on which the caller has ADMINISTRATE permissions
+- Bump commons-text from 1.9 to 1.10.0 
+- Bump service-base from 1.0.5 to 1.1.0
+- Bump jaxb-core from 4.0.0 to 4.0.1 
+- Bump io.spring.dependency-management from 1.0.13.RELEASE to 1.0.14.RELEASE.
+- Bump spring-boot-admin-starter-client from 2.7.5 to 2.7.10
+- Bump io.spring.dependency-management from 1.0.14.RELEASE to 1.1.0
+- Bump org.owasp.dependencycheck from 7.2.1 to 7.4.1 
+- Bump springDocVersion from 1.6.11 to 1.6.14
+- Bump javers-spring-boot-starter-sql from 6.7.1 to 6.8.2
+- Bump jackson-jaxrs-json-provider from 2.13.4 to 2.14.0 
+- Bump jackson-datatype-joda from 2.13.4 to 2.14.0
+- Bump tika-core from 2.5.0 to 2.6.0 
+- Bump spring-boot-dependencies from 2.7.4 to 2.7.7
+- Bump gson from 2.9.1 to 2.10 
+- Bump postgresql from 42.5.0 to 42.5.1
+- Bump jackson-datatype-joda from 2.14.0 to 2.14.1 
+- Bump jackson-jaxrs-json-provider from 2.14.0 to 2.14.1
+- Update gradle from 7.2 to 7.6
 
 ### Added
 
@@ -142,7 +174,8 @@ Extracted from the 'base-repo' project.
 ### Removed
 - none
 
-[Unreleased]: https://github.com/kit-data-manager/repo-core/compare/v1.0.4...HEAD
+[Unreleased]: https://github.com/kit-data-manager/repo-core/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/kit-data-manager/repo-core/compare/v1.0.4...v1.1.0
 [1.0.4]: https://github.com/kit-data-manager/repo-core/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/kit-data-manager/repo-core/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/kit-data-manager/repo-core/compare/v1.0.1...v1.0.2
