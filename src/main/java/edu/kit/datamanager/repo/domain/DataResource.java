@@ -93,6 +93,7 @@ public class DataResource implements EtagSupport, Serializable {
     //The internal resource identifier assigned once during creation
     @Id
     @org.springframework.data.annotation.Id
+    @Field(type = FieldType.Text)
     @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
     @SecureUpdate({"FORBIDDEN"})
     @Searchable
@@ -184,12 +185,12 @@ public class DataResource implements EtagSupport, Serializable {
 
     @Schema(description = "Unstructured size information about the resource or its contents.", example = "15 files, 10 page, 100 bytes", required = false)
     @ElementCollection(fetch = FetchType.EAGER)
-    @Field(type = FieldType.Nested, includeInParent = true)
+    @Field(type = FieldType.Text)
     private Set<String> sizes = new HashSet<>();
 
     @Schema(description = "Format information about the resource or its contents. Preferably, mime types or file extensions are used.", example = "text/plain, xml, application/pdf", required = false)
     @ElementCollection(fetch = FetchType.EAGER)
-    @Field(type = FieldType.Nested, includeInParent = true)
+    @Field(type = FieldType.Text)
     private Set<String> formats = new HashSet<>();
 
     //e.g. major.minor

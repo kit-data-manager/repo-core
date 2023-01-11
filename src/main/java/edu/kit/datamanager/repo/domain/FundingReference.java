@@ -44,7 +44,6 @@ public class FundingReference {
     @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
     @SecureUpdate({"FORBIDDEN"})
     @Searchable
-    @Field(index = false)
     private Long id;
     @Schema(required = true)
     @Field(type = FieldType.Text, name = "funderName")

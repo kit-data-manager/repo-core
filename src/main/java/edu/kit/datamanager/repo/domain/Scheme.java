@@ -40,7 +40,6 @@ public class Scheme {
     @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
     @SecureUpdate({"FORBIDDEN"})
     @Searchable
-    @Field(index = false)
     private Long id;
     @Schema(example = "ORCID", required = true)
     @Field(type = FieldType.Keyword, name = "schemeId")

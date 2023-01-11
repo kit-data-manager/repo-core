@@ -81,7 +81,6 @@ public class Contributor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @SecureUpdate({"FORBIDDEN"})
     @Searchable
-    @Field(index = false)
     private Long id;
     @Schema(description = "Contributing user.", implementation = edu.kit.datamanager.repo.domain.Agent.class, required = true)
     @OneToOne(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)

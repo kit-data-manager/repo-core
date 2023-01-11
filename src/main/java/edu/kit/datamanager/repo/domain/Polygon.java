@@ -45,7 +45,6 @@ public class Polygon {
     @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
     @SecureUpdate({"FORBIDDEN"})
     @Searchable
-    @Field(index = false)
     private Long id;
     @Schema(required = true)
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
