@@ -21,7 +21,6 @@ import edu.kit.datamanager.entities.messaging.IAMQPSubmittable;
 import edu.kit.datamanager.repo.dao.IAMQPMessageDao;
 import edu.kit.datamanager.repo.dao.DummyAMQPMessageDao;
 import edu.kit.datamanager.repo.domain.AMQPMessage;
-import edu.kit.datamanager.repo.service.impl.DataResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import edu.kit.datamanager.service.IMessagingService;
 import java.util.Optional;
@@ -42,7 +41,7 @@ import org.springframework.stereotype.Service;
 public class RabbitMQMessagingService implements IMessagingService {
 
     @Autowired
-    private RabbitMQConfiguration configuration;
+    private Optional<RabbitMQConfiguration> configuration;
     @Autowired
     private Optional<IAMQPMessageDao> messageDao;
     private static final Logger logger = LoggerFactory.getLogger(RabbitMQMessagingService.class);
@@ -50,7 +49,7 @@ public class RabbitMQMessagingService implements IMessagingService {
     @Override
     public void send(IAMQPSubmittable msg) {
         logger.trace("Processing new AMQPSubmittable via RabbitMQMessagingService.");
-        if (configuration.isMessagingEnabled()) {
+        if (configuration.isPresent() && configuration.get().isMessagingEnabled()) {
             logger.trace("Messaging enabled, serializing and submitting message.");
             boolean messagePreservationRequired = true;
             String msgString = null;
@@ -59,9 +58,9 @@ public class RabbitMQMessagingService implements IMessagingService {
             try {
                 msgString = msg.toJson();
                 msgRoute = msg.getRoutingKey();
-                exchangeName = configuration.rabbitMQExchange().getName();
+                exchangeName = configuration.get().rabbitMQExchange().getName();
                 logger.trace("Sending message {} via exchange {} and route {}.", msgString, exchangeName, msgRoute);
-                configuration.rabbitMQTemplate().convertAndSend(configuration.rabbitMQExchange().getName(), msgRoute, msgString);
+                configuration.get().rabbitMQTemplate().convertAndSend(configuration.get().rabbitMQExchange().getName(), msgRoute, msgString);
                 logger.trace("Message sent.");
                 messagePreservationRequired = false;
                 checkAndSendPreservedMessages();
@@ -113,7 +112,11 @@ public class RabbitMQMessagingService implements IMessagingService {
     @Override
     public Health health() {
         logger.trace("Obtaining health information.");
-        return Health.up().withDetail("RabbitMQMessaging", configuration.rabbitMQExchange()).build();
+        if (!configuration.isPresent() || !configuration.get().isMessagingEnabled()) {
+            return Health.unknown().build();
+        }
+
+        return Health.up().withDetail("RabbitMQMessaging", configuration.get().rabbitMQExchange()).build();
     }
 
 }
