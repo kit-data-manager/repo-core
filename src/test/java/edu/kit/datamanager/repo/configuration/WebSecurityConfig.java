@@ -20,6 +20,7 @@ import edu.kit.datamanager.security.filter.KeycloakTokenValidator;
 import edu.kit.datamanager.security.filter.NoAuthenticationFilter;
 import edu.kit.datamanager.security.filter.NoopAuthenticationEventPublisher;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -48,8 +49,7 @@ import org.springframework.web.filter.CorsFilter;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 
-  @Autowired
-  private Logger logger;
+  private Logger logger = LoggerFactory.getLogger(WebSecurityConfig.class);
 
   @Autowired
   private ApplicationProperties applicationProperties;

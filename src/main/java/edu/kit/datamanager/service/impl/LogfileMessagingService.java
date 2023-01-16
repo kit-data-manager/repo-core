@@ -19,7 +19,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import edu.kit.datamanager.entities.messaging.IAMQPSubmittable;
 import edu.kit.datamanager.service.IMessagingService;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.actuate.health.Health;
 
 /**
@@ -28,8 +28,7 @@ import org.springframework.boot.actuate.health.Health;
  */
 public class LogfileMessagingService implements IMessagingService {
 
-    @Autowired
-    private Logger logger;
+    private Logger logger = LoggerFactory.getLogger(LogfileMessagingService.class);
 
     @Override
     public void send(IAMQPSubmittable msg) {
