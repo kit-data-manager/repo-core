@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -37,8 +38,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class FileContentProvider implements IContentProvider{
 
-  @Autowired
-  private Logger logger;
+  private Logger logger = LoggerFactory.getLogger(FileContentProvider.class);
+
   @Autowired(required = false)
   private IRepoVersioningService[] versioningServices;
 
