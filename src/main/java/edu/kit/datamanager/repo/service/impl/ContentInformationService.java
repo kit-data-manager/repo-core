@@ -110,12 +110,12 @@ public class ContentInformationService implements IContentInformationService {
     @Autowired
     private IContentCollectionProvider[] collectionContentProviders;
 
-     /**
+    /**
      * Default constructor.
      */
     public ContentInformationService() {
     }
-    
+
     @Override
     public void configure(RepoBaseConfiguration applicationProperties) {
         this.applicationProperties = applicationProperties;
@@ -148,6 +148,12 @@ public class ContentInformationService implements IContentInformationService {
             contentInfo.setId(null);
             contentInfo.setParentResource(resource);
             contentInfo.setRelativePath(path);
+            contentInfo.setMediaType((contentInformation != null) ? contentInformation.getMediaType() : null);
+        }
+
+        if (contentInfo.getMediaType() != null) {
+            LOGGER.trace("Using provided/existing media type {}.", contentInfo.getMediaType());
+            options.put("mediaType", contentInfo.getMediaType());
         }
 
         String newFileVersion = null;
@@ -448,7 +454,7 @@ public class ContentInformationService implements IContentInformationService {
             }
 
             if (example.getMediaType() != null) {
-                LOGGER.trace("Adding mediatype query specification for media type {}.", example.getMediaType());
+                LOGGER.trace("Adding mediatype query specification for media type {}.", example.getMediaType());           
                 spec = spec.and(ContentInformationMediaTypeSpecification.toSpecification(example.getMediaType(), false));
             }
 
@@ -463,9 +469,9 @@ public class ContentInformationService implements IContentInformationService {
             }
             if (LOGGER.isTraceEnabled()) {
                 LOGGER.trace("List all entries: ");
-                for (ContentInformation ci : dao.findAll()) {
+                dao.findAll().forEach(ci -> {
                     LOGGER.trace("- {}", ci);
-                }
+                });
             }
             LOGGER.trace("Calling findAll for collected specs and page information {}.", pgbl);
             page = dao.findAll(spec, pgbl);
