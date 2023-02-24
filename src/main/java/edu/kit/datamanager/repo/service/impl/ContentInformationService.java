@@ -467,12 +467,6 @@ public class ContentInformationService implements IContentInformationService {
                 LOGGER.debug("Adding tag query specification for tags {}.", example.getTags());
                 spec = spec.and(ContentInformationTagSpecification.toSpecification(example.getTags().toArray(new String[]{})));
             }
-            if (LOGGER.isTraceEnabled()) {
-                LOGGER.trace("List all entries: ");
-                dao.findAll().forEach(ci -> {
-                    LOGGER.trace("- {}", ci);
-                });
-            }
             LOGGER.trace("Calling findAll for collected specs and page information {}.", pgbl);
             page = dao.findAll(spec, pgbl);
         }
