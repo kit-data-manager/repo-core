@@ -196,13 +196,13 @@ public class DataResourceService implements IDataResourceService {
         logger.trace("Checking for mandatory element 'titles'.");
         if (resource.getTitles().isEmpty()) {
             logger.error("No titles found. Throwing BadArgumentException.");
-            throw new BadArgumentException("No title assigned to provided document.");
+            throw new BadArgumentException("Mandatory attribute 'title' missing.");
         }
 
         logger.trace("Checking for mandatory element 'resourceType'.");
         if (resource.getResourceType() == null) {
             logger.error("No resource type provided found. Throwing BadArgumentException.");
-            throw new BadArgumentException("No resource type assigned to provided document.");
+            throw new BadArgumentException("Mandatory attribute 'resourceType' missing.");
         }
 
         logger.trace("Checking for mandatory element 'creators'.");

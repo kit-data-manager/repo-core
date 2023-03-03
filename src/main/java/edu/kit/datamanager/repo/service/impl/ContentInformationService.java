@@ -137,7 +137,6 @@ public class ContentInformationService implements IContentInformationService {
         options.put("force", Boolean.toString(force));
 
         ContentInformation contentInfo;
-        Path toRemove = null;
         if (existingContentInformation.isPresent()) {
             contentInfo = existingContentInformation.get();
             options.put("contentUri", contentInfo.getContentUri());
