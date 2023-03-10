@@ -31,6 +31,25 @@ alter table description alter column description type character varying(10240);
 
 ### Removed
 
+## [1.1.1] - 2023-01-26
+
+### Security
+
+### Changed
+- Bump gson from 2.10 to 2.10.1 by @dependabot in https://github.com/kit-data-manager/repo-core/pull/128
+- Bump httpclient from 4.5.13 to 4.5.14 by @dependabot in https://github.com/kit-data-manager/repo-core/pull/127
+
+### Added
+
+### Fixed
+- Autowired loggers removed to avoid NPE at runtime by @ThomasJejkal in https://github.com/kit-data-manager/repo-core/pull/132
+- Health information no longer queried from RabbitMQMessagingService if messaging is disabled by @ThomasJejkal in https://github.com/kit-data-manager/repo-core/pull/134
+
+
+### Deprecated
+
+### Removed
+
 ## [1.1.0] - 2023-01-11
 
 ### Security
@@ -187,7 +206,8 @@ Extracted from the 'base-repo' project.
 ### Removed
 - none
 
-[Unreleased]: https://github.com/kit-data-manager/repo-core/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/kit-data-manager/repo-core/compare/v1.1.1...HEAD
+[1.1.0]: https://github.com/kit-data-manager/repo-core/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/kit-data-manager/repo-core/compare/v1.0.4...v1.1.0
 [1.0.4]: https://github.com/kit-data-manager/repo-core/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/kit-data-manager/repo-core/compare/v1.0.2...v1.0.3
