@@ -21,6 +21,7 @@ import edu.kit.datamanager.entities.BaseEnum;
 import edu.kit.datamanager.util.EnumUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -68,6 +69,7 @@ public class Description {
     private Long id;
     @Schema(description = "The actual description as full text.", required = true)
     @Field(type = FieldType.Text, name = "description")
+    @Column(length = 10240)
     private String description;
     //vocab, e.g. Abstract
     @Schema(description = "Controlled vocabulary value describing the description type.", required = true)

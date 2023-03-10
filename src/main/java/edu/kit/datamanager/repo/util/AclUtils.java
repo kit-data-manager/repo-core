@@ -16,37 +16,15 @@
 package edu.kit.datamanager.repo.util;
 
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  *
  * @author jejkal
  */
-public class AclUtils{
+public class AclUtils {
 
-  public static boolean isSidInPrincipalList(String sid, List<String> principalIds){
-    for(String principalId : principalIds){
-      Pattern p = Pattern.compile(principalId);
-      Matcher m = p.matcher(sid);
-      if(m.matches()){
-        return true;
-      }
+    public static boolean isSidInPrincipalList(String sid, List<String> principalIds) {
+        return (principalIds.stream().map(principalId -> Pattern.compile(principalId)).map(p -> p.matcher(sid)).anyMatch(m -> (m.matches())));
     }
-
-    return false;
-  }
-//
-//  public static void main(String[] args){
-//
-//    List<String> principalIds = new ArrayList<>();
-//    principalIds.add("tester");
-//    principalIds.add(".*KIT");
-//
-//    System.out.println(isSidInPrincipalList("USERS@KIT", principalIds));
-//    System.out.println(isSidInPrincipalList("tester", principalIds));
-//    System.out.println(isSidInPrincipalList("test", principalIds));
-//    System.out.println(isSidInPrincipalList("KIT_LEADER", principalIds));
-//
-//  }
 }

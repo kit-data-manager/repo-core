@@ -195,7 +195,6 @@ public class ContentDataUtils {
 
         DataResourceUtils.performPermissionCheck(resource, PERMISSION.ADMINISTRATE);
 
-        ControllerUtils.checkEtag(eTag, resource);
 
         //try to obtain single content element matching path exactly
         Page<ContentInformation> contentInfoOptional = applicationProperties.getContentInformationService().findAll(ContentInformation.createContentInformation(resource.getId(), path), PageRequest.of(0, 1));
@@ -203,6 +202,7 @@ public class ContentDataUtils {
             LOGGER.debug("Content information entry found. Checking ETag.");
 
             ContentInformation contentInfo = contentInfoOptional.getContent().get(0);
+            ControllerUtils.checkEtag(eTag, contentInfo);
 
             Path localContentToRemove = null;
             URI contentUri = URI.create(contentInfo.getContentUri());
@@ -259,9 +259,9 @@ public class ContentDataUtils {
 
         DataResourceUtils.performPermissionCheck(resource, PERMISSION.WRITE);
 
-        ControllerUtils.checkEtag(eTag, resource);
-
         toUpdate = applicationProperties.getContentInformationService().getContentInformation(resource.getId(), path, null);
+        ControllerUtils.checkEtag(eTag, toUpdate);
+
         applicationProperties.getContentInformationService().patch(toUpdate, patch, DataResourceUtils.getUserAuthorities(resource));
         return toUpdate;
     }

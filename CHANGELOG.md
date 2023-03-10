@@ -9,10 +9,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 ### Changed
+- Accessing ContentInformation metadata returns own ETags different from the ETag from the parent resource.
+- Creating resources from DataCite JSON metadata is now triggered by providing Content-Type 'application/vnd.datacite.org+json' at POST /api/v1/dataresources/.
+- The allowed size of description content has been changed from 255 to 10240 characters. 
+
+For existing databases, a manual update is required to adapt the column size. 
+The query may depend on the used database system, for PostgreSQL this would be: 
+
+```
+alter table description alter column description type character varying(10240);
+``` 
 
 ### Added
+- Creating resources from Zenodo JSON metadata has been added and is triggered by providing Content-Type 'application/vnd.zenodo.org+json' at POST /api/v1/dataresources/.
 
 ### Fixed
+- Creating resource from DataCite JSON metadata has been fixed.
+- Fixed automatic mediaType detection for content upload, i.e., solve issue that text-based files are always detected as text/plain.
 
 ### Deprecated
 
