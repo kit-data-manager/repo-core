@@ -41,6 +41,7 @@ import org.apache.tika.parser.AutoDetectParser;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import edu.kit.datamanager.repo.service.IRepoVersioningService;
+import java.io.File;
 import org.apache.tika.metadata.TikaCoreProperties;
 import org.slf4j.LoggerFactory;
 
@@ -97,7 +98,9 @@ public class SimpleDataVersioningService implements IRepoVersioningService{
           AutoDetectParser parser = new AutoDetectParser();
           Detector detector = parser.getDetector();
           Metadata md1 = new Metadata();
-          md1.add(TikaCoreProperties.RESOURCE_NAME_KEY, destination.getFileName().toString());
+          String filename = destination.getFileName().toString();
+          //add filename to support tika...first, we have to remove the appended timestamp from filenname.ext_timestamp to make this work
+          md1.add(TikaCoreProperties.RESOURCE_NAME_KEY, filename.substring(0, filename.lastIndexOf("_")));
           org.apache.tika.mime.MediaType mediaType = detector.detect(bis, md1);
           map.put("mediaType", mediaType.toString());
           logger.trace("Assigned media type {} to content information.", map.get("mediaType"));

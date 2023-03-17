@@ -1244,7 +1244,7 @@ public class DataResourceControllerTestWithoutVersioning {
     Map<String, String> metadata = new HashMap<>();
     metadata.put("test", "ok");
     cinfo.setMetadata(metadata);
-    cinfo.setMediaType("application/json");
+    cinfo.setMediaType("text/plain");
 
     ObjectMapper mapper = createObjectMapper();
 

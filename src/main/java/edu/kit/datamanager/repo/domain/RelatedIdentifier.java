@@ -67,7 +67,30 @@ public class RelatedIdentifier {
         REVIEWS("Reviews"),
         IS_REVIEWED_BY("IsReviewedBy"),
         IS_DERIVED_FROM("IsDerivedFrom"),
-        IS_SOURCE_OF("IsSourceOf");
+        IS_SOURCE_OF("IsSourceOf"),
+        IS_VERSION_OF("IsVersionOf"),
+        HAS_VERSION("HasVersion"),
+        ISCITEDBY("IsCitedBy"),
+        ISSUPPLEMENTTO("IsSupplementTo"),
+        ISSUPPLEMENTEDBY("IsSupplementedBy"),
+        ISCONTINUEDBY("IsContinuedBy"),
+        ISNEWVERSIONOF("IsNewVersionOf"),
+        ISPREVIOUSVERSIONOF("IsPreviousVersionOf"),
+        ISPARTOF("IsPartOf"),
+        HASPART("HasPart"),
+        ISREFERENCEDBY("IsReferencedBy"),
+        ISDOCUMENTEDBY("IsDocumentedBy"),
+        ISCOMPILEDBY("IsCompiledBy"),
+        ISVARIANTFORMOF("IsVariantFormOf"),
+        ISORIGINALFORMOF("IsOriginalFormOf"),
+        ISIDENTICALTO("IsIdenticalTo"),
+        HASMETADATA("HasMetadata"),
+        ISMETADATAFOR("IsMetadataFor"),
+        ISREVIEWEDBY("IsReviewedBy"),
+        ISDERIVEDFROM("IsDerivedFrom"),
+        ISSOURCEOF("IsSourceOf"),
+        ISVERSIONOF("IsVersionOf"),
+        HASVERSION("HasVersion");
 
         private final String value;
 

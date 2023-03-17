@@ -50,133 +50,135 @@ import org.apache.tika.metadata.TikaCoreProperties;
  * @author jejkal
  */
 @Component
-public class NoneDataVersioningService implements IRepoVersioningService{
+public class NoneDataVersioningService implements IRepoVersioningService {
 
-  private static final Logger logger = LoggerFactory.getLogger(NoneDataVersioningService.class);
+    private static final Logger logger = LoggerFactory.getLogger(NoneDataVersioningService.class);
 
-  private RepoBaseConfiguration applicationProperties;
+    private RepoBaseConfiguration applicationProperties;
 
-  @Override
-  public void configure(RepoBaseConfiguration applicationProperties){
-    this.applicationProperties = applicationProperties;
-  }
+    @Override
+    public void configure(RepoBaseConfiguration applicationProperties) {
+        this.applicationProperties = applicationProperties;
+    }
 
-  @Override
-  public void write(String resourceId, String callerId, String path, InputStream stream, Map<String, String> map){
-    boolean force = Boolean.parseBoolean(map.get("force"));
-    String contentUriString = map.get("contentUri");
+    @Override
+    public void write(String resourceId, String callerId, String path, InputStream stream, Map<String, String> map) {
+        boolean force = Boolean.parseBoolean(map.get("force"));
+        String contentUriString = map.get("contentUri");
 
-    if(contentUriString != null){
-      logger.trace("ContentUri option provided, checking 'force' option.");
-      if(!force){
-        //conflict
-        logger.error("Existing content information found for resource {} at path {} and 'force' flag not set. Throwing ResourceAlreadyExistException.", "DataResource#" + resourceId, path);
-        throw new ResourceAlreadyExistException("There is already content registered at " + path + ". Provide force=true in order to replace the existing resource.");
-      } else{
-        logger.trace("'Force' flag set. Checking for local content to replace.");
-        //overwrite...mark file for deletion
-        URI contentUri = URI.create(contentUriString);
-        if(!"file".equals(contentUri.getScheme())){
-          //mark file for removal
-          logger.debug("Existing contentUri {} is no local file. Creating new contentUri.", contentUri);
-          // toRemove = Paths.get(contentUri);
-          contentUri = PathUtils.getDataUri(DataResource.factoryNewDataResource(resourceId), path, applicationProperties);
-          contentUriString = contentUri.toString();
+        if (contentUriString != null) {
+            logger.trace("ContentUri option provided, checking 'force' option.");
+            if (!force) {
+                //conflict
+                logger.error("Existing content information found for resource {} at path {} and 'force' flag not set. Throwing ResourceAlreadyExistException.", "DataResource#" + resourceId, path);
+                throw new ResourceAlreadyExistException("There is already content registered at " + path + ". Provide force=true in order to replace the existing resource.");
+            } else {
+                logger.trace("'Force' flag set. Checking for local content to replace.");
+                //overwrite...mark file for deletion
+                URI contentUri = URI.create(contentUriString);
+                if (!"file".equals(contentUri.getScheme())) {
+                    //mark file for removal
+                    logger.debug("Existing contentUri {} is no local file. Creating new contentUri.", contentUri);
+                    // toRemove = Paths.get(contentUri);
+                    contentUri = PathUtils.getDataUri(DataResource.factoryNewDataResource(resourceId), path, applicationProperties);
+                    contentUriString = contentUri.toString();
+                }
+            }
+        } else {
+            logger.trace("New entry detected, setting initial contentUri.");
+            contentUriString = PathUtils.getDataUri(DataResource.factoryNewDataResource(resourceId), path, applicationProperties).toString();
         }
-      }
-    } else{
-      logger.trace("New entry detected, setting initial contentUri.");
-      contentUriString = PathUtils.getDataUri(DataResource.factoryNewDataResource(resourceId), path, applicationProperties).toString();
-    }
 
-    logger.trace("Obtaining path for contentUriString {}.", contentUriString);
-    //URI dataUri = PathUtils.getDataUri(DataResource.factoryNewDataResource(resourceId), path, applicationProperties);
-    Path destination = Paths.get(URI.create(contentUriString));
-    logger.trace("Preparing destination {} for storing user data.", destination);
-    //store data
-    OutputStream out = null;
-    try{
-      //read/write file, create checksum and calculate file size
-      Files.createDirectories(destination.getParent());
+        logger.trace("Obtaining path for contentUriString {}.", contentUriString);
+        //URI dataUri = PathUtils.getDataUri(DataResource.factoryNewDataResource(resourceId), path, applicationProperties);
+        Path destination = Paths.get(URI.create(contentUriString));
+        logger.trace("Preparing destination {} for storing user data.", destination);
+        //store data
+        OutputStream out = null;
+        try {
+            //read/write file, create checksum and calculate file size
+            Files.createDirectories(destination.getParent());
 
-      MessageDigest md = MessageDigest.getInstance("SHA1");
-      logger.trace("Start reading user data from stream.");
-      int cnt;
-      long bytes = 0;
-      byte[] buffer = new byte[1024];
-      out = Files.newOutputStream(destination);
-      while((cnt = stream.read(buffer)) > -1){
-        out.write(buffer, 0, cnt);
-        md.update(buffer, 0, cnt);
-        bytes += cnt;
-      }
+            MessageDigest md = MessageDigest.getInstance("SHA1");
+            logger.trace("Start reading user data from stream.");
+            int cnt;
+            long bytes = 0;
+            byte[] buffer = new byte[1024];
+            out = Files.newOutputStream(destination);
+            while ((cnt = stream.read(buffer)) > -1) {
+                out.write(buffer, 0, cnt);
+                md.update(buffer, 0, cnt);
+                bytes += cnt;
+            }
 
-      logger.trace("Performing upload post-processing.");
-      map.put("checksum", "sha1:" + Hex.encodeHexString(md.digest()));
-      logger.debug("Assigned hash {} to content information.", map.get("checksum"));
-      map.put("size", Long.toString(bytes));
-      logger.debug("Assigned size {} to content information.", map.get("size"));
-      map.put("contentUri", contentUriString);
-      logger.debug("Assigned content URI {} to content information.", map.get("contentUri"));
+            logger.trace("Performing upload post-processing.");
+            map.put("checksum", "sha1:" + Hex.encodeHexString(md.digest()));
+            logger.debug("Assigned hash {} to content information.", map.get("checksum"));
+            map.put("size", Long.toString(bytes));
+            logger.debug("Assigned size {} to content information.", map.get("size"));
+            map.put("contentUri", contentUriString);
+            logger.debug("Assigned content URI {} to content information.", map.get("contentUri"));
 
-      if(!map.containsKey("mediaType")){
-        logger.trace("Trying to determine content type.");
-        try(InputStream is = Files.newInputStream(destination); BufferedInputStream bis = new BufferedInputStream(is);){
-          AutoDetectParser parser = new AutoDetectParser();
-          Detector detector = parser.getDetector();
-          Metadata md1 = new Metadata();
-          md1.add(TikaCoreProperties.RESOURCE_NAME_KEY, destination.getFileName().toString());
-          org.apache.tika.mime.MediaType mediaType = detector.detect(bis, md1);
-          map.put("mediaType", mediaType.toString());
-          logger.trace("Assigned media type {} to content information.", map.get("mediaType"));
+            if (!map.containsKey("mediaType")) {
+                logger.trace("Trying to determine content type.");
+                try (InputStream is = Files.newInputStream(destination); BufferedInputStream bis = new BufferedInputStream(is);) {
+                    AutoDetectParser parser = new AutoDetectParser();
+                    Detector detector = parser.getDetector();
+                    Metadata md1 = new Metadata();
+                    String filename = destination.getFileName().toString();
+                    //add filename to support tika...first, we have to remove the appended timestamp from filenname.ext_timestamp to make this work
+                    md1.add(TikaCoreProperties.RESOURCE_NAME_KEY, filename.substring(0, filename.lastIndexOf("_")));
+                    org.apache.tika.mime.MediaType mediaType = detector.detect(bis, md1);
+                    map.put("mediaType", mediaType.toString());
+                    logger.trace("Assigned media type {} to content information.", map.get("mediaType"));
+                }
+            }
+        } catch (IOException ex) {
+            logger.error("Failed to finish upload. Throwing CustomInternalServerError.", ex);
+            throw new CustomInternalServerError("Unable to read from stream. Upload canceled.");
+        } catch (NoSuchAlgorithmException ex) {
+            logger.error("Failed to initialize SHA1 message digest. Throwing CustomInternalServerError.", ex);
+            throw new CustomInternalServerError("Internal digest initialization error. Unable to perform upload.");
+        } finally {
+            if (out != null) {
+                try {
+                    out.flush();
+                    out.close();
+                } catch (IOException ignored) {
+                }
+            }
         }
-      }
-    } catch(IOException ex){
-      logger.error("Failed to finish upload. Throwing CustomInternalServerError.", ex);
-      throw new CustomInternalServerError("Unable to read from stream. Upload canceled.");
-    } catch(NoSuchAlgorithmException ex){
-      logger.error("Failed to initialize SHA1 message digest. Throwing CustomInternalServerError.", ex);
-      throw new CustomInternalServerError("Internal digest initialization error. Unable to perform upload.");
-    } finally{
-      if(out != null){
-        try{
-          out.flush();
-          out.close();
-        } catch(IOException ignored){
+    }
+
+    @Override
+    public void read(String resourceId, String callerId, String path, String versionId, OutputStream destination, Map<String, String> options) {
+        String contentUriString = options.get("contentUri");
+        logger.trace("Checking URI {}.", contentUriString);
+
+        if (!Files.exists(Paths.get(URI.create(contentUriString)))) {
+            logger.error("Content at URI {} seems not to exist.", contentUriString);
+            throw new ResourceNotFoundException("The provided resource was not found on the server.");
+        } else {
+            logger.trace("Content URI at {} found.", contentUriString);
         }
-      }
-    }
-  }
 
-  @Override
-  public void read(String resourceId, String callerId, String path, String versionId, OutputStream destination, Map<String, String> options){
-    String contentUriString = options.get("contentUri");
-    logger.trace("Checking URI {}.", contentUriString);
-
-     if(!Files.exists(Paths.get(URI.create(contentUriString)))){
-      logger.error("Content at URI {} seems not to exist.", contentUriString);
-      throw new ResourceNotFoundException("The provided resource was not found on the server.");
-    } else{
-      logger.trace("Content URI at {} found.", contentUriString);
+        try {
+            logger.trace("Copying file content to target stream.");
+            Files.copy(Paths.get(URI.create(contentUriString)), destination);
+        } catch (IOException ex) {
+            logger.error("Failed to read content stream.", ex);
+            throw new CustomInternalServerError("Failed to read content stream.");
+        }
     }
 
-    try{
-      logger.trace("Copying file content to target stream.");
-      Files.copy(Paths.get(URI.create(contentUriString)), destination);
-    } catch(IOException ex){
-      logger.error("Failed to read content stream.", ex);
-      throw new CustomInternalServerError("Failed to read content stream.");
+    @Override
+    public VersionInfo info(String resourceId, String path, String versionId, Map<String, String> options) {
+        return new VersionInfo(resourceId, versionId, null, null, null, null, null, new HashSet<>(Arrays.asList(path)));
     }
-  }
 
-  @Override
-  public VersionInfo info(String resourceId, String path, String versionId, Map<String, String> options){
-    return new VersionInfo(resourceId, versionId, null, null, null, null, null, new HashSet<>(Arrays.asList(path)));
-  }
-
-  @Override
-  public String getServiceName(){
-    return "none";
-  }
+    @Override
+    public String getServiceName() {
+        return "none";
+    }
 
 }

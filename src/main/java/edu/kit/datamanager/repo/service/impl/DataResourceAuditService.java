@@ -36,105 +36,104 @@ import org.slf4j.LoggerFactory;
  */
 public class DataResourceAuditService implements IAuditService<DataResource> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(DataResourceAuditService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataResourceAuditService.class);
 
-  private final Javers javers;
-  private final RepoBaseConfiguration applicationProperties;
+    private final Javers javers;
+    private final RepoBaseConfiguration applicationProperties;
 
-  public DataResourceAuditService(Javers javers, RepoBaseConfiguration applicationProperties) {
-    this.javers = javers;
-    this.applicationProperties = applicationProperties;
-    applicationProperties.setAuditService(this);
-  }
-
-  @Override
-  public void captureAuditInformation(DataResource resource, String principal) {
-    LOGGER.trace("Calling captureAuditInformation(DataResource#{}, {}).", resource.getId(), principal);
-    if (!applicationProperties.isAuditEnabled()) {
-      LOGGER.trace("Audit is disabled. Skipping registration of resource.");
-    } else {
-      LOGGER.trace("Capturing audit information for resource {} modified by principal {}.", resource, principal);
-      javers.commit(principal, resource);
-      LOGGER.trace("Successfully committed audit information for resource with id '{}'.", resource.getId());
+    public DataResourceAuditService(Javers javers, RepoBaseConfiguration applicationProperties) {
+        this.javers = javers;
+        this.applicationProperties = applicationProperties;
+        applicationProperties.setAuditService(this);
     }
-  }
 
-  @Override
-  public Optional<String> getAuditInformationAsJson(String resourceId, int page, int resultsPerPage) {
-    LOGGER.trace("Calling getAuditInformationAsJson({}, {}, {}).", resourceId, page, resultsPerPage);
-    if (!applicationProperties.isAuditEnabled()) {
-      LOGGER.trace("Audit is disabled. Returning empty result.");
-      return Optional.empty();
-    } else {
-      JqlQuery query = QueryBuilder.byInstanceId(resourceId, DataResource.class).limit(resultsPerPage).skip(page * resultsPerPage).build();
-      Changes result = javers.findChanges(query);
-
-      LOGGER.trace("Obtained {} change elements. Returning them in serialized format.", result.size());
-      return Optional.of(javers.getJsonConverter().toJson(result));
-    }
-  }
-
-  @Override
-  public Optional<DataResource> getResourceByVersion(String resourceId, long version) {
-    LOGGER.trace("Calling getResourceByVersion({}, {}).", resourceId, version);
-    Optional<DataResource> result = Optional.empty();
-    if ((resourceId != null) && (version > 0)) {
-      if (applicationProperties.isAuditEnabled()) {
-        JqlQuery query = QueryBuilder.
-                byInstanceId(resourceId, DataResource.class).
-                withVersion(version).
-                withScopeDeepPlus(applicationProperties.getMaxJaversScope()).
-                build();
-        LOGGER.trace("Obtaining shadows from Javers repository.");
-        List<Shadow<DataResource>> shadows = javers.findShadows(query);
-
-        if (!CollectionUtils.isEmpty(shadows)) {
-          LOGGER.trace("Shadow for resource id '{}' and version {} found. Returning result.", resourceId, version);
-          Shadow<DataResource> versionShadow = shadows.get(0);
-          LOGGER.trace("Returning shadow at index 0 with commit metadata {}.", versionShadow.getCommitMetadata());
-          result = Optional.of(versionShadow.get());
+    @Override
+    public void captureAuditInformation(DataResource resource, String principal) {
+        LOGGER.trace("Calling captureAuditInformation(DataResource#{}, {}).", resource.getId(), principal);
+        if (!applicationProperties.isAuditEnabled()) {
+            LOGGER.trace("Audit is disabled. Skipping registration of resource.");
         } else {
-          LOGGER.warn("No version information found for resource id '{}'. Returning empty result.", resourceId);
+            LOGGER.trace("Capturing audit information for resource {} modified by principal {}.", resource, principal);
+            javers.commit(principal, resource);
+            LOGGER.trace("Successfully committed audit information for resource with id '{}'.", resource.getId());
         }
-      } else {
-        LOGGER.trace("Audit is disabled. Returning empty result.");
-      }
     }
-    return result;
-  }
 
-  @Override
-  public long getCurrentVersion(String resourceId) {
-    LOGGER.trace("Calling getCurrentVersion({}).", resourceId);
-    if (!applicationProperties.isAuditEnabled()) {
-      LOGGER.trace("Audit is disabled. Returning 0.");
-      return 0l;
-    } else {
-      JqlQuery query = QueryBuilder.byInstanceId(resourceId, DataResource.class).limit(1).build();
-      LOGGER.trace("Obtaining snapshots from Javers repository.");
-      List<CdoSnapshot> snapshots = javers.findSnapshots(query);
+    @Override
+    public Optional<String> getAuditInformationAsJson(String resourceId, int page, int resultsPerPage) {
+        LOGGER.trace("Calling getAuditInformationAsJson({}, {}, {}).", resourceId, page, resultsPerPage);
+        Optional result = Optional.empty();
+        if (!applicationProperties.isAuditEnabled()) {
+            LOGGER.trace("Audit is disabled. Returning empty result.");
+        } else {
+            JqlQuery query = QueryBuilder.byInstanceId(resourceId, DataResource.class).limit(resultsPerPage).skip(page * resultsPerPage).build();
+            Changes changes = javers.findChanges(query);
 
-      if (CollectionUtils.isEmpty(snapshots)) {
-        LOGGER.warn("No version information found for resource id '{}'. Returning 0.", resourceId);
-        return 0;
-      }
-
-      long version = snapshots.get(0).getVersion();
-      LOGGER.trace("Snapshot for resource id '{}' found. Returning version {}.", resourceId, version);
-      return version;
+            LOGGER.trace("Obtained {} change elements. Returning them in serialized format.", changes.size());
+            result = Optional.of(javers.getJsonConverter().toJson(changes));
+        }
+        return result;
     }
-  }
 
-  @Override
-  public void deleteAuditInformation(String resourceId, DataResource resource) {
-    LOGGER.trace("Calling deleteAuditInformation({}, <resource>).", resourceId);
-    if (!applicationProperties.isAuditEnabled()) {
-      LOGGER.trace("Audit is disabled. Returning without doing anything.");
-    } else {
-      LOGGER.trace("Performing shallow delete of resource with id '{}'.", resourceId);
-      javers.commitShallowDelete(resourceId, resource);
-      LOGGER.trace("Shallow delete executed.");
+    @Override
+    public Optional<DataResource> getResourceByVersion(String resourceId, long version) {
+        LOGGER.trace("Calling getResourceByVersion({}, {}).", resourceId, version);
+        Optional<DataResource> result = Optional.empty();
+        if ((resourceId != null) && (version > 0)) {
+            if (!applicationProperties.isAuditEnabled()) {
+                LOGGER.trace("Audit is disabled. Returning empty result.");
+            } else {
+                JqlQuery query = QueryBuilder.
+                        byInstanceId(resourceId, DataResource.class).
+                        withVersion(version).
+                        withScopeDeepPlus(applicationProperties.getMaxJaversScope()).
+                        build();
+                LOGGER.trace("Obtaining shadows from Javers repository.");
+                List<Shadow<DataResource>> shadows = javers.findShadows(query);
+
+                if (!CollectionUtils.isEmpty(shadows)) {
+                    LOGGER.trace("Shadow for resource id '{}' and version {} found. Returning result.", resourceId, version);
+                    Shadow<DataResource> versionShadow = shadows.get(0);
+                    LOGGER.trace("Returning shadow at index 0 with commit metadata {}.", versionShadow.getCommitMetadata());
+                    result = Optional.of(versionShadow.get());
+                } else {
+                    LOGGER.warn("No version information found for resource id '{}'. Returning empty result.", resourceId);
+                }
+            }
+        }
+        return result;
     }
-  }
 
+    @Override
+    public long getCurrentVersion(String resourceId) {
+        LOGGER.trace("Calling getCurrentVersion({}).", resourceId);
+        long version = 0l;
+        if (!applicationProperties.isAuditEnabled()) {
+            LOGGER.trace("Audit is disabled. Returning 0.");
+        } else {
+            JqlQuery query = QueryBuilder.byInstanceId(resourceId, DataResource.class).limit(1).build();
+            LOGGER.trace("Obtaining snapshots from Javers repository.");
+            List<CdoSnapshot> snapshots = javers.findSnapshots(query);
+
+            if (CollectionUtils.isEmpty(snapshots)) {
+                LOGGER.warn("No version information found for resource id '{}'. Returning 0.", resourceId);
+            } else {
+                version = snapshots.get(0).getVersion();
+                LOGGER.trace("Snapshot for resource id '{}' found. Returning version {}.", resourceId, version);
+            }
+        }
+        return version;
+    }
+
+    @Override
+    public void deleteAuditInformation(String resourceId, DataResource resource) {
+        LOGGER.trace("Calling deleteAuditInformation({}, <resource>).", resourceId);
+        if (!applicationProperties.isAuditEnabled()) {
+            LOGGER.trace("Audit is disabled. Returning without doing anything.");
+        } else {
+            LOGGER.trace("Performing shallow delete of resource with id '{}'.", resourceId);
+            javers.commitShallowDelete(resourceId, resource);
+            LOGGER.trace("Shallow delete executed.");
+        }
+    }
 }
