@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import edu.kit.datamanager.repo.service.IRepoVersioningService;
 import org.apache.tika.metadata.TikaCoreProperties;
+import org.apache.tika.mime.MediaType;
 
 /**
  *
@@ -128,7 +129,7 @@ public class NoneDataVersioningService implements IRepoVersioningService {
                     String filename = destination.getFileName().toString();
                     //add filename to support tika...first, we have to remove the appended timestamp from filenname.ext_timestamp to make this work
                     md1.add(TikaCoreProperties.RESOURCE_NAME_KEY, filename.substring(0, filename.lastIndexOf("_")));
-                    org.apache.tika.mime.MediaType mediaType = detector.detect(bis, md1);
+                    MediaType mediaType = detector.detect(bis, md1);
                     map.put("mediaType", mediaType.toString());
                     logger.trace("Assigned media type {} to content information.", map.get("mediaType"));
                 }

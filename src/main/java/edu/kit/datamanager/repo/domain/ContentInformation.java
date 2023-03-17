@@ -215,7 +215,7 @@ public class ContentInformation implements EtagSupport, Serializable {
         if (!Objects.equals(this.relativePath, other.relativePath)) {
             return false;
         }
-        if (!Objects.equals(this.size, other.size)) {
+        if (this.size != other.size) {
             return false;
         }
         if (!Objects.equals(this.uploader, other.uploader)) {
@@ -240,7 +240,7 @@ public class ContentInformation implements EtagSupport, Serializable {
         hash = 41 * hash + Objects.hashCode(this.metadata);
         hash = 41 * hash + Objects.hashCode(this.tags);
         hash = 41 * hash + Objects.hashCode(this.relativePath);
-        hash = 41 * hash + Objects.hashCode(this.size);
+        hash = 41 * hash + Long.hashCode(this.size);
         hash = 41 * hash + Objects.hashCode(this.uploader);
         hash = 41 * hash + Objects.hashCode(this.version);
         hash = 41 * hash + Objects.hashCode(this.versioningService);
