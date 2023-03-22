@@ -49,11 +49,11 @@ public class DateBasedStorageService implements IRepoStorageService {
     public String createPath(DataResource resource) {
         Map<String, String> data = new HashMap<>();
         // ToDo: Get create date of data resource.
-        data.put("year", Integer.toString(Calendar.getInstance().get(Calendar.YEAR)));
-        data.put("month", Integer.toString(Calendar.getInstance().get(Calendar.MONTH)));
-        data.put("day", Integer.toString(Calendar.getInstance().get(Calendar.DAY_OF_MONTH)));
-        data.put("hour", Integer.toString(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)));
-        data.put("minute", Integer.toString(Calendar.getInstance().get(Calendar.MINUTE)));
+        data.put("year", String.format("%d", Calendar.getInstance().get(Calendar.YEAR)));
+        data.put("month", String.format("%02d", Calendar.getInstance().get(Calendar.MONTH)));
+        data.put("day", String.format("%02d", Calendar.getInstance().get(Calendar.DAY_OF_MONTH)));
+        data.put("hour", String.format("%02d", Calendar.getInstance().get(Calendar.HOUR_OF_DAY)));
+        data.put("minute", String.format("%02d", Calendar.getInstance().get(Calendar.MINUTE)));
 
         String pattern = applicationProperties.getPathPattern().replaceAll("\\@", "\\$");
         if (pattern.startsWith("/")) {
