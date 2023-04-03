@@ -50,7 +50,7 @@ public class DateBasedStorageService implements IRepoStorageService {
         Map<String, String> data = new HashMap<>();
         // ToDo: Get create date of data resource.
         data.put("year", String.format("%d", Calendar.getInstance().get(Calendar.YEAR)));
-        data.put("month", String.format("%02d", Calendar.getInstance().get(Calendar.MONTH)));
+        data.put("month", String.format("%02d", Calendar.getInstance().get(Calendar.MONTH) + 1));
         data.put("day", String.format("%02d", Calendar.getInstance().get(Calendar.DAY_OF_MONTH)));
         data.put("hour", String.format("%02d", Calendar.getInstance().get(Calendar.HOUR_OF_DAY)));
         data.put("minute", String.format("%02d", Calendar.getInstance().get(Calendar.MINUTE)));
