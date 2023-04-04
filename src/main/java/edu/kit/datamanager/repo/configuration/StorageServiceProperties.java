@@ -24,12 +24,12 @@ public class StorageServiceProperties {
     @Value("${repo.plugin.storage.id.charPerDirectory:4}")
     private int charPerDirectory;
 
-    @Value("${repo.plugin.storage.id.maxDepth:8}")
+    @Value("${repo.plugin.storage.id.maxDepth:7}")
     private int maxDepth;
 
     /**
      *Date-based storage properties
      */
-    @Value("${repo.plugin.storage.date.pathPattern:'@{year}'}")
+    @Value("${repo.plugin.storage.date.pathPattern:'@{year}/@{month}'}")
     private String pathPattern;
 }
