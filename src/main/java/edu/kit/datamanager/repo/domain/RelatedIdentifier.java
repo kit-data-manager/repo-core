@@ -22,13 +22,13 @@ import edu.kit.datamanager.entities.Identifier;
 import edu.kit.datamanager.util.EnumUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Objects;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import lombok.Data;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
@@ -123,7 +123,7 @@ public class RelatedIdentifier {
     @Field(type = FieldType.Keyword, name = "relationType")
     private RELATION_TYPES relationType;
     @Schema(description = "Identifier scheme.", required = false)
-    @OneToOne(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @Field(type = FieldType.Nested, includeInParent = true)
     private Scheme scheme;
     @Schema(description = "Related metadata scheme.", required = false)

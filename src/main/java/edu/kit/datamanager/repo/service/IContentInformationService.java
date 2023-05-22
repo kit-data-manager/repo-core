@@ -22,7 +22,7 @@ import edu.kit.datamanager.service.IGenericService;
 import edu.kit.datamanager.service.IServiceAuditSupport;
 import java.io.InputStream;
 import java.util.List;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -17,10 +17,10 @@ package edu.kit.datamanager.repo.domain;
 
 import edu.kit.datamanager.entities.BaseEnum;
 import edu.kit.datamanager.entities.Identifier;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.data.elasticsearch.annotations.Field;

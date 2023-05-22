@@ -26,7 +26,7 @@ import edu.kit.datamanager.repo.dao.spec.dataresource.ResourceTypeSpec;
 import edu.kit.datamanager.repo.domain.DataResource;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -39,7 +39,7 @@ import org.springframework.http.ResponseEntity;
  * @author jejkal
  */
 /*@RunWith(PowerMockRunner.class)
-@PowerMockIgnore("javax.net.ssl.*")
+@PowerMockIgnore("jakarta.net.ssl.*")
 @PrepareForTest({HttpClients.class})*/
 public class HttpContentProviderTest{
 

@@ -18,12 +18,12 @@ package edu.kit.datamanager.repo.domain;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import edu.kit.datamanager.entities.messaging.IAMQPSubmittable;
 import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Data;
 
 /**
