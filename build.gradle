@@ -110,7 +110,9 @@ dependencies {
     //implementation "com.monitorjbl:spring-json-view:1.0.1"
 
     implementation "de.codecentric:spring-boot-admin-starter-client:2.7.10"
-
+    // log4j core
+    implementation "org.apache.logging.log4j:log4j-core"
+    implementation "ch.qos.logback:logback-classic"
     //Java 11 Support 
 //    implementation "javax.xml.bind:jaxb-api:2.3.1"
 //    implementation "com.sun.xml.bind:jaxb-core:4.0.2"

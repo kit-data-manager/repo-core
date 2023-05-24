@@ -16,16 +16,14 @@
 package edu.kit.datamanager.repo.configuration;
 
 import edu.kit.datamanager.security.filter.KeycloakTokenFilter;
-import edu.kit.datamanager.security.filter.KeycloakTokenValidator;
-import edu.kit.datamanager.security.filter.NoAuthenticationFilter;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -53,34 +51,25 @@ public class WebSecurityConfig {
   @Autowired
   private ApplicationProperties applicationProperties;
 
+  @Autowired
+  private Optional<KeycloakTokenFilter> keycloaktokenFilterBean;
+
   public WebSecurityConfig() {
   }
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    HttpSecurity httpSecurity = http.authorizeHttpRequests()
-            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
+    return http.authorizeHttpRequests(authorize
+            -> authorize
+                    .requestMatchers(EndpointRequest.toAnyEndpoint()).hasAnyRole("ADMIN", "ACTUATOR")
+                    .requestMatchers("/api/v1/**").permitAll()
+                    .anyRequest().authenticated()
+    )
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+            .addFilterAfter(keycloaktokenFilterBean.get(), BasicAuthenticationFilter.class)
             .csrf().disable()
-            // .addFilterBefore(corsFilter(), SessionManagementFilter.class)
-            .addFilterAfter(new KeycloakTokenFilter(KeycloakTokenValidator.builder()
-                    .jwtLocalSecret(applicationProperties.getJwtSecret())
-                    .build(null, null, null)), BasicAuthenticationFilter.class);
-    if (!applicationProperties.isAuthEnabled()) {
-      logger.info("Authentication is DISABLED. Adding 'NoAuthenticationFilter' to authentication chain.");
-      AuthenticationManager defaultAuthenticationManager = http.getSharedObject(AuthenticationManager.class);
-      httpSecurity = httpSecurity.addFilterAfter(new NoAuthenticationFilter(applicationProperties.getJwtSecret(), defaultAuthenticationManager), BasicAuthenticationFilter.class);
-    } else {
-      logger.info("Authentication is ENABLED.");
-    }
-
-    httpSecurity.
-            authorizeHttpRequests().
-            requestMatchers("/api/v1").authenticated();
-
-    http.headers().cacheControl().disable();
-
-    return http.build();
+            .build();
   }
 
   @Bean
@@ -100,7 +89,7 @@ public class WebSecurityConfig {
     final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     CorsConfiguration config = new CorsConfiguration();
     config.setAllowCredentials(true);
-    config.addAllowedOrigin("*"); // @Value: http://localhost:8080
+    config.addAllowedOrigin("http://localhost*"); // @Value: http://localhost:8080
     config.addAllowedHeader("*");
     config.addAllowedMethod("*");
     config.addExposedHeader("Content-Range");
