@@ -51,7 +51,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
@@ -62,7 +61,7 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
  */
 @RunWith(SpringRunner.class)
 /*@PowerMockRunnerDelegate(SpringJUnit4ClassRunner.class)
-@PowerMockIgnore({"javax.crypto.*", "javax.management.*"})
+@PowerMockIgnore({"jakarta.crypto.*", "jakarta.management.*"})
 @PrepareForTest(AuthenticationHelper.class)*/
 @SpringBootTest
 @AutoConfigureMockMvc

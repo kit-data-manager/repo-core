@@ -18,11 +18,11 @@ package edu.kit.datamanager.repo.domain;
 import edu.kit.datamanager.annotations.Searchable;
 import edu.kit.datamanager.annotations.SecureUpdate;
 import io.swagger.v3.oas.annotations.media.Schema;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import lombok.Data;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
@@ -42,13 +42,13 @@ public class GeoLocation {
     @SecureUpdate({"FORBIDDEN"})
     @Searchable
     private Long id;
-    @OneToOne(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @Field(type = FieldType.Nested, includeInParent = true)
     private Point point;
-    @OneToOne(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @Field(type = FieldType.Nested, includeInParent = true)
     private Box box;
-    @OneToOne(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @Field(type = FieldType.Nested, includeInParent = true)
     private Polygon polygon;
     @Field(type = FieldType.Text, name = "place")

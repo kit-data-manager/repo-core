@@ -22,7 +22,7 @@ import edu.kit.datamanager.exceptions.BadArgumentException;
 import edu.kit.datamanager.exceptions.CustomInternalServerError;
 import edu.kit.datamanager.repo.configuration.ApplicationProperties;
 import edu.kit.datamanager.repo.configuration.RepoBaseConfiguration;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

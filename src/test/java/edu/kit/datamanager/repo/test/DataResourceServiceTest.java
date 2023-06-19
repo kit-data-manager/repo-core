@@ -71,7 +71,7 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
  */
 @RunWith(SpringRunner.class)
 /*@PowerMockRunnerDelegate(SpringJUnit4ClassRunner.class)
-@PowerMockIgnore({"javax.crypto.*", "javax.management.*"})
+@PowerMockIgnore({"jakarta.crypto.*", "jakarta.management.*"})
 @PrepareForTest(AuthenticationHelper.class)*/
 @SpringBootTest
 @AutoConfigureMockMvc
