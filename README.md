@@ -15,7 +15,7 @@ and general purpose implementations, e.g. helpers and exceptions.
 
 In order to build this module you'll need:
 
-* Java SE Development Kit 11 or higher
+* Java SE Development Kit 17 or higher
 
 After obtaining the sources change to the folder where the sources are located and call:
 
@@ -39,14 +39,14 @@ Instead of using a local build you may also use the most recent version from the
 <dependency>
     <groupId>edu.kit.datamanager</groupId>
     <artifactId>repo-core</artifactId>
-    <version>1.1.2</version>
+    <version>1.2.0</version>
 </dependency>
 ~~~~
 
 ### Gradle (short)
 
 ~~~~
-    implementation "edu.kit.datamanager:repo-core:1.1.2"
+    implementation "edu.kit.datamanager:repo-core:1.2.0"
 ~~~~
 
 ## License
