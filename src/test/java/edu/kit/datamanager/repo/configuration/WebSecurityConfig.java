@@ -16,6 +16,7 @@
 package edu.kit.datamanager.repo.configuration;
 
 import edu.kit.datamanager.security.filter.KeycloakTokenFilter;
+import edu.kit.datamanager.security.filter.PublicAuthenticationFilter;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,12 +63,13 @@ public class WebSecurityConfig {
     return http.authorizeHttpRequests(authorize
             -> authorize
                     .requestMatchers(EndpointRequest.toAnyEndpoint()).hasAnyRole("ADMIN", "ACTUATOR")
-                    .requestMatchers("/api/v1/**").permitAll()
+                    .requestMatchers("/**").permitAll()
                     .anyRequest().authenticated()
     )
             .sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
             .addFilterAfter(keycloaktokenFilterBean.get(), BasicAuthenticationFilter.class)
+            .addFilterAfter(new PublicAuthenticationFilter(applicationProperties.getJwtSecret()), BasicAuthenticationFilter.class)
             .csrf().disable()
             .build();
   }
