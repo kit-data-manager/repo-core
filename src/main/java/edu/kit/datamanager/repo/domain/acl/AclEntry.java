@@ -25,6 +25,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 /**
@@ -49,6 +50,7 @@ public class AclEntry{
   @SecureUpdate("FORBIDDEN")
   private Long id;
   @SecureUpdate("FORBIDDEN")
+  @NotNull(message = "Subject ID of ACL entry must not be null.")
   private String sid;
   @SecureUpdate("ADMINISTRATE")
   @Enumerated(EnumType.STRING)
