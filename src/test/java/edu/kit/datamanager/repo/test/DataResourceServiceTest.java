@@ -260,7 +260,7 @@ public class DataResourceServiceTest {
         Assert.assertEquals(AuthenticationHelper.ANONYMOUS_USER_PRINCIPAL, resource.getAcls().toArray(new AclEntry[]{})[0].getSid());
         Assert.assertEquals(PERMISSION.ADMINISTRATE, resource.getAcls().toArray(new AclEntry[]{})[0].getPermission());
     }
-
+    
     @Test
     @Ignore
     public void testCreateResourceWithWithFullAuthentication() throws JsonProcessingException {
@@ -288,6 +288,15 @@ public class DataResourceServiceTest {
         Assert.fail("Test should have failed already, but resource " + resource + " has been created.");
     }
 
+     @Test(expected = BadArgumentException.class)
+    public void testCreateWithAclSidNull() {
+        DataResource resource = createResourceWithDoi("testDoi8", "MyResource", null);
+        AclEntry e = new AclEntry(null, PERMISSION.WRITE);
+        resource.getAcls().add(e);
+        resource = service.create(resource, AuthenticationHelper.ANONYMOUS_USER_PRINCIPAL);
+        Assert.fail("Test should have failed already, but resource " + resource + " has been created.");
+    }
+    
     private DataResource createResourceWithDoi(String pid, String title, String type) {
         DataResource resource;
 
