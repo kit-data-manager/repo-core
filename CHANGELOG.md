@@ -18,6 +18,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+## [1.2.0] - 2023-06-27
+
+### Changed
+- At least JDK 17 is now required.
+- Bump some github actions from 2 to 3.
+- Bump org.springframework.boot:spring-boot-dependencies from 2.7.7 to 3.1.0.
+- Bump gradle from 7.6.1 to 8.1.1. 
+- Bump service-base from 1.1.1 to 1.2.0.
+- Bump JaVers from 6.14.0 to 7.0.0.
+
+### Added
+
+### Fixed
+- Add check for empty ACL SID.
+
+### Deprecated
+
+### Removed
+
 ## [1.1.2] - 2023-03-17
 
 ### Changed
@@ -223,7 +242,8 @@ Extracted from the 'base-repo' project.
 ### Removed
 - none
 
-[Unreleased]: https://github.com/kit-data-manager/repo-core/compare/v1.1.2...HEAD
+[Unreleased]: https://github.com/kit-data-manager/repo-core/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/kit-data-manager/repo-core/compare/v1.1.2...v1.2.0
 [1.1.2]: https://github.com/kit-data-manager/repo-core/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/kit-data-manager/repo-core/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/kit-data-manager/repo-core/compare/v1.0.4...v1.1.0

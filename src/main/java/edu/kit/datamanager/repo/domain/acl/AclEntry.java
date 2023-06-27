@@ -19,12 +19,13 @@ import edu.kit.datamanager.annotations.SecureUpdate;
 import edu.kit.datamanager.util.EnumUtils;
 import edu.kit.datamanager.entities.PERMISSION;
 import java.util.Objects;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 /**
@@ -49,6 +50,7 @@ public class AclEntry{
   @SecureUpdate("FORBIDDEN")
   private Long id;
   @SecureUpdate("FORBIDDEN")
+  @NotNull(message = "Subject ID of ACL entry must not be null.")
   private String sid;
   @SecureUpdate("ADMINISTRATE")
   @Enumerated(EnumType.STRING)

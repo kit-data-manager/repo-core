@@ -36,18 +36,18 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
@@ -101,19 +101,19 @@ public class DataResource implements EtagSupport, Serializable {
 
     //mandatory
     @Schema(required = true)
-    @OneToOne(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @Field(type = FieldType.Nested, includeInParent = true)
     private PrimaryIdentifier identifier;
 
     //vocab
     @Schema(required = true)
-    @OneToMany(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "resource_id")
     @Field(type = FieldType.Nested, includeInParent = true)
     private Set<Agent> creators = new HashSet<>();
 
     @Schema(required = true)
-    @OneToMany(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "resource_id")
     @Field(type = FieldType.Nested, includeInParent = true)
     private Set<Title> titles = new HashSet<>();
@@ -130,44 +130,44 @@ public class DataResource implements EtagSupport, Serializable {
     private String publicationYear;
 
     @Schema(required = true)
-    @OneToOne(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "resource_id")
     @Field(type = FieldType.Nested, includeInParent = true)
     private ResourceType resourceType;
 
     //recommended
     @Schema(description = "One or more subjects describing the resource (recommended).", required = false)
-    @OneToMany(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "resource_id")
     @Field(type = FieldType.Nested, includeInParent = true)
     private Set<Subject> subjects = new HashSet<>();
 
     @Schema(description = "One or more contributors that have contributed to the resource (recommended).", required = false)
-    @OneToMany(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "resource_id")
     @Field(type = FieldType.Nested, includeInParent = true)
     private Set<Contributor> contributors = new HashSet<>();
 
     @Schema(description = "One or more dates related to the resource, e.g. creation or publication date (recommended).", required = false)
-    @OneToMany(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "resource_id")
     @Field(type = FieldType.Nested, includeInParent = true)
     private Set<Date> dates = new HashSet<>();
 
     @Schema(description = "One or more related identifiers the can be used to identify related resources, e.g. metadata, parts or derived resources (recommended).", required = false)
-    @OneToMany(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "resource_id")
     @Field(type = FieldType.Nested, includeInParent = true)
     private Set<RelatedIdentifier> relatedIdentifiers = new HashSet<>();
 
     @Schema(description = "One or more description entries providing additional information, e.g. abstract or technical information (recommended).", required = false)
-    @OneToMany(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "resource_id")
     @Field(type = FieldType.Nested, includeInParent = true)
     private Set<Description> descriptions = new HashSet<>();
 
     @Schema(description = "One or more geolocation entries providing information about the location of the resource, e.g. storage or aquisition location (recommended).", required = false)
-    @OneToMany(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "resource_id")
     @Field(type = FieldType.Nested, includeInParent = true)
     private Set<GeoLocation> geoLocations = new HashSet<>();
@@ -179,7 +179,7 @@ public class DataResource implements EtagSupport, Serializable {
     private String language;
 
     @Schema(description = "One or more alternate identifiers the can be used to identify the resources in addition to the primary identifier.", required = false)
-    @OneToMany(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @Field(type = FieldType.Nested, includeInParent = true)
     private Set<Identifier> alternateIdentifiers = new HashSet<>();
 
@@ -201,13 +201,13 @@ public class DataResource implements EtagSupport, Serializable {
 
     //e.g. CC-0
     @Schema(description = "Intellectual property information.", required = false)
-    @OneToMany(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "resource_id")
     @Field(type = FieldType.Nested, includeInParent = true)
     private Set<Scheme> rights = new HashSet<>();
 
     @Schema(description = "Funding information, e.g. funder, award number and title.", required = false)
-    @OneToMany(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "resource_id")
     @Field(type = FieldType.Nested, includeInParent = true)
     private Set<FundingReference> fundingReferences = new HashSet<>();
@@ -235,7 +235,7 @@ public class DataResource implements EtagSupport, Serializable {
     @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
     Instant embargoDate;
 
-    @OneToMany(cascade = javax.persistence.CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @SecureUpdate({"ROLE_ADMINISTRATOR", "PERMISSION_ADMINISTRATE"})
     @JoinColumn(name = "resource_id")
     @Field(type = FieldType.Nested, includeInParent = true)

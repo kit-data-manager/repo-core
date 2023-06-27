@@ -16,7 +16,7 @@
 package edu.kit.datamanager.service;
 
 import edu.kit.datamanager.entities.ContentElement;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
 
 /**

@@ -47,7 +47,7 @@ import org.springframework.web.client.support.RestGatewaySupport;
  * @author jejkal
  */
 @RunWith(SpringRunner.class)
-//@PowerMockIgnore("javax.net.ssl.*")
+//@PowerMockIgnore("jakarta.net.ssl.*")
 //@PrepareForTest({RestTemplate.class})
 @SpringBootTest
 @ContextConfiguration(classes = SpringTestConfig.class)
