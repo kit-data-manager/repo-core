@@ -31,6 +31,9 @@ public class RepoBaseConfigurationTest{
     RepoBaseConfiguration props = new RepoBaseConfiguration();
     props.setBasepath(URI.create("file:///tmp/").toURL());
     Assert.assertEquals("file:/tmp/", props.getBasepath().toString());
+    String landingPage = "https://www.example.org/landingpage?id={id}&version=${version}";
+    props.setLandingPage(landingPage);
+    Assert.assertEquals(landingPage, props.getLandingPage());
   }
 //
 //  @Test

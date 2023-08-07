@@ -37,6 +37,16 @@ public class RepoBaseConfiguration {
    */
   private URL basepath;
   /**
+   * Redirect to internal or external landing page.
+   * The string may contain two placeholders for substitution:
+   * <ol>
+   * <li> {id} - Identifier of the digital object (mandatory) </li>
+   * <li> {version} - Version of the digital object (optional)</li> 
+   * </ol>
+   * e.g.: https://www.example.org/landingpage?id={id}&version={version}
+   */
+  private String landingPage;
+  /**
    * Repo is read only or not.
    */
   private boolean readOnly;
@@ -115,19 +125,6 @@ public class RepoBaseConfiguration {
     this.basepath = basePath;
   }
 
-//  /**
-//   * @return the hierarchy
-//   */
-//  public FileHierarchy getHierarchy() {
-//    return hierarchy;
-//  }
-//
-//  /**
-//   * @param hierarchy the hierarchy to set
-//   */
-//  public void setHierarchy(FileHierarchy hierarchy) {
-//    this.hierarchy = hierarchy;
-//  }
   /**
    * Returns status of the repository. writeable <-> readonly
    * @return the readOnly
@@ -302,6 +299,20 @@ public class RepoBaseConfiguration {
    */
   public void setMaxJaversScope(int maxJaversScope) {
     this.maxJaversScope = maxJaversScope;
+  }
+
+  /**
+   * @return the landingPage
+   */
+  public String getLandingPage() {
+    return landingPage;
+  }
+
+  /**
+   * @param landingPage the landingPage to set
+   */
+  public void setLandingPage(String landingPage) {
+    this.landingPage = landingPage;
   }
 
 }
