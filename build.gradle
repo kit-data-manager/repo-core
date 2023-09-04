@@ -98,7 +98,7 @@ dependencies {
     implementation "com.google.code.gson:gson:2.10.1"
 
     // Database
-    implementation "com.h2database:h2:2.1.214"
+    implementation "com.h2database:h2:2.2.222"
     implementation "org.postgresql:postgresql:42.6.0"
     // XML
     implementation "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.15.2"
