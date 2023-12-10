@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Fixed
+* Bump actions/setup-java to 3.13.0
+* Bump com.h2database:h2 to 2.2.224
+* Bump org.javers:javers-spring-boot-starter-sql to 7.3.3
+* Bump actions/checkout to 4
+* Bump io.freefair.maven-publish-java to 8.3
+* Bump io.freefair.lombok to 8.3
 
 ### Deprecated
 
