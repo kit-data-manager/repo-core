@@ -92,7 +92,7 @@ dependencies {
     // includes commons-lang3
     implementation "org.apache.commons:commons-text:1.10.0"
     implementation 'org.apache.httpcomponents:httpclient:4.5.14'
-    implementation "org.apache.tika:tika-core:2.8.0"
+    implementation "org.apache.tika:tika-core:2.9.1"
     // javers
     implementation "org.javers:javers-spring-boot-starter-sql:${javersVersion}"
     implementation "com.google.code.gson:gson:2.10.1"
