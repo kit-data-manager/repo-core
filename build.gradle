@@ -99,7 +99,7 @@ dependencies {
 
     // Database
     implementation "com.h2database:h2:2.2.224"
-    implementation "org.postgresql:postgresql:42.6.0"
+    implementation "org.postgresql:postgresql:42.7.1"
     // XML
     implementation "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.16.1"
     implementation "com.fasterxml.jackson.module:jackson-module-afterburner:2.16.1"
