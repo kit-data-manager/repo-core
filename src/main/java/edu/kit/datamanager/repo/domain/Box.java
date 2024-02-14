@@ -36,21 +36,21 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 public class Box {
 
     @Id
-    @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, accessMode = Schema.AccessMode.READ_ONLY)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @SecureUpdate({"FORBIDDEN"})
     @Searchable
     private Long id;
-    @Schema(description = "-67.302", example = "-180 <= westLongitude <= 180", required = true)
+    @Schema(description = "-67.302", example = "-180 <= westLongitude <= 180", requiredMode = Schema.RequiredMode.REQUIRED)
     @Field(type = FieldType.Float, name = "westLongitude")
     private float westLongitude;
-    @Schema(description = "-67.302", example = "-180 <= eastLongitude <= 180", required = true)
+    @Schema(description = "-67.302", example = "-180 <= eastLongitude <= 180", requiredMode = Schema.RequiredMode.REQUIRED)
     @Field(type = FieldType.Float, name = "eastLongitude")
     private float eastLongitude;
-    @Schema(description = "31.233", example = "-90 <= southLatitude <= 90", required = true)
+    @Schema(description = "31.233", example = "-90 <= southLatitude <= 90", requiredMode = Schema.RequiredMode.REQUIRED)
     @Field(type = FieldType.Float, name = "southLatitude")
     private float southLatitude;
-    @Schema(description = "31.233", example = "-90 <= northLatitude <= 90", required = true)
+    @Schema(description = "31.233", example = "-90 <= northLatitude <= 90", requiredMode = Schema.RequiredMode.REQUIRED)
     @Field(type = FieldType.Float, name = "northLatitude")
     private float northLatitude;
 

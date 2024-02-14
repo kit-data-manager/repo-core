@@ -106,27 +106,27 @@ public class RelatedIdentifier {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, accessMode = Schema.AccessMode.READ_ONLY)
     @SecureUpdate({"FORBIDDEN"})
     @Searchable
     private Long id;
-    @Schema(description = "Controlled vocabulary, e.g. INTERNAL or DOI.", required = true)
+    @Schema(description = "Controlled vocabulary, e.g. INTERNAL or DOI.", requiredMode = Schema.RequiredMode.REQUIRED)
     @Enumerated(EnumType.STRING)
     @Field(type = FieldType.Keyword, name = "identifierType")
     private Identifier.IDENTIFIER_TYPE identifierType;
-    @Schema(description = "10.1234/foo", required = true)
+    @Schema(description = "10.1234/foo", requiredMode = Schema.RequiredMode.REQUIRED)
     @Field(type = FieldType.Text, name = "value")
     private String value;
     //vocab, e.g. IsMetadataFor...
-    @Schema(description = "Controlled vocabulary value describing the relation type, e.g. IS_PART_OF or IS_METADATA_FOR.", required = true)
+    @Schema(description = "Controlled vocabulary value describing the relation type, e.g. IS_PART_OF or IS_METADATA_FOR.", requiredMode = Schema.RequiredMode.REQUIRED)
     @Enumerated(EnumType.STRING)
     @Field(type = FieldType.Keyword, name = "relationType")
     private RELATION_TYPES relationType;
-    @Schema(description = "Identifier scheme.", required = false)
+    @Schema(description = "Identifier scheme.", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @OneToOne(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @Field(type = FieldType.Nested, includeInParent = true)
     private Scheme scheme;
-    @Schema(description = "Related metadata scheme.", required = false)
+    @Schema(description = "Related metadata scheme.", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @Field(type = FieldType.Keyword, name = "relatedMetadataScheme")
     private String relatedMetadataScheme;
 

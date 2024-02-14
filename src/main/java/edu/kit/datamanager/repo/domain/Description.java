@@ -63,20 +63,20 @@ public class Description {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, accessMode = Schema.AccessMode.READ_ONLY)
     @SecureUpdate({"FORBIDDEN"})
     @Searchable
     private Long id;
-    @Schema(description = "The actual description as full text.", required = true)
+    @Schema(description = "The actual description as full text.", requiredMode = Schema.RequiredMode.REQUIRED)
     @Field(type = FieldType.Text, name = "description")
     @Column(length = 10240)
     private String description;
     //vocab, e.g. Abstract
-    @Schema(description = "Controlled vocabulary value describing the description type.", required = true)
+    @Schema(description = "Controlled vocabulary value describing the description type.", requiredMode = Schema.RequiredMode.REQUIRED)
     @Enumerated(EnumType.STRING)
     @Field(type = FieldType.Keyword, name = "type")
     private TYPE type;
-    @Schema(description = "Description language.", required = false)
+    @Schema(description = "Description language.", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @Field(type = FieldType.Keyword, name = "lang")
     private String lang;
 

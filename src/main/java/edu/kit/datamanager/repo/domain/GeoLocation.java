@@ -38,7 +38,7 @@ public class GeoLocation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, accessMode = Schema.AccessMode.READ_ONLY)
     @SecureUpdate({"FORBIDDEN"})
     @Searchable
     private Long id;
