@@ -13,19 +13,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Fixed
-* Bump actions/setup-java to 4.0.0
+* Bump actions/setup-java to 4.1.0
 * Bump actions/checkout to 4
 * Bump codecov/codecov-action to 4
 * Bump github/codeql-action to 3
 * Bump maven-publish-java to 8.6
-* Bump javers-spring-boot-starter-sql to 7.3.7
+* Bump javers-spring-boot-starter-sql to 7.3.8
 * Bump springDocVersion to 2.3.0
 * Bump convert to 4.0.1
 * Bump tika-core to 2.9.1
 * Bump dependencycheck to 9.0.8
 * Bump commons-text to 1.11.0
 * Bump commons-io to 2.15.1
-* Bump postgresql to 42.7.1
+* Bump postgresql to 42.7.2
 * Bump h2 to 2.2.224
 * Bump jackson-jaxrs-json-provider to 2.16.1
 * Bump jackson-module-afterburner to 2.16.1
