@@ -15,7 +15,6 @@
  */
 package edu.kit.datamanager.repo.service.impl;
 
-import edu.kit.datamanager.repo.configuration.IdBasedStorageProperties;
 import edu.kit.datamanager.repo.configuration.StorageServiceProperties;
 import edu.kit.datamanager.repo.domain.DataResource;
 import edu.kit.datamanager.repo.service.IRepoStorageService;
