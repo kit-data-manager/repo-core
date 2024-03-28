@@ -129,17 +129,23 @@ public class ContentInformationService implements IContentInformationService {
             boolean force) {
         LOGGER.trace("Performing create({}, {}, {}, {}, {}).", contentInformation, "DataResource#" + resource.getId(), "<InputStream>", path, force);
 
-        //check for existing content information
-        //We use here no tags as tags are just for reflecting related content elements, but all tags are associated with the same content element.
-//    Page<ContentInformation> existingContentInformation = findAll(ContentInformation.createContentInformation(resource.getId(), path), PageRequest.of(0, 1));
         Optional<ContentInformation> existingContentInformation = dao.findByParentResourceAndRelativePath(resource, path);
         Map<String, String> options = new HashMap<>();
         options.put("force", Boolean.toString(force));
 
         ContentInformation contentInfo;
+        String newFileVersion = null;
         if (existingContentInformation.isPresent()) {
             contentInfo = existingContentInformation.get();
             options.put("contentUri", contentInfo.getContentUri());
+            try{
+                int previousVersion = Integer.parseInt(contentInfo.getFileVersion());
+                LOGGER.trace("Parsed previous file version '{}'. New version would be incremented by 1.", previousVersion);
+                newFileVersion = Integer.toString(previousVersion + 1);
+            }catch(NumberFormatException nfe){
+                LOGGER.info("Failed to parse previous file version with value '{}' as integer. Skip incrementing version.", contentInfo.getFileVersion());
+                newFileVersion = contentInfo.getFileVersion();
+            }
         } else {
             LOGGER.trace("No existing content information found.");
             //no existing content information, create new or take provided
@@ -148,6 +154,7 @@ public class ContentInformationService implements IContentInformationService {
             contentInfo.setParentResource(resource);
             contentInfo.setRelativePath(path);
             contentInfo.setMediaType((contentInformation != null) ? contentInformation.getMediaType() : null);
+            newFileVersion = Integer.toString(1);
         }
 
         if (contentInfo.getMediaType() != null) {
@@ -155,7 +162,6 @@ public class ContentInformationService implements IContentInformationService {
             options.put("mediaType", contentInfo.getMediaType());
         }
 
-        String newFileVersion = null;
         if (file != null) {
             LOGGER.trace("User upload detected. Preparing to consume data.");
             //file upload
@@ -202,8 +208,15 @@ public class ContentInformationService implements IContentInformationService {
             }
 
             if (options.containsKey("fileVersion")) {
+                //use file version from versioning service if provided
                 newFileVersion = options.get("fileVersion");
+                LOGGER.trace("Using new file version '{}' from versioning service. ", newFileVersion);
+            } else {
+                LOGGER.trace("Using new file version '{}' based on previous version. ", newFileVersion);
             }
+
+            LOGGER.trace("Setting new file version to {}.", newFileVersion);
+            contentInfo.setFileVersion(newFileVersion);
 
             LOGGER.trace("File successfully written using versioning service '{}'.", versioningService);
         } else {
@@ -254,11 +267,6 @@ public class ContentInformationService implements IContentInformationService {
         long newMetadataVersion = (contentInfo.getId() != null) ? applicationProperties.getContentInformationAuditService().getCurrentVersion(Long.toString(contentInfo.getId())) + 1 : 1;
         LOGGER.trace("Setting new version number of content information to {}.", newMetadataVersion);
         contentInfo.setVersion((int) newMetadataVersion);
-
-        if (newFileVersion == null) {
-            LOGGER.trace("No file version provided by versioning service. Using metadata version {} as file version.", newMetadataVersion);
-            contentInfo.setFileVersion(Long.toString(newMetadataVersion));
-        }
 
         LOGGER.trace("Persisting content information.");
         ContentInformation result = getDao().save(contentInfo);
@@ -453,7 +461,7 @@ public class ContentInformationService implements IContentInformationService {
             }
 
             if (example.getMediaType() != null) {
-                LOGGER.trace("Adding mediatype query specification for media type {}.", example.getMediaType());           
+                LOGGER.trace("Adding mediatype query specification for media type {}.", example.getMediaType());
                 spec = spec.and(ContentInformationMediaTypeSpecification.toSpecification(example.getMediaType(), false));
             }
 

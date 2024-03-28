@@ -75,19 +75,19 @@ public class Date {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, accessMode = Schema.AccessMode.READ_ONLY)
     @SecureUpdate({"FORBIDDEN"})
     @Searchable
     private Long id;
     //ISO format
-    @Schema(description = "The actual date of the entry.", example = "2017-05-10T10:41:00Z", required = true)
+    @Schema(description = "The actual date of the entry.", example = "2017-05-10T10:41:00Z", requiredMode = Schema.RequiredMode.REQUIRED)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
     @JsonDeserialize(using = CustomInstantDeserializer.class)
     @JsonSerialize(using = CustomInstantSerializer.class)
-    @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
+    @Field(type = FieldType.Date, format = DateFormat.date_optional_time)
     Instant value;
     //vocab, e.g. Created, Issued...
-    @Schema(description = "Controlled vocabulary value describing the date type.", required = true)
+    @Schema(description = "Controlled vocabulary value describing the date type.", requiredMode = Schema.RequiredMode.REQUIRED)
     @Enumerated(EnumType.STRING)
     @Field(type = FieldType.Keyword, name = "type")
     DATE_TYPE type;

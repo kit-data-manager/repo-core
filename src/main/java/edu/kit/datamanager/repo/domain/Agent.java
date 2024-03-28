@@ -42,18 +42,18 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 public class Agent {
 
     @Id
-    @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, accessMode = Schema.AccessMode.READ_ONLY)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @SecureUpdate({"FORBIDDEN"})
     @Searchable
     private Long id;
-    @Schema(description = "Family name of the user.", example = "Doe", required = false)
+    @Schema(description = "Family name of the user.", example = "Doe", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @Field(type = FieldType.Keyword, name = "familyName")
     private String familyName;
-    @Schema(description = "Given name of the user.", example = "John", required = false)
+    @Schema(description = "Given name of the user.", example = "John", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @Field(type = FieldType.Keyword, name = "givenName")
     private String givenName;
-    @Schema(description = "Affiliation of the user, e.g. home institution.", example = "Karlsruhe Institute of Techology", required = false)
+    @Schema(description = "Affiliation of the user, e.g. home institution.", example = "Karlsruhe Institute of Techology", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @ElementCollection
     @Field(type = FieldType.Text)
     private Set<String> affiliations = new HashSet<>();

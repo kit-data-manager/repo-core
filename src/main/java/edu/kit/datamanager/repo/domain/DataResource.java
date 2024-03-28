@@ -94,133 +94,133 @@ public class DataResource implements EtagSupport, Serializable {
     @Id
     @org.springframework.data.annotation.Id
     @Field(type = FieldType.Text)
-    @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, accessMode = Schema.AccessMode.READ_ONLY)
     @SecureUpdate({"FORBIDDEN"})
     @Searchable
     private String id = null;
 
     //mandatory
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     @OneToOne(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @Field(type = FieldType.Nested, includeInParent = true)
     private PrimaryIdentifier identifier;
 
     //vocab
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     @OneToMany(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "resource_id")
     @Field(type = FieldType.Nested, includeInParent = true)
     private Set<Agent> creators = new HashSet<>();
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     @OneToMany(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "resource_id")
     @Field(type = FieldType.Nested, includeInParent = true)
     private Set<Title> titles = new HashSet<>();
 
-    @Schema(description = "Publisher, e.g. institution", example = "Karlsruhe Institute of Technology", required = true)
+    @Schema(description = "Publisher, e.g. institution", example = "Karlsruhe Institute of Technology", requiredMode = Schema.RequiredMode.REQUIRED)
     @Searchable
-    @Field(type = FieldType.Text, name = "publisher")
+    @Field(type = FieldType.Search_As_You_Type, name = "publisher")
     private String publisher;
 
     //format: YYYY
-    @Schema(description = "Publication year (could be aquisition year, if publication year is not feasible)", example = "2017", required = true)
+    @Schema(description = "Publication year (could be aquisition year, if publication year is not feasible)", example = "2017",requiredMode = Schema.RequiredMode.REQUIRED)
     @Searchable
     @Field(type = FieldType.Date, name = "publicationYear", format = DateFormat.year)
     private String publicationYear;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     @OneToOne(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "resource_id")
     @Field(type = FieldType.Nested, includeInParent = true)
     private ResourceType resourceType;
 
     //recommended
-    @Schema(description = "One or more subjects describing the resource (recommended).", required = false)
+    @Schema(description = "One or more subjects describing the resource (recommended).", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @OneToMany(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "resource_id")
     @Field(type = FieldType.Nested, includeInParent = true)
     private Set<Subject> subjects = new HashSet<>();
 
-    @Schema(description = "One or more contributors that have contributed to the resource (recommended).", required = false)
+    @Schema(description = "One or more contributors that have contributed to the resource (recommended).", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @OneToMany(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "resource_id")
     @Field(type = FieldType.Nested, includeInParent = true)
     private Set<Contributor> contributors = new HashSet<>();
 
-    @Schema(description = "One or more dates related to the resource, e.g. creation or publication date (recommended).", required = false)
+    @Schema(description = "One or more dates related to the resource, e.g. creation or publication date (recommended).", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @OneToMany(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "resource_id")
     @Field(type = FieldType.Nested, includeInParent = true)
     private Set<Date> dates = new HashSet<>();
 
-    @Schema(description = "One or more related identifiers the can be used to identify related resources, e.g. metadata, parts or derived resources (recommended).", required = false)
+    @Schema(description = "One or more related identifiers the can be used to identify related resources, e.g. metadata, parts or derived resources (recommended).", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @OneToMany(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "resource_id")
     @Field(type = FieldType.Nested, includeInParent = true)
     private Set<RelatedIdentifier> relatedIdentifiers = new HashSet<>();
 
-    @Schema(description = "One or more description entries providing additional information, e.g. abstract or technical information (recommended).", required = false)
+    @Schema(description = "One or more description entries providing additional information, e.g. abstract or technical information (recommended).", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @OneToMany(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "resource_id")
     @Field(type = FieldType.Nested, includeInParent = true)
     private Set<Description> descriptions = new HashSet<>();
 
-    @Schema(description = "One or more geolocation entries providing information about the location of the resource, e.g. storage or aquisition location (recommended).", required = false)
+    @Schema(description = "One or more geolocation entries providing information about the location of the resource, e.g. storage or aquisition location (recommended).", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @OneToMany(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "resource_id")
     @Field(type = FieldType.Nested, includeInParent = true)
     private Set<GeoLocation> geoLocations = new HashSet<>();
 
     //optional
-    @Schema(description = "The primary language of the resource. Possible codes are IETF BCP 47 or ISO 639-1.", example = "en, de, fr", required = false)
+    @Schema(description = "The primary language of the resource. Possible codes are IETF BCP 47 or ISO 639-1.", example = "en, de, fr", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @Searchable
     @Field(type = FieldType.Keyword, name = "language")
     private String language;
 
-    @Schema(description = "One or more alternate identifiers the can be used to identify the resources in addition to the primary identifier.", required = false)
+    @Schema(description = "One or more alternate identifiers the can be used to identify the resources in addition to the primary identifier.", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @OneToMany(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @Field(type = FieldType.Nested, includeInParent = true)
     private Set<Identifier> alternateIdentifiers = new HashSet<>();
 
-    @Schema(description = "Unstructured size information about the resource or its contents.", example = "15 files, 10 page, 100 bytes", required = false)
+    @Schema(description = "Unstructured size information about the resource or its contents.", example = "15 files, 10 page, 100 bytes", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @ElementCollection(fetch = FetchType.EAGER)
     @Field(type = FieldType.Text)
     private Set<String> sizes = new HashSet<>();
 
-    @Schema(description = "Format information about the resource or its contents. Preferably, mime types or file extensions are used.", example = "text/plain, xml, application/pdf", required = false)
+    @Schema(description = "Format information about the resource or its contents. Preferably, mime types or file extensions are used.", example = "text/plain, xml, application/pdf", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @ElementCollection(fetch = FetchType.EAGER)
     @Field(type = FieldType.Text)
     private Set<String> formats = new HashSet<>();
 
     //e.g. major.minor
-    @Schema(description = "Version of the resource, e.g. major.minor.", example = "1.0", required = false)
+    @Schema(description = "Version of the resource, e.g. major.minor.", example = "1.0", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @Searchable
     @Field(type = FieldType.Keyword, name = "version")
     private String version;
 
     //e.g. CC-0
-    @Schema(description = "Intellectual property information.", required = false)
+    @Schema(description = "Intellectual property information.", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @OneToMany(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "resource_id")
     @Field(type = FieldType.Nested, includeInParent = true)
     private Set<Scheme> rights = new HashSet<>();
 
-    @Schema(description = "Funding information, e.g. funder, award number and title.", required = false)
+    @Schema(description = "Funding information, e.g. funder, award number and title.", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @OneToMany(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "resource_id")
     @Field(type = FieldType.Nested, includeInParent = true)
     private Set<FundingReference> fundingReferences = new HashSet<>();
 
     //internal properties
-    @Schema(description = "Date at which the last update occured.", example = "2017-05-10T10:41:00Z", required = true)
+    @Schema(description = "Date at which the last update occured.", example = "2017-05-10T10:41:00Z", requiredMode = Schema.RequiredMode.REQUIRED)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
     @JsonDeserialize(using = CustomInstantDeserializer.class)
     @JsonSerialize(using = CustomInstantSerializer.class)
-    @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
+    @Field(type = FieldType.Date, format = DateFormat.date_optional_time)
     Instant lastUpdate;
     //state of the resource (VOLATILE by default)
-    @Schema(description = "State information of the resource. After creation each resource is classified as VOLATILE", required = false)
+    @Schema(description = "State information of the resource. After creation each resource is classified as VOLATILE", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @Enumerated(EnumType.STRING)
     @Searchable
     @Field(type = FieldType.Keyword, name = "state")
@@ -228,11 +228,11 @@ public class DataResource implements EtagSupport, Serializable {
     //embargo date that should receive a value 'resourceCreationTime + DefaultEmbargoSpan' on resource creation time
     //embargo date should only be used for policy triggering, not for actual access decisions. This should be done on the basis of ACLs. 
     //As soon as the embargo ends, all access restrictions should be removed in order to allow public access.
-    @Schema(description = "Date at which the embargo ends, e.g. after which the resource is published.", example = "2017-05-10T10:41:00Z", required = true)
+    @Schema(description = "Date at which the embargo ends, e.g. after which the resource is published.", example = "2017-05-10T10:41:00Z", requiredMode = Schema.RequiredMode.REQUIRED)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
     @JsonDeserialize(using = CustomInstantDeserializer.class)
     @JsonSerialize(using = CustomInstantSerializer.class)
-    @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
+    @Field(type = FieldType.Date, format = DateFormat.date_optional_time)
     Instant embargoDate;
 
     @OneToMany(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)

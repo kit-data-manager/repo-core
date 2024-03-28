@@ -77,18 +77,18 @@ public class Contributor {
     }
 
     @Id
-    @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, accessMode = Schema.AccessMode.READ_ONLY)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @SecureUpdate({"FORBIDDEN"})
     @Searchable
     private Long id;
-    @Schema(description = "Contributing user.", implementation = edu.kit.datamanager.repo.domain.Agent.class, required = true)
+    @Schema(description = "Contributing user.", implementation = edu.kit.datamanager.repo.domain.Agent.class, requiredMode = Schema.RequiredMode.REQUIRED)
     @OneToOne(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @Field(type = FieldType.Nested, includeInParent = true)
     private Agent user;
 
     //vocab, e.g. Producer, Editor...
-    @Schema(description = "Controlled vocabulary value describing the contribution type, e.g. Producer.", required = true)
+    @Schema(description = "Controlled vocabulary value describing the contribution type, e.g. Producer.", requiredMode = Schema.RequiredMode.REQUIRED)
     @Enumerated(EnumType.STRING)
     @Field(type = FieldType.Keyword, name = "contributionType")
     private TYPE contributionType;

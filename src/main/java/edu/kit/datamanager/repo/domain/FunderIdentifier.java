@@ -54,6 +54,7 @@ public class FunderIdentifier extends Identifier {
         }
     }
     @Enumerated(EnumType.STRING)
+    @Field(type = FieldType.Keyword)
     private FUNDER_TYPE type;
 
     public static FunderIdentifier factoryIdentifier(String value, FUNDER_TYPE type) {

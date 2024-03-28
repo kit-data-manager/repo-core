@@ -72,15 +72,15 @@ public class ResourceType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, accessMode = Schema.AccessMode.READ_ONLY)
     @SecureUpdate({"FORBIDDEN"})
     @Searchable
     private Long id;
-    @Schema(description = "Measurement Data", required = true)
-    @Field(type = FieldType.Text, name = "value")
+    @Schema(description = "Measurement Data", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Field(type = FieldType.Keyword, name = "value")
     private String value;
     //vocab, e.g. Dataset, Image....
-    @Schema(example = "DATASET", required = true)
+    @Schema(example = "DATASET", requiredMode = Schema.RequiredMode.REQUIRED)
     @Enumerated(EnumType.STRING)
     @Field(type = FieldType.Keyword, name = "typeGeneral")
     private TYPE_GENERAL typeGeneral;

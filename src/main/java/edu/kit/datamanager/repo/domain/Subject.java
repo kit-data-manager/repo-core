@@ -38,21 +38,21 @@ public class Subject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, accessMode = Schema.AccessMode.READ_ONLY)
     @SecureUpdate({"FORBIDDEN"})
     @Searchable
     private Long id;
-    @Schema(description = "The subject value.", required = false)
-    @Field(type = FieldType.Text, name = "value")
+    @Schema(description = "The subject value.", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    @Field(type = FieldType.Keyword, name = "value")
     private String value;
-    @Schema(required = false)
+    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @OneToOne(cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     @Field(type = FieldType.Nested, includeInParent = true)
     private Scheme scheme;
-    @Schema(example = "http://udcdata.info/037278", required = false)
-    @Field(type = FieldType.Keyword, name = "valueUri")
+    @Schema(example = "http://udcdata.info/037278", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    @Field(type = FieldType.Text, name = "valueUri")
     private String valueUri;
-    @Schema(example = "en", required = false)
+    @Schema(example = "en", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @Field(type = FieldType.Keyword, name = "lang")
     private String lang;
 

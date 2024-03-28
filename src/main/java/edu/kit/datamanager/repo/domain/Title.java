@@ -61,19 +61,19 @@ public class Title {
     }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, accessMode = Schema.AccessMode.READ_ONLY)
     @SecureUpdate({"FORBIDDEN"})
     @Searchable
     private Long id;
-    @Schema(example = "My sample resource", required = true)
-    @Field(type = FieldType.Text, name = "value")
+    @Schema(example = "My sample resource", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Field(type = FieldType.Search_As_You_Type, name = "value")
     private String value;
     //vocab, e.g. Subtitle, AlternativeTitle
-    @Schema(example = "SUBTITLE", required = false)
+    @Schema(example = "SUBTITLE", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @Enumerated(EnumType.STRING)
     @Field(type = FieldType.Keyword, name = "titleType")
     private TYPE titleType;
-    @Schema(example = "en", required = false)
+    @Schema(example = "en", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @Field(type = FieldType.Keyword, name = "lang")
     private String lang;
 
