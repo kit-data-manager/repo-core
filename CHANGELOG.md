@@ -9,9 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Fixed
+
+### Security
+
+### Deprecated
+
+### Removed
+
+## [1.2.2] - 2024-04-02
+
+### Fixed
 * Alignment of metadata and file version in ContentInformationService by @github-actions in https://github.com/kit-data-manager/repo-core/pull/271
 
 ### Security
+* Update gradle to 8.5
 * Bump actions/setup-java to 4.2.1
 * Bump actions/checkout to 4
 * Bump codecov/codecov-action to 4
@@ -34,10 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Bump dependency-management to 1.1.4
 * Bump lombok to 8.6
 * Bump dozer-core to 7.0.0
-
-### Deprecated
-
-### Removed
+* Bump service-base to 1.2.1
 
 ## [1.2.1] - 2023-06-27
 
