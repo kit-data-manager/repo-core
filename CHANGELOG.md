@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Bump codecov/codecov-action to 4
 * Bump github/codeql-action to 3
 * Bump maven-publish-java to 8.6
+* Bump jacoco to 0.8.11
 * Bump javers-spring-boot-starter-sql to 7.4.2
 * Bump springDocVersion to 2.3.0
 * Bump convert to 4.0.2
