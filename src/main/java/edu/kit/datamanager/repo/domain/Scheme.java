@@ -37,14 +37,14 @@ public class Scheme {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, accessMode = Schema.AccessMode.READ_ONLY)
     @SecureUpdate({"FORBIDDEN"})
     @Searchable
     private Long id;
-    @Schema(example = "ORCID", required = true)
+    @Schema(example = "ORCID",requiredMode = Schema.RequiredMode.REQUIRED)
     @Field(type = FieldType.Keyword, name = "schemeId")
     private String schemeId;
-    @Schema(example = "http://orcid.org/", required = false)
+    @Schema(example = "http://orcid.org/", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @Field(type = FieldType.Keyword, name = "schemeUri")
     private String schemeUri;
 

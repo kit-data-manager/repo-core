@@ -129,14 +129,12 @@ public class ContentInformationService implements IContentInformationService {
             boolean force) {
         LOGGER.trace("Performing create({}, {}, {}, {}, {}).", contentInformation, "DataResource#" + resource.getId(), "<InputStream>", path, force);
 
-        //check for existing content information
-        //We use here no tags as tags are just for reflecting related content elements, but all tags are associated with the same content element.
-//    Page<ContentInformation> existingContentInformation = findAll(ContentInformation.createContentInformation(resource.getId(), path), PageRequest.of(0, 1));
         Optional<ContentInformation> existingContentInformation = dao.findByParentResourceAndRelativePath(resource, path);
         Map<String, String> options = new HashMap<>();
         options.put("force", Boolean.toString(force));
 
         ContentInformation contentInfo;
+        String newFileVersion = "1";
         if (existingContentInformation.isPresent()) {
             contentInfo = existingContentInformation.get();
             options.put("contentUri", contentInfo.getContentUri());
@@ -155,7 +153,6 @@ public class ContentInformationService implements IContentInformationService {
             options.put("mediaType", contentInfo.getMediaType());
         }
 
-        String newFileVersion = null;
         if (file != null) {
             LOGGER.trace("User upload detected. Preparing to consume data.");
             //file upload
@@ -202,8 +199,14 @@ public class ContentInformationService implements IContentInformationService {
             }
 
             if (options.containsKey("fileVersion")) {
+                //use file version from versioning service if provided
                 newFileVersion = options.get("fileVersion");
+                LOGGER.trace("Using new file version '{}' from versioning service. ", newFileVersion);
+            } else {
+                LOGGER.trace("Using default file version '{}'. ", newFileVersion);
             }
+
+            contentInfo.setFileVersion(newFileVersion);
 
             LOGGER.trace("File successfully written using versioning service '{}'.", versioningService);
         } else {
@@ -226,6 +229,9 @@ public class ContentInformationService implements IContentInformationService {
                 LOGGER.debug("Assigned size {} to content information.", contentInfo.getSize());
                 contentInfo.setHash(contentInformation.getHash());
                 LOGGER.debug("Assigned hash {} to content information.", contentInfo.getHash());
+                contentInfo.setFileVersion(newFileVersion);
+                LOGGER.trace("Using default file version {}.", newFileVersion);
+                contentInfo.setFileVersion(newFileVersion);
             }
         }
 
@@ -255,11 +261,6 @@ public class ContentInformationService implements IContentInformationService {
         LOGGER.trace("Setting new version number of content information to {}.", newMetadataVersion);
         contentInfo.setVersion((int) newMetadataVersion);
 
-        if (newFileVersion == null) {
-            LOGGER.trace("No file version provided by versioning service. Using metadata version {} as file version.", newMetadataVersion);
-            contentInfo.setFileVersion(Long.toString(newMetadataVersion));
-        }
-
         LOGGER.trace("Persisting content information.");
         ContentInformation result = getDao().save(contentInfo);
 
@@ -276,7 +277,6 @@ public class ContentInformationService implements IContentInformationService {
         URI uri;
         if (path.endsWith("/") || path.isEmpty()) {
             //collection download
-//      ContentInformation info = ContentInformation.createContentInformation(resource.getId(), path);
             Page<ContentInformation> page = dao.findByParentResource(resource, PageRequest.of(0, Integer.MAX_VALUE));
             if (page.isEmpty()) {
                 //nothing to provide
@@ -406,7 +406,7 @@ public class ContentInformationService implements IContentInformationService {
     @Override
     public ContentInformation findById(String identifier) throws ResourceNotFoundException {
         LOGGER.trace("Performing findById({}).", identifier);
-        Long id = Long.parseLong(identifier);
+        Long id = Long.valueOf(identifier);
         Optional<ContentInformation> contentInformation = getDao().findById(id);
         if (!contentInformation.isPresent()) {
             //TODO: check later for collection download
@@ -453,7 +453,7 @@ public class ContentInformationService implements IContentInformationService {
             }
 
             if (example.getMediaType() != null) {
-                LOGGER.trace("Adding mediatype query specification for media type {}.", example.getMediaType());           
+                LOGGER.trace("Adding mediatype query specification for media type {}.", example.getMediaType());
                 spec = spec.and(ContentInformationMediaTypeSpecification.toSpecification(example.getMediaType(), false));
             }
 

@@ -6,17 +6,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Security
-
-### Changed
-
 ### Added
 
 ### Fixed
 
+### Security
+
 ### Deprecated
 
 ### Removed
+
+## [1.2.2] - 2024-04-02
+
+### Fixed
+* Alignment of metadata and file version in ContentInformationService by @github-actions in https://github.com/kit-data-manager/repo-core/pull/271
+
+### Security
+* Update gradle to 8.5
+* Bump actions/setup-java to 4.2.1
+* Bump actions/checkout to 4
+* Bump codecov/codecov-action to 4
+* Bump github/codeql-action to 3
+* Bump maven-publish-java to 8.6
+* Bump jacoco to 0.8.11
+* Bump javers-spring-boot-starter-sql to 7.4.2
+* Bump springDocVersion to 2.5.0
+* Bump convert to 4.0.2
+* Bump tika-core to 2.9.1
+* Bump dependencycheck to 9.1.0
+* Bump commons-text to 1.11.0
+* Bump commons-io to 2.16.0
+* Bump postgresql to 42.7.2
+* Bump h2 to 2.2.224
+* Bump jackson-jaxrs-json-provider to 2.17.0
+* Bump jackson-module-afterburner to 2.17.0
+* Bump jackson-datatype-jsr310 to 2.17.0
+* Bump jackson-datatype-joda to 2.17.0
+* Bump dependency-management to 1.1.4
+* Bump lombok to 8.6
+* Bump dozer-core to 7.0.0
+* Bump service-base to 1.2.1
 
 ## [1.2.1] - 2023-06-27
 
@@ -247,7 +276,8 @@ Extracted from the 'base-repo' project.
 ### Removed
 - none
 
-[Unreleased]: https://github.com/kit-data-manager/repo-core/compare/v1.2.1...HEAD
+[Unreleased]: https://github.com/kit-data-manager/repo-core/compare/v1.2.2...HEAD
+[1.2.2]: https://github.com/kit-data-manager/repo-core/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/kit-data-manager/repo-core/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/kit-data-manager/repo-core/compare/v1.1.2...v1.2.0
 [1.1.2]: https://github.com/kit-data-manager/repo-core/compare/v1.1.1...v1.1.2

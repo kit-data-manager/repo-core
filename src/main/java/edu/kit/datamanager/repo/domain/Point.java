@@ -38,14 +38,14 @@ public class Point {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(required = false, accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, accessMode = Schema.AccessMode.READ_ONLY)
     @SecureUpdate({"FORBIDDEN"})
     @Searchable
     private Long id;
-    @Schema(example = "-180 <= longitude <= 180", required = true)
+    @Schema(example = "-180 <= longitude <= 180", requiredMode = Schema.RequiredMode.REQUIRED)
     @Field(type = FieldType.Float, name = "longitude")
     private float longitude;
-    @Schema(example = "-90 <= latitude <= 90", required = true)
+    @Schema(example = "-90 <= latitude <= 90", requiredMode = Schema.RequiredMode.REQUIRED)
     @Field(type = FieldType.Float, name = "latitude")
     private float latitude;
 
