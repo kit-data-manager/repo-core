@@ -70,7 +70,7 @@ public class ContentInformationAuditService implements IAuditService<ContentInfo
       LOGGER.trace("Audit is disabled. Returning empty result.");
       return Optional.empty();
     } else{
-      JqlQuery query = QueryBuilder.byInstanceId(Long.parseLong(contentInformationId), ContentInformation.class).limit(resultsPerPage).skip(page * resultsPerPage).build();
+      JqlQuery query = QueryBuilder.byInstanceId(Long.valueOf(contentInformationId), ContentInformation.class).limit(resultsPerPage).skip(page * resultsPerPage).build();
       Changes result = javers.findChanges(query);
 
       LOGGER.trace("Obtained {} change elements. Returning them in serialized format.", result.size());
@@ -86,7 +86,7 @@ public class ContentInformationAuditService implements IAuditService<ContentInfo
       return Optional.empty();
     } else{
       LOGGER.trace("Querying for content information with instance id {} and version {}.", contentInformationId, version);
-      JqlQuery query = QueryBuilder.byInstanceId(Long.parseLong(contentInformationId), ContentInformation.class).withVersion(version).withShadowScope(ShadowScope.DEEP_PLUS).build();
+      JqlQuery query = QueryBuilder.byInstanceId(Long.valueOf(contentInformationId), ContentInformation.class).withVersion(version).withShadowScope(ShadowScope.DEEP_PLUS).build();
       LOGGER.trace("Obtaining shadows from Javers repository.");
       List<Shadow<ContentInformation>> shadows = javers.findShadows(query);
 
@@ -109,7 +109,7 @@ public class ContentInformationAuditService implements IAuditService<ContentInfo
       LOGGER.trace("Audit is disabled. Returning 0.");
       return 0l;
     } else{
-      JqlQuery query = QueryBuilder.byInstanceId(Long.parseLong(contentInformationId), ContentInformation.class).limit(1).build();
+      JqlQuery query = QueryBuilder.byInstanceId(Long.valueOf(contentInformationId), ContentInformation.class).limit(1).build();
       LOGGER.trace("Obtaining snapshots from Javers repository.");
       List<CdoSnapshot> snapshots = javers.findSnapshots(query);
 

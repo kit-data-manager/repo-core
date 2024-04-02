@@ -134,18 +134,10 @@ public class ContentInformationService implements IContentInformationService {
         options.put("force", Boolean.toString(force));
 
         ContentInformation contentInfo;
-        String newFileVersion = null;
+        String newFileVersion = "1";
         if (existingContentInformation.isPresent()) {
             contentInfo = existingContentInformation.get();
             options.put("contentUri", contentInfo.getContentUri());
-            try{
-                int previousVersion = Integer.parseInt(contentInfo.getFileVersion());
-                LOGGER.trace("Parsed previous file version '{}'. New version would be incremented by 1.", previousVersion);
-                newFileVersion = Integer.toString(previousVersion + 1);
-            }catch(NumberFormatException nfe){
-                LOGGER.info("Failed to parse previous file version with value '{}' as integer. Skip incrementing version.", contentInfo.getFileVersion());
-                newFileVersion = contentInfo.getFileVersion();
-            }
         } else {
             LOGGER.trace("No existing content information found.");
             //no existing content information, create new or take provided
@@ -154,7 +146,6 @@ public class ContentInformationService implements IContentInformationService {
             contentInfo.setParentResource(resource);
             contentInfo.setRelativePath(path);
             contentInfo.setMediaType((contentInformation != null) ? contentInformation.getMediaType() : null);
-            newFileVersion = Integer.toString(1);
         }
 
         if (contentInfo.getMediaType() != null) {
@@ -212,10 +203,9 @@ public class ContentInformationService implements IContentInformationService {
                 newFileVersion = options.get("fileVersion");
                 LOGGER.trace("Using new file version '{}' from versioning service. ", newFileVersion);
             } else {
-                LOGGER.trace("Using new file version '{}' based on previous version. ", newFileVersion);
+                LOGGER.trace("Using default file version '{}'. ", newFileVersion);
             }
 
-            LOGGER.trace("Setting new file version to {}.", newFileVersion);
             contentInfo.setFileVersion(newFileVersion);
 
             LOGGER.trace("File successfully written using versioning service '{}'.", versioningService);
@@ -239,6 +229,9 @@ public class ContentInformationService implements IContentInformationService {
                 LOGGER.debug("Assigned size {} to content information.", contentInfo.getSize());
                 contentInfo.setHash(contentInformation.getHash());
                 LOGGER.debug("Assigned hash {} to content information.", contentInfo.getHash());
+                contentInfo.setFileVersion(newFileVersion);
+                LOGGER.trace("Using default file version {}.", newFileVersion);
+                contentInfo.setFileVersion(newFileVersion);
             }
         }
 
@@ -284,7 +277,6 @@ public class ContentInformationService implements IContentInformationService {
         URI uri;
         if (path.endsWith("/") || path.isEmpty()) {
             //collection download
-//      ContentInformation info = ContentInformation.createContentInformation(resource.getId(), path);
             Page<ContentInformation> page = dao.findByParentResource(resource, PageRequest.of(0, Integer.MAX_VALUE));
             if (page.isEmpty()) {
                 //nothing to provide
@@ -414,7 +406,7 @@ public class ContentInformationService implements IContentInformationService {
     @Override
     public ContentInformation findById(String identifier) throws ResourceNotFoundException {
         LOGGER.trace("Performing findById({}).", identifier);
-        Long id = Long.parseLong(identifier);
+        Long id = Long.valueOf(identifier);
         Optional<ContentInformation> contentInformation = getDao().findById(id);
         if (!contentInformation.isPresent()) {
             //TODO: check later for collection download
