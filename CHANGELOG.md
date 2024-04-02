@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Bump maven-publish-java to 8.6
 * Bump jacoco to 0.8.11
 * Bump javers-spring-boot-starter-sql to 7.4.2
-* Bump springDocVersion to 2.3.0
+* Bump springDocVersion to 2.5.0
 * Bump convert to 4.0.2
 * Bump tika-core to 2.9.1
 * Bump dependencycheck to 9.1.0
