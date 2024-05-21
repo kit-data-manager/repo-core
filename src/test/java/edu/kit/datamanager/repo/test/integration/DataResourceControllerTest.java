@@ -323,6 +323,30 @@ public class DataResourceControllerTest {
         this.mockMvc.perform(post("/api/v1/dataresources/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(example)).param("page", "0").param("size", "10").header(HttpHeaders.AUTHORIZATION,
                 "Bearer " + userToken)).andDo(print()).andExpect(status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(1)));
     }
+    
+    @Test
+    public void testFindDataResourcesByExampleWithState() throws Exception {
+        DataResource example = new DataResource();
+        example.setState(DataResource.State.REVOKED);
+        ObjectMapper mapper = createObjectMapper();
+
+        //search for REVOKED resource as admin
+        this.mockMvc.perform(post("/api/v1/dataresources/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(example)).param("page", "0").param("size", "10").header(HttpHeaders.AUTHORIZATION,
+                "Bearer " + adminToken)).andDo(print()).andExpect(status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(2)));
+       
+        //search for REVOKED resource as user
+        this.mockMvc.perform(post("/api/v1/dataresources/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(example)).param("page", "0").param("size", "10").header(HttpHeaders.AUTHORIZATION,
+                "Bearer " + userToken)).andDo(print()).andExpect(status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(2)));
+       
+        
+        example.setState(DataResource.State.FIXED);
+        this.mockMvc.perform(post("/api/v1/dataresources/search").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(example)).param("page", "0").param("size", "10").header(HttpHeaders.AUTHORIZATION,
+                "Bearer " + adminToken)).andDo(print()).andExpect(status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(1)));
+        
+        
+    }
+    
+    
 
     @Test
     public void testFindUsingResourceType() throws Exception {

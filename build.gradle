@@ -27,7 +27,7 @@ plugins {
     // plugins for release and publishing to maven repo
     id "signing"
     id "net.researchgate.release" version "3.0.2"
-    id "io.github.gradle-nexus.publish-plugin" version "2.0.0-rc-2"
+    id "io.github.gradle-nexus.publish-plugin" version "2.0.0"
     id 'maven-publish'
 }
 
@@ -87,19 +87,18 @@ dependencies {
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-api:${springDocVersion}"
     // apache
     implementation "commons-configuration:commons-configuration:1.10"
-    implementation "commons-io:commons-io:2.16.0"
+    implementation "commons-io:commons-io:2.16.1"
     implementation "org.apache.commons:commons-collections4:4.4"
     // includes commons-lang3
-    implementation "org.apache.commons:commons-text:1.11.0"
+    implementation "org.apache.commons:commons-text:1.12.0"
     implementation 'org.apache.httpcomponents:httpclient:4.5.14'
-    implementation "org.apache.tika:tika-core:2.9.1"
+    implementation "org.apache.tika:tika-core:2.9.2"
     // javers
     implementation "org.javers:javers-spring-boot-starter-sql:${javersVersion}"
-    implementation "com.google.code.gson:gson:2.10.1"
 
     // Database
     implementation "com.h2database:h2:2.2.224"
-    implementation "org.postgresql:postgresql:42.7.2"
+    implementation "org.postgresql:postgresql:42.7.3"
     // XML
     implementation "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.17.0"
     implementation "com.fasterxml.jackson.module:jackson-module-afterburner:2.17.0"
@@ -114,7 +113,7 @@ dependencies {
     implementation "org.apache.logging.log4j:log4j-core"
     implementation "ch.qos.logback:logback-classic"
 
-    implementation "edu.kit.datamanager:service-base:1.2.1"
+    implementation "edu.kit.datamanager:service-base:1.3.1"
 
     implementation "com.github.java-json-tools:json-patch:1.13"
     implementation "com.github.dozermapper:dozer-core:7.0.0"
