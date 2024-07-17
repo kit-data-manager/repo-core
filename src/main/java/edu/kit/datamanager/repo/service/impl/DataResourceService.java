@@ -602,7 +602,7 @@ public class DataResourceService implements IDataResourceService {
             errorMessage.append("Empty publication year provided for update.\n");
         }
         if (newResource.getPublisher() == null) {
-            errorMessage.append("Empty publication year provided for update.\n");
+            errorMessage.append("Empty publisher provided for update.\n");
         }
 
         if (errorMessage.length() > 0) {
