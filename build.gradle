@@ -57,6 +57,7 @@ println "Spring Boot version: ${springBootVersion}"
 repositories {
     mavenLocal() 
     mavenCentral()
+    maven { url 'https://maven.google.com' }
 }
 
 configurations {
