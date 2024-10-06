@@ -94,7 +94,7 @@ dependencies {
     implementation "org.apache.tika:tika-core:2.9.2"
     // javers
     implementation "org.javers:javers-spring-boot-starter-sql:${javersVersion}"
-    implementation "com.google.code.gson:gson:2.10.1"
+    implementation "com.google.code.gson:gson:2.11.0"
 
     // Database
     implementation "com.h2database:h2:2.3.232"
