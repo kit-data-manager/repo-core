@@ -89,10 +89,10 @@ public class RelatedIdentifierSpecificationTest {
     hasMetadataResource3 = createTestResource("hasMetadataResource3", RELATION_TYPE_1, RELATED_RESOURCE_3);
 
     isMetadataOfResource1 = createTestResource("isMetadataOfResource1", RELATION_TYPE_2, RELATED_RESOURCE_1);
-    isMetadataOfResource1 = createTestResource("isMetadataOfResource2", RELATION_TYPE_2, RELATED_RESOURCE_2);
-    isMetadataOfResource1 = createTestResource("isMetadataOfResource3", RELATION_TYPE_2, RELATED_RESOURCE_3);
+    isMetadataOfResource2 = createTestResource("isMetadataOfResource2", RELATION_TYPE_2, RELATED_RESOURCE_2);
+    isMetadataOfResource3 = createTestResource("isMetadataOfResource3", RELATION_TYPE_2, RELATED_RESOURCE_3);
 
-    isMetadataOfResource1 = createTestResource("noTypeForResource", null, RELATED_RESOURCE_3);
+    resourceWithNoType = createTestResource("noTypeForResource", null, RELATED_RESOURCE_3);
   }
 
   /**
