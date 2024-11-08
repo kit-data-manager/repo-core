@@ -76,9 +76,6 @@ public class RelatedIdentifierSpec {
       Join<DataResource, RelatedIdentifier> relatedIdentifierJoin = root.join("relatedIdentifiers", JoinType.INNER);
       //get all related identifiers of type relationType with one of the provided values
       Predicate allPredicates = builder.conjunction();
-      Predicate predicateValue = null;
-      Predicate predicateRelationType = null;
-      int determineCase = 0; // 1 - identifer only, 2 - relationType only, 3 - both
       if (identifierValues != null && identifierValues.length != 0) {
         allPredicates = builder.and(allPredicates, relatedIdentifierJoin.get("value").in(identifierValues));
       }
