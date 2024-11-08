@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+* Enhanced searching capabilities for related identifiers with new methods in the RelatedIdentifierSpec class.
+* Comprehensive unit tests added for the RelatedIdentifierSpec class to ensure robust functionality.
+* Improved error messaging for missing publisher during updates in the DataResourceService.
 
 ### Fixed
 
@@ -53,6 +56,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Deprecated
 
 ### Removed
+* Fixed issue with privileged find for state 'REVOKED'
+
+### Security
 * Removed outdated configuration for GitHub Actions in the project setup.
 
 ## [1.2.2] - 2024-04-02
