@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Karlsruhe Institute of Technology.
+ * Copyright 2024 Karlsruhe Institute of Technology.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,14 +63,6 @@ public class RelatedIdentifierSpecificationTest {
   @Autowired
   private IDataResourceDao dataResourceDao;
 
-  private DataResource hasMetadataResource1;
-  private DataResource hasMetadataResource2;
-  private DataResource hasMetadataResource3;
-  private DataResource isMetadataOfResource1;
-  private DataResource isMetadataOfResource2;
-  private DataResource isMetadataOfResource3;
-  private DataResource resourceWithNoType;
-
   private static final String UNKNOWN_RELATED_RESOURCE = "something else";
   private static final String RELATED_RESOURCE_1 = "documentLocation";
   private static final String RELATED_RESOURCE_2 = "documentLocation_2";
@@ -84,20 +76,21 @@ public class RelatedIdentifierSpecificationTest {
   public void setUp() throws JsonProcessingException {
     dataResourceDao.deleteAll();
     
-    hasMetadataResource1 = createTestResource("hasMetadataResource1", RELATION_TYPE_1, RELATED_RESOURCE_1);
-    hasMetadataResource2 = createTestResource("hasMetadataResource2", RELATION_TYPE_1, RELATED_RESOURCE_2);
-    hasMetadataResource3 = createTestResource("hasMetadataResource3", RELATION_TYPE_1, RELATED_RESOURCE_3);
+    createTestResource("hasMetadataResource1", RELATION_TYPE_1, RELATED_RESOURCE_1);
+    createTestResource("hasMetadataResource2", RELATION_TYPE_1, RELATED_RESOURCE_2);
+    createTestResource("hasMetadataResource3", RELATION_TYPE_1, RELATED_RESOURCE_3);
 
-    isMetadataOfResource1 = createTestResource("isMetadataOfResource1", RELATION_TYPE_2, RELATED_RESOURCE_1);
-    isMetadataOfResource2 = createTestResource("isMetadataOfResource2", RELATION_TYPE_2, RELATED_RESOURCE_2);
-    isMetadataOfResource3 = createTestResource("isMetadataOfResource3", RELATION_TYPE_2, RELATED_RESOURCE_3);
+    createTestResource("isMetadataOfResource1", RELATION_TYPE_2, RELATED_RESOURCE_1);
+    createTestResource("isMetadataOfResource2", RELATION_TYPE_2, RELATED_RESOURCE_2);
+    createTestResource("isMetadataOfResource3", RELATION_TYPE_2, RELATED_RESOURCE_3);
 
-    resourceWithNoType = createTestResource("noTypeForResource", null, RELATED_RESOURCE_3);
+    createTestResource("noTypeForResource", null, RELATED_RESOURCE_3);
   }
 
   /**
-   * FIND TESTS*
-   */
+   * Test specification for related identifier only.
+   * @throws Exception  Any error.
+   */ 
   @Test
   public void testGetDataResourcesByRelatedResourceAndValue() throws Exception {
     testSingleValue(RELATED_RESOURCE_1, 2);
@@ -123,6 +116,10 @@ public class RelatedIdentifierSpecificationTest {
     Assert.assertEquals("Find all related to " + RELATED_RESOURCE_1 + " and " + RELATED_RESOURCE_2 + " and " + RELATED_RESOURCE_3, 7, findAll.size());
   }
 
+  /**
+   * Test specification for no related identifier provided.
+   * @throws Exception  Any error.
+   */ 
   @Test
   public void testGetDataResourcesByRelatedResourceAndNoValue() throws Exception {
     Specification<DataResource> toSpecification = RelatedIdentifierSpec.toSpecification(new String[0]);
@@ -134,6 +131,10 @@ public class RelatedIdentifierSpecificationTest {
     Assert.assertEquals("Find all related to (String[])null", 7, findAll.size());
   }
 
+  /**
+   * Test specification for no relation type only.
+   * @throws Exception  Any error.
+   */ 
   @Test
   public void testGetDataResourcesByRelatedResourceAndRelatedType() throws Exception {
     testForRelatedType(RELATION_TYPE_1, 3);
@@ -142,6 +143,10 @@ public class RelatedIdentifierSpecificationTest {
     testForRelatedType(null, 7);
   }
 
+  /**
+   * Test specification for relation type AND related identifier provided.
+   * @throws Exception  Any error.
+   */ 
   @Test
   public void testGetDataResourcesByRelatedResourceFilteredByValueAndType() throws Exception {
     testForSingleValueAndType(RELATED_RESOURCE_1, RELATION_TYPE_1, 1);
