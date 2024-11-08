@@ -23,7 +23,6 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import org.datacite.schema.kernel_4.Resource.RelatedIdentifiers;
 import org.springframework.data.jpa.domain.Specification;
 
 /**
@@ -74,31 +73,17 @@ public class RelatedIdentifierSpec {
     return (Root<DataResource> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
       query.distinct(true);
       //join dataresource table with related identifiers table
-      Join<DataResource, RelatedIdentifiers.RelatedIdentifier> altJoin = root.join("relatedIdentifiers", JoinType.INNER);
+      Join<DataResource, RelatedIdentifier> relatedIdentifierJoin = root.join("relatedIdentifiers", JoinType.INNER);
       //get all related identifiers of type relationType with one of the provided values
-      Predicate allPredicates = null;
+      Predicate allPredicates = builder.conjunction();
       Predicate predicateValue = null;
       Predicate predicateRelationType = null;
       int determineCase = 0; // 1 - identifer only, 2 - relationType only, 3 - both
       if (identifierValues != null && identifierValues.length != 0) {
-        predicateValue = altJoin.get("value").in((Object[]) identifierValues);
-        determineCase++;
+        allPredicates = builder.and(allPredicates, relatedIdentifierJoin.get("value").in(identifierValues));
       }
       if (relationType != null) {
-        predicateRelationType = builder.equal(altJoin.get("relationType"), relationType);
-        determineCase += 2;
-      }
-
-      switch (determineCase) {
-        case 1:
-          allPredicates = builder.and(predicateValue);
-          break;
-        case 2:
-          allPredicates = builder.and(predicateRelationType);
-          break;
-        case 3:
-          allPredicates = builder.and(predicateRelationType, predicateValue);
-          break;
+        allPredicates = builder.and(allPredicates, builder.equal(relatedIdentifierJoin.get("relationType"), relationType));
       }
 
       return allPredicates;

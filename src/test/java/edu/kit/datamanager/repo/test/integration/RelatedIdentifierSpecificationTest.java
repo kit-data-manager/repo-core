@@ -41,231 +41,159 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 import org.springframework.test.context.web.ServletTestExecutionListener;
 
 /**
- *
- * @author jejkal
+ * Test specifications for related identifiers. These can be filtered by
+ * <ul> <li> value and/or
+ * <li> relation type
+ * </ul>
+ * The setup defines 7 instances. With 2 different relation types and 3
+ * different values. One instance is without any relation type.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @TestExecutionListeners(listeners = {ServletTestExecutionListener.class,
-    DependencyInjectionTestExecutionListener.class,
-    DirtiesContextTestExecutionListener.class,
-    TransactionalTestExecutionListener.class,
-    WithSecurityContextTestExecutionListener.class})
+  DependencyInjectionTestExecutionListener.class,
+  DirtiesContextTestExecutionListener.class,
+  TransactionalTestExecutionListener.class,
+  WithSecurityContextTestExecutionListener.class})
 @TestPropertySource(properties = {"spring.datasource.url=jdbc:h2:mem:related_identifiers;DB_CLOSE_DELAY=-1;MODE=LEGACY;NON_KEYWORDS=VALUE"})
 @ActiveProfiles("test")
 public class RelatedIdentifierSpecificationTest {
-    @Autowired
-    private IDataResourceDao dataResourceDao;
 
-    private DataResource hasMetadataResource1;
-    private DataResource hasMetadataResource2;
-    private DataResource hasMetadataResource3;
-    private DataResource isMetadataOfResource1;
-    private DataResource isMetadataOfResource2;
-    private DataResource isMetadataOfResource3;
-    private DataResource resourceWithNoType;
+  @Autowired
+  private IDataResourceDao dataResourceDao;
+
+  private DataResource hasMetadataResource1;
+  private DataResource hasMetadataResource2;
+  private DataResource hasMetadataResource3;
+  private DataResource isMetadataOfResource1;
+  private DataResource isMetadataOfResource2;
+  private DataResource isMetadataOfResource3;
+  private DataResource resourceWithNoType;
+
+  private static final String UNKNOWN_RELATED_RESOURCE = "something else";
+  private static final String RELATED_RESOURCE_1 = "documentLocation";
+  private static final String RELATED_RESOURCE_2 = "documentLocation_2";
+  private static final String RELATED_RESOURCE_3 = "http://example.org/some%20stupid url";
+
+  private static final RelatedIdentifier.RELATION_TYPES RELATION_TYPE_1 = RelatedIdentifier.RELATION_TYPES.HAS_METADATA;
+  private static final RelatedIdentifier.RELATION_TYPES RELATION_TYPE_2 = RelatedIdentifier.RELATION_TYPES.IS_METADATA_FOR;
+  private static final RelatedIdentifier.RELATION_TYPES RELATION_TYPE_3 = RelatedIdentifier.RELATION_TYPES.IS_DERIVED_FROM;
+
+  @Before
+  public void setUp() throws JsonProcessingException {
+    dataResourceDao.deleteAll();
     
-    private static final String UNKNOWN_RELATED_RESOURCE = "something else";
-    private static final String RELATED_RESOURCE_1 = "document_location";
-    private static final String RELATED_RESOURCE_2 = "document_location_2";
-    private static final String RELATED_RESOURCE_3 = "document_location_3";
-    
-    private static final RelatedIdentifier.RELATION_TYPES RELATION_TYPE_1 = RelatedIdentifier.RELATION_TYPES.HAS_METADATA;
-    private static final RelatedIdentifier.RELATION_TYPES RELATION_TYPE_2 = RelatedIdentifier.RELATION_TYPES.IS_METADATA_FOR;
-    private static final RelatedIdentifier.RELATION_TYPES RELATION_TYPE_3 = RelatedIdentifier.RELATION_TYPES.IS_DERIVED_FROM;
+    hasMetadataResource1 = createTestResource("hasMetadataResource1", RELATION_TYPE_1, RELATED_RESOURCE_1);
+    hasMetadataResource2 = createTestResource("hasMetadataResource2", RELATION_TYPE_1, RELATED_RESOURCE_2);
+    hasMetadataResource3 = createTestResource("hasMetadataResource3", RELATION_TYPE_1, RELATED_RESOURCE_3);
 
-    @Before
-    public void setUp() throws JsonProcessingException {
-        dataResourceDao.deleteAll();
+    isMetadataOfResource1 = createTestResource("isMetadataOfResource1", RELATION_TYPE_2, RELATED_RESOURCE_1);
+    isMetadataOfResource1 = createTestResource("isMetadataOfResource2", RELATION_TYPE_2, RELATED_RESOURCE_2);
+    isMetadataOfResource1 = createTestResource("isMetadataOfResource3", RELATION_TYPE_2, RELATED_RESOURCE_3);
 
+    isMetadataOfResource1 = createTestResource("noTypeForResource", null, RELATED_RESOURCE_3);
+  }
 
-        hasMetadataResource1 = DataResource.factoryNewDataResource("hasMetadataResource1");
-        hasMetadataResource1.setState(DataResource.State.FIXED);
-        hasMetadataResource1.getRelatedIdentifiers().add(RelatedIdentifier.factoryRelatedIdentifier(RELATION_TYPE_1, RELATED_RESOURCE_1, Scheme.factoryScheme("id", "uri"), "metadata_scheme"));;
-        hasMetadataResource1 = dataResourceDao.save(hasMetadataResource1);
+  /**
+   * FIND TESTS*
+   */
+  @Test
+  public void testGetDataResourcesByRelatedResourceAndValue() throws Exception {
+    testSingleValue(RELATED_RESOURCE_1, 2);
+    testSingleValue(RELATED_RESOURCE_1.toUpperCase(), 0);
+    testSingleValue(RELATED_RESOURCE_1.toLowerCase(), 0);
+    testSingleValue(RELATED_RESOURCE_2, 2);
+    testSingleValue(RELATED_RESOURCE_3, 3);
+    testSingleValue(UNKNOWN_RELATED_RESOURCE, 0);
+    testSingleValue(null, 0);
 
-        hasMetadataResource2 = DataResource.factoryNewDataResource("hasMetadataResource2");
-        hasMetadataResource2.setState(DataResource.State.FIXED);
-        hasMetadataResource2.getRelatedIdentifiers().add(RelatedIdentifier.factoryRelatedIdentifier(RELATION_TYPE_1, RELATED_RESOURCE_2, Scheme.factoryScheme("id", "uri"), "metadata_scheme"));;
-        hasMetadataResource2 = dataResourceDao.save(hasMetadataResource2);
+    testTwoValues(RELATED_RESOURCE_1, RELATED_RESOURCE_2, 4);
+    testTwoValues(RELATED_RESOURCE_1, RELATED_RESOURCE_3, 5);
+    testTwoValues(RELATED_RESOURCE_2, RELATED_RESOURCE_3, 5);
+    testTwoValues(RELATED_RESOURCE_1.substring(1), RELATED_RESOURCE_3, 3);
+    testTwoValues(UNKNOWN_RELATED_RESOURCE, RELATED_RESOURCE_1, 2);
+    testTwoValues(UNKNOWN_RELATED_RESOURCE, RELATED_RESOURCE_1, 2);
+    testTwoValues(UNKNOWN_RELATED_RESOURCE, RELATED_RESOURCE_2, 2);
+    testTwoValues(UNKNOWN_RELATED_RESOURCE, RELATED_RESOURCE_3, 3);
+    testTwoValues(UNKNOWN_RELATED_RESOURCE, RELATED_RESOURCE_1.substring(1), 0);
 
-        hasMetadataResource3 = DataResource.factoryNewDataResource("hasMetadataResource3");
-        hasMetadataResource3.setState(DataResource.State.FIXED);
-        hasMetadataResource3.getRelatedIdentifiers().add(RelatedIdentifier.factoryRelatedIdentifier(RELATION_TYPE_1, RELATED_RESOURCE_3, Scheme.factoryScheme("id", "uri"), "metadata_scheme"));;
-        hasMetadataResource3 = dataResourceDao.save(hasMetadataResource3);
+    Specification<DataResource> toSpecification = RelatedIdentifierSpec.toSpecification(RELATED_RESOURCE_1, RELATED_RESOURCE_2, RELATED_RESOURCE_3);
+    List<DataResource> findAll = dataResourceDao.findAll(toSpecification);
+    Assert.assertEquals("Find all related to " + RELATED_RESOURCE_1 + " and " + RELATED_RESOURCE_2 + " and " + RELATED_RESOURCE_3, 7, findAll.size());
+  }
 
-        isMetadataOfResource1 = DataResource.factoryNewDataResource("isMetadataOfResource1");
-        isMetadataOfResource1.setState(DataResource.State.FIXED);
-        isMetadataOfResource1.getRelatedIdentifiers().add(RelatedIdentifier.factoryRelatedIdentifier(RELATION_TYPE_2, RELATED_RESOURCE_1, Scheme.factoryScheme("id", "uri"), "metadata_scheme"));;
-        isMetadataOfResource1 = dataResourceDao.save(isMetadataOfResource1);
+  @Test
+  public void testGetDataResourcesByRelatedResourceAndNoValue() throws Exception {
+    Specification<DataResource> toSpecification = RelatedIdentifierSpec.toSpecification(new String[0]);
+    List<DataResource> findAll = dataResourceDao.findAll(toSpecification);
+    Assert.assertEquals("Find all related to new String[0]", 7, findAll.size());
 
-        isMetadataOfResource2 = DataResource.factoryNewDataResource("isMetadataOfResource2");
-        isMetadataOfResource2.setState(DataResource.State.FIXED);
-        isMetadataOfResource2.getRelatedIdentifiers().add(RelatedIdentifier.factoryRelatedIdentifier(RELATION_TYPE_2, RELATED_RESOURCE_2, Scheme.factoryScheme("id", "uri"), "metadata_scheme"));;
-        isMetadataOfResource2 = dataResourceDao.save(isMetadataOfResource2);
+    toSpecification = RelatedIdentifierSpec.toSpecification((String[]) null);
+    findAll = dataResourceDao.findAll(toSpecification);
+    Assert.assertEquals("Find all related to (String[])null", 7, findAll.size());
+  }
 
-        isMetadataOfResource3 = DataResource.factoryNewDataResource("isMetadataOfResource3");
-        isMetadataOfResource3.setState(DataResource.State.FIXED);
-        isMetadataOfResource3.getRelatedIdentifiers().add(RelatedIdentifier.factoryRelatedIdentifier(RELATION_TYPE_2, RELATED_RESOURCE_3, Scheme.factoryScheme("id", "uri"), "metadata_scheme"));;
-        isMetadataOfResource3 = dataResourceDao.save(isMetadataOfResource3);
+  @Test
+  public void testGetDataResourcesByRelatedResourceAndRelatedType() throws Exception {
+    testForRelatedType(RELATION_TYPE_1, 3);
+    testForRelatedType(RELATION_TYPE_2, 3);
+    testForRelatedType(RELATION_TYPE_3, 0);
+    testForRelatedType(null, 7);
+  }
 
-        resourceWithNoType = DataResource.factoryNewDataResource("noTypeForResource");
-        resourceWithNoType.setState(DataResource.State.FIXED);
-        resourceWithNoType.getRelatedIdentifiers().add(RelatedIdentifier.factoryRelatedIdentifier(null, RELATED_RESOURCE_3, Scheme.factoryScheme("id", "uri"), "metadata_scheme"));;
-        resourceWithNoType = dataResourceDao.save(resourceWithNoType);
-    }
+  @Test
+  public void testGetDataResourcesByRelatedResourceFilteredByValueAndType() throws Exception {
+    testForSingleValueAndType(RELATED_RESOURCE_1, RELATION_TYPE_1, 1);
+    testForSingleValueAndType(RELATED_RESOURCE_2, RELATION_TYPE_1, 1);
+    testForSingleValueAndType(RELATED_RESOURCE_3, RELATION_TYPE_1, 1);
 
-    /**
-     * FIND TESTS*
-     */
-    @Test
-    public void testGetDataResourcesByRelatedResourceAndValue() throws Exception {
-      Specification<DataResource> toSpecification = RelatedIdentifierSpec.toSpecification(RELATED_RESOURCE_1);
-      List<DataResource> findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to " + RELATED_RESOURCE_1, 2, findAll.size());
-      
-      toSpecification = RelatedIdentifierSpec.toSpecification(RELATED_RESOURCE_2);
-      findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to " + RELATED_RESOURCE_2, 2, findAll.size());
-      
-      toSpecification = RelatedIdentifierSpec.toSpecification(RELATED_RESOURCE_3);
-      findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to " + RELATED_RESOURCE_3, 3, findAll.size());
-      
-      toSpecification = RelatedIdentifierSpec.toSpecification(UNKNOWN_RELATED_RESOURCE);
-      findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to " + UNKNOWN_RELATED_RESOURCE, 0, findAll.size());
-      
-      toSpecification = RelatedIdentifierSpec.toSpecification(RELATED_RESOURCE_1, RELATED_RESOURCE_2);
-      findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to " + RELATED_RESOURCE_1 + " and " + RELATED_RESOURCE_2, 4, findAll.size());
-      
-      toSpecification = RelatedIdentifierSpec.toSpecification(RELATED_RESOURCE_1, RELATED_RESOURCE_3);
-      findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to " + RELATED_RESOURCE_1 + " and " + RELATED_RESOURCE_3, 5, findAll.size());
-      
-      toSpecification = RelatedIdentifierSpec.toSpecification(RELATED_RESOURCE_2, RELATED_RESOURCE_3);
-      findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to " + RELATED_RESOURCE_2 + " and " + RELATED_RESOURCE_3, 5, findAll.size());
-      
-      toSpecification = RelatedIdentifierSpec.toSpecification(RELATED_RESOURCE_1.substring(1), RELATED_RESOURCE_3);
-      findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to " + RELATED_RESOURCE_1.substring(1) + " and " + RELATED_RESOURCE_3, 3, findAll.size());
-      
-      toSpecification = RelatedIdentifierSpec.toSpecification(UNKNOWN_RELATED_RESOURCE, RELATED_RESOURCE_1);
-      findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to " + UNKNOWN_RELATED_RESOURCE + " and " + RELATED_RESOURCE_1, 2, findAll.size());
-      
-      toSpecification = RelatedIdentifierSpec.toSpecification(UNKNOWN_RELATED_RESOURCE, RELATED_RESOURCE_2);
-      findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to " + UNKNOWN_RELATED_RESOURCE + " and " + RELATED_RESOURCE_2, 2, findAll.size());
-      
-      toSpecification = RelatedIdentifierSpec.toSpecification(UNKNOWN_RELATED_RESOURCE, RELATED_RESOURCE_3);
-      findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to " + UNKNOWN_RELATED_RESOURCE + " and " + RELATED_RESOURCE_3, 3, findAll.size());
-      
-      toSpecification = RelatedIdentifierSpec.toSpecification(RELATED_RESOURCE_1.substring(1), UNKNOWN_RELATED_RESOURCE);
-      findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to " + RELATED_RESOURCE_1 + " and " + UNKNOWN_RELATED_RESOURCE, 0, findAll.size());
-      
-      toSpecification = RelatedIdentifierSpec.toSpecification((String)null);
-      findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to (String)null", 0, findAll.size());
-      
-      toSpecification = RelatedIdentifierSpec.toSpecification(RELATED_RESOURCE_1, RELATED_RESOURCE_2, RELATED_RESOURCE_3);
-      findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to " + RELATED_RESOURCE_1 + " and " + RELATED_RESOURCE_2 + " and " + RELATED_RESOURCE_3, 7, findAll.size());
-    }
-    @Test
-    public void testGetDataResourcesByRelatedResourceAndNoValue() throws Exception {
-      Specification<DataResource> toSpecification = RelatedIdentifierSpec.toSpecification(new String[0]);
-      List<DataResource> findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to new String[0]", 7, findAll.size());
-      
-      toSpecification = RelatedIdentifierSpec.toSpecification((String[])null);
-      findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to (String[])null" , 7, findAll.size());
-      
-    }
-    @Test
-    public void testGetDataResourcesByRelatedResourceAndRelatedType() throws Exception {
-      Specification<DataResource> toSpecification = RelatedIdentifierSpec.toSpecification(RELATION_TYPE_1);
-      List<DataResource> findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to with type " + RELATION_TYPE_1, 3, findAll.size());
-      
-      toSpecification = RelatedIdentifierSpec.toSpecification(RELATION_TYPE_2);
-      findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to with type " + RELATION_TYPE_2, 3, findAll.size());
-      
-      toSpecification = RelatedIdentifierSpec.toSpecification(RELATION_TYPE_3);
-      findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to with type " + RELATION_TYPE_3, 0, findAll.size());
+    testForSingleValueAndType(RELATED_RESOURCE_1, RELATION_TYPE_2, 1);
+    testForSingleValueAndType(RELATED_RESOURCE_2, RELATION_TYPE_2, 1);
+    testForSingleValueAndType(RELATED_RESOURCE_3, RELATION_TYPE_2, 1);
 
-      toSpecification = RelatedIdentifierSpec.toSpecification((RelatedIdentifier.RELATION_TYPES)null);
-      findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to (RelatedIdentifier.RELATION_TYPES)null)", 7, findAll.size());
-    }
-    @Test
-    public void testGetDataResourcesByRelatedResourceFilteredByValueAndType() throws Exception {
-      Specification<DataResource> toSpecification = RelatedIdentifierSpec.toSpecification(RELATION_TYPE_1, RELATED_RESOURCE_1);
-      List<DataResource> findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to " + RELATED_RESOURCE_1 + " with type " + RELATION_TYPE_1, 1, findAll.size());
-      
-      toSpecification = RelatedIdentifierSpec.toSpecification(RELATION_TYPE_1, RELATED_RESOURCE_2);
-      findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to " + RELATED_RESOURCE_2 + " with type " + RELATION_TYPE_1, 1, findAll.size());
-      
-      toSpecification = RelatedIdentifierSpec.toSpecification(RELATION_TYPE_1, RELATED_RESOURCE_3);
-      findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to " + RELATED_RESOURCE_3 + " with type " + RELATION_TYPE_1, 1, findAll.size());
-      
-      toSpecification = RelatedIdentifierSpec.toSpecification(RELATION_TYPE_2, RELATED_RESOURCE_1);
-      findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to " + RELATED_RESOURCE_1 + " with type " + RELATION_TYPE_2, 1, findAll.size());
-      
-      toSpecification = RelatedIdentifierSpec.toSpecification(RELATION_TYPE_2, RELATED_RESOURCE_2);
-      findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to " + RELATED_RESOURCE_2 + " with type " + RELATION_TYPE_2, 1, findAll.size());
-      
-      toSpecification = RelatedIdentifierSpec.toSpecification(RELATION_TYPE_2, RELATED_RESOURCE_3);
-      findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to " + RELATED_RESOURCE_3 + " with type " + RELATION_TYPE_2, 1, findAll.size());
-      
-      toSpecification = RelatedIdentifierSpec.toSpecification(RELATION_TYPE_3, RELATED_RESOURCE_1);
-      findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to " + RELATED_RESOURCE_1 + " with type " + RELATION_TYPE_2, 0, findAll.size());
-      
-      toSpecification = RelatedIdentifierSpec.toSpecification(RELATION_TYPE_3, RELATED_RESOURCE_2);
-      findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to " + RELATED_RESOURCE_2 + " with type " + RELATION_TYPE_2, 0, findAll.size());
-      
-      toSpecification = RelatedIdentifierSpec.toSpecification(RELATION_TYPE_3, RELATED_RESOURCE_3);
-      findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to " + RELATED_RESOURCE_3 + " with type " + RELATION_TYPE_2, 0, findAll.size());
-       
-      toSpecification = RelatedIdentifierSpec.toSpecification(RELATION_TYPE_1, UNKNOWN_RELATED_RESOURCE);
-      findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to " + UNKNOWN_RELATED_RESOURCE, 0, findAll.size());
-      
-      toSpecification = RelatedIdentifierSpec.toSpecification(RELATION_TYPE_1, RELATED_RESOURCE_1, RELATED_RESOURCE_3);
-      findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to " + RELATED_RESOURCE_1 + " and " + RELATED_RESOURCE_3 + " with type " + RELATION_TYPE_1, 2, findAll.size());
-      
-      toSpecification = RelatedIdentifierSpec.toSpecification(RELATED_RESOURCE_1.substring(1), RELATED_RESOURCE_3);
-      findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to " + RELATED_RESOURCE_1 .substring(1)+ " and " + RELATED_RESOURCE_3, 3, findAll.size());
-      
-      toSpecification = RelatedIdentifierSpec.toSpecification(UNKNOWN_RELATED_RESOURCE, RELATED_RESOURCE_3);
-      findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to " + UNKNOWN_RELATED_RESOURCE + " and " + RELATED_RESOURCE_3, 3, findAll.size());
-      
-      toSpecification = RelatedIdentifierSpec.toSpecification(RELATED_RESOURCE_1.substring(1), UNKNOWN_RELATED_RESOURCE);
-      findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to " + RELATED_RESOURCE_1 .substring(1)+ " and " + UNKNOWN_RELATED_RESOURCE, 0, findAll.size());
-      
-      toSpecification = RelatedIdentifierSpec.toSpecification((String)null);
-      findAll = dataResourceDao.findAll(toSpecification);
-      Assert.assertEquals("Find all related to null", 0, findAll.size());
-    }
+    testForSingleValueAndType(RELATED_RESOURCE_1, RELATION_TYPE_3, 0);
+    testForSingleValueAndType(RELATED_RESOURCE_2, RELATION_TYPE_3, 0);
+    testForSingleValueAndType(RELATED_RESOURCE_3, RELATION_TYPE_3, 0);
+
+    testForSingleValueAndType(UNKNOWN_RELATED_RESOURCE, RELATION_TYPE_1, 0);
+
+    Specification<DataResource> toSpecification = RelatedIdentifierSpec.toSpecification(RELATION_TYPE_1, RELATED_RESOURCE_1, RELATED_RESOURCE_3);
+    List<DataResource> findAll = dataResourceDao.findAll(toSpecification);
+    Assert.assertEquals("Find all related to " + RELATED_RESOURCE_1 + " and " + RELATED_RESOURCE_3 + " with type " + RELATION_TYPE_1, 2, findAll.size());
+  }
+
+  private DataResource createTestResource(String name, RelatedIdentifier.RELATION_TYPES relationType, String relatedResource) {
+    DataResource resource = DataResource.factoryNewDataResource(name);
+    resource.setState(DataResource.State.FIXED);
+    resource.getRelatedIdentifiers().add(
+            RelatedIdentifier.factoryRelatedIdentifier(relationType, relatedResource,
+                    Scheme.factoryScheme("id", "uri"), "metadata_scheme")
+    );
+    return dataResourceDao.save(resource);
+  }
+
+  private void testSingleValue(String value, int expectedValue) {
+    Specification<DataResource> toSpecification = RelatedIdentifierSpec.toSpecification(value);
+    List<DataResource> findAll = dataResourceDao.findAll(toSpecification);
+    Assert.assertEquals("Find all related to " + value, expectedValue, findAll.size());
+  }
+
+  private void testTwoValues(String value1, String value2, int expectedValue) {
+    Specification<DataResource> toSpecification = RelatedIdentifierSpec.toSpecification(value1, value2);
+    List<DataResource> findAll = dataResourceDao.findAll(toSpecification);
+    Assert.assertEquals("Find all related to " + value1 + " and " + value2, expectedValue, findAll.size());
+  }
+
+  private void testForRelatedType(RelatedIdentifier.RELATION_TYPES relationType, int expectedValue) {
+    Specification<DataResource> toSpecification = RelatedIdentifierSpec.toSpecification(relationType);
+    List<DataResource> findAll = dataResourceDao.findAll(toSpecification);
+    Assert.assertEquals("Find all related to with type " + relationType, expectedValue, findAll.size());
+  }
+
+  private void testForSingleValueAndType(String value, RelatedIdentifier.RELATION_TYPES relationType, int expectedValue) {
+    Specification<DataResource> toSpecification = RelatedIdentifierSpec.toSpecification(relationType, value);
+    List<DataResource> findAll = dataResourceDao.findAll(toSpecification);
+    Assert.assertEquals("Find all related to " + value + " with type " + relationType, expectedValue, findAll.size());
+  }
 }
