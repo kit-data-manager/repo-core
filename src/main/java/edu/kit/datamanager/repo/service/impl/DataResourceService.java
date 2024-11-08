@@ -502,7 +502,7 @@ public class DataResourceService implements IDataResourceService {
         logger.trace("Checking example for state information.");
         if (example != null && example.getState() != null) {
             //example is set...check if example state should be used
-            if (includeRevoked || !DataResource.State.REVOKED.equals(example.getSubjects())) {
+            if (includeRevoked || !DataResource.State.REVOKED.equals(example.getState())) {
                 logger.trace("Adding state {} from example.", example.getState());
                 //we either are allowed to include revoked state or the state is not 'REVOKED', add state from example
                 states.add(example.getState());
@@ -513,12 +513,11 @@ public class DataResourceService implements IDataResourceService {
 
         if (states.isEmpty()) {
             logger.trace("No state element received from example. Adding default states VOLATILE and FIXED.");
-            //No state obtained from example...adding default states VOLATILE and FIXED
             states.add(DataResource.State.VOLATILE);
             states.add(DataResource.State.FIXED);
         }
 
-        if (includeRevoked) {
+        if (includeRevoked && !states.contains(DataResource.State.REVOKED)) {
             logger.trace("Flag 'includeRevoked' is enabled. Adding states REVOKED.");
             //Add REVOKED state in case this is allowed (e.g. admin access)
             states.add(DataResource.State.REVOKED);
@@ -603,7 +602,7 @@ public class DataResourceService implements IDataResourceService {
             errorMessage.append("Empty publication year provided for update.\n");
         }
         if (newResource.getPublisher() == null) {
-            errorMessage.append("Empty publication year provided for update.\n");
+            errorMessage.append("Empty publisher provided for update.\n");
         }
 
         if (errorMessage.length() > 0) {
