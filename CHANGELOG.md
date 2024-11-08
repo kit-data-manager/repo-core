@@ -9,13 +9,51 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Fixed
-* Fixed potential issue with unprivileged find
 
 ### Security
 
 ### Deprecated
 
 ### Removed
+
+## [1.2.3] - 2024-11-08
+
+### Added
+* Enhanced searching capabilities for related identifiers with new methods in the RelatedIdentifierSpec class.
+* Comprehensive unit tests added for the RelatedIdentifierSpec class to ensure robust functionality.
+
+### Fixed
+* Fixed potential issue with unprivileged find
+* Improved error messaging for missing publisher during updates in the DataResourceService.
+
+### Security
+* Update actions/setup-java action to v4.5.0
+* Update dependency com.fasterxml.jackson.datatype:jackson-datatype-joda to v2.18.1.
+* Update dependency com.fasterxml.jackson.datatype:jackson-datatype-jsr310 to v2.18.1
+* Update dependency com.fasterxml.jackson.module:jackson-module-afterburner to v2.18.1
+* Update dependency com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider to v2.18.1
+* Update dependency com.google.code.gson:gson to v2.11.0
+* Bump commons-io:commons-io from 2.16.1 to 2.17.0.
+* Update dependency de.codecentric:spring-boot-admin-starter-client to v3.3.5
+* Update dependency edu.kit.datamanager:service-base to v1.3.2
+* Update plugin io.freefair.lombok to v8.10.2
+* Update plugin io.freefair.maven-publish-java to v8.10.2
+* Update dependency gradle to v8.10.2
+* Update dependency jacoco to v0.8.12
+* Bump org.apache.tika:tika-core from 2.9.2 to 3.0.0
+* Update dependency org.javers:javers-spring-boot-starter-sql to v7.6.3
+* Bump org.javers:javers-spring-boot-starter-sql from 7.6.2 to 7.6.3
+* Update plugin org.owasp.dependencycheck to v11
+* Bump org.postgresql:postgresql from 42.7.3 to 42.7.4.
+* Update dependency org.springframework.boot:spring-boot-dependencies to v3.3.5
+* Update dependency org.springframework.data:spring-data-elasticsearch to v5.3.5
+* Update dependency org.springframework.restdocs:spring-restdocs-mockmvc to v3.0.2
+* Update dependency org.springframework:spring-messaging to v6.1.14
+
+### Deprecated
+
+### Removed
+* Removed outdated configuration for GitHub Actions in the project setup.
 
 ## [1.2.2] - 2024-04-02
 
@@ -277,7 +315,8 @@ Extracted from the 'base-repo' project.
 ### Removed
 - none
 
-[Unreleased]: https://github.com/kit-data-manager/repo-core/compare/v1.2.2...HEAD
+[Unreleased]: https://github.com/kit-data-manager/repo-core/compare/v1.2.3...HEAD
+[1.2.3]: https://github.com/kit-data-manager/repo-core/compare/v1.2.2...v1.2.3
 [1.2.2]: https://github.com/kit-data-manager/repo-core/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/kit-data-manager/repo-core/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/kit-data-manager/repo-core/compare/v1.1.2...v1.2.0
