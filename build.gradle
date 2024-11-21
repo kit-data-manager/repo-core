@@ -86,7 +86,7 @@ dependencies {
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-api:${springDocVersion}"
     // apache
     implementation "commons-configuration:commons-configuration:1.10"
-    implementation "commons-io:commons-io:2.17.0"
+    implementation "commons-io:commons-io:2.18.0"
     implementation "org.apache.commons:commons-collections4:4.4"
     // includes commons-lang3
     implementation "org.apache.commons:commons-text:1.12.0"
