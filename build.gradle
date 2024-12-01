@@ -100,7 +100,7 @@ dependencies {
     implementation "com.h2database:h2:2.3.232"
     implementation "org.postgresql:postgresql:42.7.4"
     // XML
-    implementation "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.18.1"
+    implementation "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.18.2"
     implementation "com.fasterxml.jackson.module:jackson-module-afterburner:2.18.1"
 
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.1"
