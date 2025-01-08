@@ -108,7 +108,7 @@ dependencies {
 
     //implementation "com.monitorjbl:spring-json-view:1.0.1"
 
-    implementation "de.codecentric:spring-boot-admin-starter-client:3.3.6"
+    implementation "de.codecentric:spring-boot-admin-starter-client:3.4.1"
     // log4j core
     implementation "org.apache.logging.log4j:log4j-core"
     implementation "ch.qos.logback:logback-classic"
