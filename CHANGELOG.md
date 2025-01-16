@@ -16,6 +16,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+## [1.2.4] - 2025-01-16
+
+### Security
+* Update plugin io.freefair.maven-publish-java to v8.11 by @renovate in https://github.com/kit-data-manager/repo-core/pull/365
+* Update codecov/codecov-action action to v5 by @renovate in https://github.com/kit-data-manager/repo-core/pull/360
+* Update plugin io.freefair.lombok to v8.11 by @renovate in https://github.com/kit-data-manager/repo-core/pull/364
+* Update dependency commons-io:commons-io to v2.18.0 by @renovate in https://github.com/kit-data-manager/repo-core/pull/369
+* Update dependency org.springframework.restdocs:spring-restdocs-mockmvc to v3.0.3 by @renovate in https://github.com/kit-data-manager/repo-core/pull/367
+* Update dependency org.javers:javers-spring-boot-starter-sql to v7.7.0 by @renovate in https://github.com/kit-data-manager/repo-core/pull/366
+* Update dependency com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider to v2.18.2 by @renovate in https://github.com/kit-data-manager/repo-core/pull/378
+* Update dependency com.fasterxml.jackson.datatype:jackson-datatype-jsr310 to v2.18.2 by @renovate in https://github.com/kit-data-manager/repo-core/pull/377
+* Update dependency com.fasterxml.jackson.datatype:jackson-datatype-joda to v2.18.2 by @renovate in https://github.com/kit-data-manager/repo-core/pull/376
+* Update dependency com.fasterxml.jackson.module:jackson-module-afterburner to v2.18.2 by @renovate in https://github.com/kit-data-manager/repo-core/pull/375
+* Update plugin org.asciidoctor.jvm.convert to v4.0.4 by @renovate in https://github.com/kit-data-manager/repo-core/pull/386
+* Update dependency org.apache.commons:commons-text to v1.13.0 by @renovate in https://github.com/kit-data-manager/repo-core/pull/382
+* Update actions/setup-java action to v4.6.0 by @renovate in https://github.com/kit-data-manager/repo-core/pull/384
+* Update dependency gradle to v8.12 by @renovate in https://github.com/kit-data-manager/repo-core/pull/387
+* Update plugin io.spring.dependency-management to v1.1.7 by @renovate in https://github.com/kit-data-manager/repo-core/pull/383
+* Update dependency org.apache.tika:tika-core to v3 by @renovate in https://github.com/kit-data-manager/repo-core/pull/373
+* Update dependency de.codecentric:spring-boot-admin-starter-client to v3.4.1 by @renovate in https://github.com/kit-data-manager/repo-core/pull/374
+* Update dependency org.springframework.data:spring-data-elasticsearch to v5.4.1 by @renovate in https://github.com/kit-data-manager/repo-core/pull/381
+* Update dependency org.springframework.boot:spring-boot-dependencies to v3.4.1 by @renovate in https://github.com/kit-data-manager/repo-core/pull/385
+* Update plugin net.researchgate.release to v3.1.0 by @renovate in https://github.com/kit-data-manager/repo-core/pull/388
+* Update dependency org.postgresql:postgresql to v42.7.5 by @renovate in https://github.com/kit-data-manager/repo-core/pull/391
+* Update plugin org.owasp.dependencycheck to v12 by @renovate in https://github.com/kit-data-manager/repo-core/pull/390
+* Update springDocVersion to v2.8.3 by @renovate in https://github.com/kit-data-manager/repo-core/pull/389
+* Update dependency org.springframework:spring-messaging to v6.2.2 by @renovate in https://github.com/kit-data-manager/repo-core/pull/392
+* Update dependency edu.kit.datamanager:service-base to v1.3.3
+
 ## [1.2.3] - 2024-11-08
 
 ### Added
@@ -317,7 +346,8 @@ Extracted from the 'base-repo' project.
 ### Removed
 - none
 
-[Unreleased]: https://github.com/kit-data-manager/repo-core/compare/v1.2.3...HEAD
+[Unreleased]: https://github.com/kit-data-manager/repo-core/compare/v1.2.4...HEAD
+[1.2.4]: https://github.com/kit-data-manager/repo-core/compare/v1.2.3...1.2.4
 [1.2.3]: https://github.com/kit-data-manager/repo-core/compare/v1.2.2...v1.2.3
 [1.2.2]: https://github.com/kit-data-manager/repo-core/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/kit-data-manager/repo-core/compare/v1.2.0...v1.2.1

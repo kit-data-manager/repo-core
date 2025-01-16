@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 plugins { 
-    id "io.freefair.lombok" version "8.10.2"
-    id "io.freefair.maven-publish-java" version "8.10.2"
-    id "io.spring.dependency-management" version "1.1.6" 
+    id "io.freefair.lombok" version "8.11"
+    id "io.freefair.maven-publish-java" version "8.11"
+    id "io.spring.dependency-management" version "1.1.7" 
     //id "com.github.kt3k.coveralls" version "2.8.1" 
-    id "org.owasp.dependencycheck" version "11.1.0"
-    id "org.asciidoctor.jvm.convert" version "4.0.3"
+    id "org.owasp.dependencycheck" version "12.0.0"
+    id "org.asciidoctor.jvm.convert" version "4.0.4"
     //id "org.ajoberstar.grgit" version "2.0.1"
     id "java"
     id "jacoco"
     // plugins for release and publishing to maven repo
     id "signing"
-    id "net.researchgate.release" version "3.0.2"
+    id "net.researchgate.release" version "3.1.0"
     id "io.github.gradle-nexus.publish-plugin" version "2.0.0"
     id 'maven-publish'
 }
 
 ext {
     // versions of dependencies
-    springBootVersion = '3.3.5'
-    springDocVersion  = '2.6.0'
-    javersVersion     = '7.6.3'
+    springBootVersion = '3.4.1'
+    springDocVersion  = '2.8.3'
+    javersVersion     = '7.7.0'
 }
 
 description = "Core module for data repositories based on metadata model of datacite."
@@ -69,7 +69,7 @@ if (project.hasProperty('release')) {
 
 dependencies {
     // Spring
-    implementation 'org.springframework:spring-messaging:6.1.14'
+    implementation 'org.springframework:spring-messaging:6.2.2'
     // Spring Boot
     implementation "org.springframework.boot:spring-boot-starter-data-rest"
     implementation "org.springframework.boot:spring-boot-starter-amqp"
@@ -77,7 +77,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.boot:spring-boot-starter-actuator"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
-    implementation 'org.springframework.data:spring-data-elasticsearch:5.3.5'
+    implementation 'org.springframework.data:spring-data-elasticsearch:5.4.1'
 
    
     // springdoc
@@ -86,10 +86,10 @@ dependencies {
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-api:${springDocVersion}"
     // apache
     implementation "commons-configuration:commons-configuration:1.10"
-    implementation "commons-io:commons-io:2.17.0"
+    implementation "commons-io:commons-io:2.18.0"
     implementation "org.apache.commons:commons-collections4:4.4"
     // includes commons-lang3
-    implementation "org.apache.commons:commons-text:1.12.0"
+    implementation "org.apache.commons:commons-text:1.13.0"
     implementation 'org.apache.httpcomponents:httpclient:4.5.14'
     implementation "org.apache.tika:tika-core:3.0.0"
     // javers
@@ -98,22 +98,22 @@ dependencies {
 
     // Database
     implementation "com.h2database:h2:2.3.232"
-    implementation "org.postgresql:postgresql:42.7.4"
+    implementation "org.postgresql:postgresql:42.7.5"
     // XML
-    implementation "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.18.1"
-    implementation "com.fasterxml.jackson.module:jackson-module-afterburner:2.18.1"
+    implementation "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.18.2"
+    implementation "com.fasterxml.jackson.module:jackson-module-afterburner:2.18.2"
 
-    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.1"
-    implementation "com.fasterxml.jackson.datatype:jackson-datatype-joda:2.18.1"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.2"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-joda:2.18.2"
 
     //implementation "com.monitorjbl:spring-json-view:1.0.1"
 
-    implementation "de.codecentric:spring-boot-admin-starter-client:3.3.5"
+    implementation "de.codecentric:spring-boot-admin-starter-client:3.4.1"
     // log4j core
     implementation "org.apache.logging.log4j:log4j-core"
     implementation "ch.qos.logback:logback-classic"
 
-    implementation "edu.kit.datamanager:service-base:1.3.2"
+    implementation "edu.kit.datamanager:service-base:1.3.3"
 
     implementation "com.github.java-json-tools:json-patch:1.13"
     implementation "com.github.dozermapper:dozer-core:7.0.0"
@@ -123,7 +123,7 @@ dependencies {
      // boot starter
     testImplementation 'org.springframework.boot:spring-boot-starter-validation'    
     testImplementation "org.springframework.boot:spring-boot-starter-test"
-    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:3.0.2'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:3.0.3'
     testImplementation "org.springframework.security:spring-security-test"
    
     //Java 11 Support 
