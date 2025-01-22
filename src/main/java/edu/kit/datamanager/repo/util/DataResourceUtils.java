@@ -478,9 +478,12 @@ public class DataResourceUtils {
                     LOGGER.trace("Resource state is {}. No special access check necessary.", resource.getState());
                     break;
                 case GONE:
+                    // only administrators are allowed to access this resource
+                    if (!AuthenticationHelper.hasAuthority(RepoUserRole.ADMINISTRATOR.toString())) {
                     String message = "The resource never was or is not longer available.";
                     LOGGER.info(message);
                     throw new ResourceNotFoundException(message);
+                    }
                 default:
                     LOGGER.warn("Unhandled resource state {} detected. Not applying any special access checks.", resource.getState());
             }
