@@ -16,6 +16,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+
+## [1.2.5] - 2025-01-24
+
+### Added
+* ACL information is now visible not only for administrators. This change was required to allow frontends to distinguish between users with READ and WRITE permissions, which was not possible before.
+* Resources in state GONE are now visible to administrators. This change was introduced for convenience to identify resources that can be cleaned up from the database.
+
+### Security
+* Update plugin io.freefair.lombok to v8.12 by @renovate in https://github.com/kit-data-manager/repo-core/pull/397
+* Update plugin io.freefair.maven-publish-java to v8.12 by @renovate in https://github.com/kit-data-manager/repo-core/pull/398
+* Update plugin org.owasp.dependencycheck to v12.0.1 by @renovate in https://github.com/kit-data-manager/repo-core/pull/394
+* Update dependency org.springframework.data:spring-data-elasticsearch to v5.4.2 by @renovate in https://github.com/kit-data-manager/repo-core/pull/393
+* Update dependency org.springframework.boot:spring-boot-dependencies to v3.4.2 by @renovate in https://github.com/kit-data-manager/repo-core/pull/400
+* Update dependency gradle to v8.12.1 by @renovate in https://github.com/kit-data-manager/repo-core/pull/401
+
 ## [1.2.4] - 2025-01-16
 
 ### Security
@@ -346,7 +361,8 @@ Extracted from the 'base-repo' project.
 ### Removed
 - none
 
-[Unreleased]: https://github.com/kit-data-manager/repo-core/compare/v1.2.4...HEAD
+[Unreleased]: https://github.com/kit-data-manager/repo-core/compare/v1.2.5...HEAD
+[1.2.5]: https://github.com/kit-data-manager/repo-core/compare/v1.2.4...1.2.5
 [1.2.4]: https://github.com/kit-data-manager/repo-core/compare/v1.2.3...1.2.4
 [1.2.3]: https://github.com/kit-data-manager/repo-core/compare/v1.2.2...v1.2.3
 [1.2.2]: https://github.com/kit-data-manager/repo-core/compare/v1.2.1...v1.2.2
