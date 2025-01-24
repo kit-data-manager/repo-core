@@ -166,8 +166,8 @@ public class DataResourceController implements IDataResourceController {
     //set content-range header for react-admin (index_start-index_end/total
     PageRequest request = ControllerUtils.checkPaginationInformation(pgbl);
     response.addHeader(CONTENT_RANGE_HEADER, ControllerUtils.getContentRangeHeader(page.getNumber(), request.getPageSize(), page.getTotalElements()));
-    return ResponseEntity.ok().body(DataResourceUtils.filterResources(page.getContent()));
-
+    //return ResponseEntity.ok().body(DataResourceUtils.filterResources(page.getContent()));
+    return ResponseEntity.ok().body(page.getContent());
   }
 
   @Override
@@ -205,9 +205,11 @@ public class DataResourceController implements IDataResourceController {
 
     if (currentVersion > 0) {
       //trigger response creation and set etag...the response body is set automatically
-      return ResponseEntity.ok().eTag("\"" + result.getEtag() + "\"").header(VERSION_HEADER, Long.toString(currentVersion)).body(DataResourceUtils.filterResource(result));
+      //return ResponseEntity.ok().eTag("\"" + result.getEtag() + "\"").header(VERSION_HEADER, Long.toString(currentVersion)).body(DataResourceUtils.filterResource(result));
+      return ResponseEntity.ok().eTag("\"" + result.getEtag() + "\"").header(VERSION_HEADER, Long.toString(currentVersion)).body(result);
     } else {
-      return ResponseEntity.ok().eTag("\"" + result.getEtag() + "\"").body(DataResourceUtils.filterResource(result));
+      //return ResponseEntity.ok().eTag("\"" + result.getEtag() + "\"").body(DataResourceUtils.filterResource(result));
+      return ResponseEntity.ok().eTag("\"" + result.getEtag() + "\"").body(result);
     }
 
   }

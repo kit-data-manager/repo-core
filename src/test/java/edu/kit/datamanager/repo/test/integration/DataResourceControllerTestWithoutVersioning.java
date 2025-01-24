@@ -787,22 +787,37 @@ public class DataResourceControllerTestWithoutVersioning {
 
   @Test
   public void testDeleteResourceAsAdmin() throws Exception {
-    String etag = this.mockMvc.perform(get("/api/v1/dataresources/" + sampleResource.getId()).header(HttpHeaders.AUTHORIZATION,
-            "Bearer " + adminToken)).andDo(print()).andExpect(status().isOk()).andReturn().getResponse().getHeader("ETag");
+        ObjectMapper mapper = createObjectMapper();
+        String etag = this.mockMvc.perform(get("/api/v1/dataresources/" + sampleResource.getId()).header(HttpHeaders.AUTHORIZATION,
+                "Bearer " + adminToken)).andDo(print()).andExpect(status().isOk()).andReturn().getResponse().getHeader("ETag");
 
-    this.mockMvc.perform(delete("/api/v1/dataresources/" + sampleResource.getId()).header("If-Match", etag).header(HttpHeaders.AUTHORIZATION,
-            "Bearer " + adminToken).contentType("application/json")).andExpect(status().isNoContent());
+        this.mockMvc.perform(delete("/api/v1/dataresources/" + sampleResource.getId()).header("If-Match", etag).header(HttpHeaders.AUTHORIZATION,
+                "Bearer " + adminToken).contentType("application/json")).andExpect(status().isNoContent());
+      // Test access on revoked resource
+      //from now on, the resource should be in state REVOKED...HTTP GET should fail for users
+       this.mockMvc.perform(get("/api/v1/dataresources/" + sampleResource.getId()).header(HttpHeaders.AUTHORIZATION,
+              "Bearer " + userToken)).andDo(print()).andExpect(status().isNotFound());
+        
+        //from now on, the resource should be in state REVOKED...HTTP GET should still work for admins
+        MvcResult result = this.mockMvc.perform(get("/api/v1/dataresources/" + sampleResource.getId()).header(HttpHeaders.AUTHORIZATION,
+                "Bearer " + adminToken)).andDo(print()).andExpect(status().isOk()).andReturn();
+        DataResource resource = mapper.readValue(result.getResponse().getContentAsString(), DataResource.class);
+        Assert.assertEquals(DataResource.State.REVOKED, resource.getState());
 
-    //try a second time...this should work
-    etag = this.mockMvc.perform(get("/api/v1/dataresources/" + sampleResource.getId()).header(HttpHeaders.AUTHORIZATION,
-            "Bearer " + adminToken)).andDo(print()).andExpect(status().isOk()).andReturn().getResponse().getHeader("ETag");
+        //try a second time...this should work
+        etag = this.mockMvc.perform(get("/api/v1/dataresources/" + sampleResource.getId()).header(HttpHeaders.AUTHORIZATION,
+                "Bearer " + adminToken)).andDo(print()).andExpect(status().isOk()).andReturn().getResponse().getHeader("ETag");
 
-    this.mockMvc.perform(delete("/api/v1/dataresources/" + sampleResource.getId()).header("If-Match", etag).header(HttpHeaders.AUTHORIZATION,
-            "Bearer " + adminToken).contentType("application/json")).andExpect(status().isNoContent());
-    //from now on, the resource should be in state GONE...HTTP GET should fail
-    this.mockMvc.perform(get("/api/v1/dataresources/" + sampleResource.getId()).header(HttpHeaders.AUTHORIZATION,
-            "Bearer " + adminToken)).andDo(print()).andExpect(status().isNotFound());
-
+        this.mockMvc.perform(delete("/api/v1/dataresources/" + sampleResource.getId()).header("If-Match", etag).header(HttpHeaders.AUTHORIZATION,
+                "Bearer " + adminToken).contentType("application/json")).andExpect(status().isNoContent());
+        //from now on, the resource should be in state GONE...HTTP GET should fail for users
+        this.mockMvc.perform(get("/api/v1/dataresources/" + sampleResource.getId()).header(HttpHeaders.AUTHORIZATION,
+                "Bearer " + userToken)).andDo(print()).andExpect(status().isNotFound());
+        //from now on, the resource should be in state GONE...HTTP GET should still work for admins
+        result = this.mockMvc.perform(get("/api/v1/dataresources/" + sampleResource.getId()).header(HttpHeaders.AUTHORIZATION,
+                "Bearer " + adminToken)).andDo(print()).andExpect(status().isOk()).andReturn();
+        resource = mapper.readValue(result.getResponse().getContentAsString(), DataResource.class);
+        Assert.assertEquals(DataResource.State.GONE, resource.getState());
   }
 
   @Test
