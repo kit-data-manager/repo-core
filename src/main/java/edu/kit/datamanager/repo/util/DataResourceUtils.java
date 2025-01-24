@@ -119,9 +119,11 @@ public class DataResourceUtils {
 
         if (currentVersion > 0) {
             //trigger response creation and set etag...the response body is set automatically
-            return ResponseEntity.ok().eTag("\"" + resource.getEtag() + "\"").header("Resource-Version", Long.toString((version != null) ? version : currentVersion)).body(filterResource(resource));
+            //return ResponseEntity.ok().eTag("\"" + resource.getEtag() + "\"").header("Resource-Version", Long.toString((version != null) ? version : currentVersion)).body(filterResource(resource));
+            return ResponseEntity.ok().eTag("\"" + resource.getEtag() + "\"").header("Resource-Version", Long.toString((version != null) ? version : currentVersion)).body(resource);
         } else {
-            return ResponseEntity.ok().eTag("\"" + resource.getEtag() + "\"").body(filterResource(resource));
+            //return ResponseEntity.ok().eTag("\"" + resource.getEtag() + "\"").body(filterResource(resource));
+            return ResponseEntity.ok().eTag("\"" + resource.getEtag() + "\"").body(resource);
         }
     }
 
@@ -371,7 +373,7 @@ public class DataResourceUtils {
      * @param resource data resource.
      * @return data resource without acls.
      */
-    public static DataResource filterResource(DataResource resource) {
+    /*public static DataResource filterResource(DataResource resource) {
         if (!AuthenticationHelper.isAuthenticatedAsService() && !DataResourceUtils.hasPermission(resource, PERMISSION.ADMINISTRATE) && !AuthenticationHelper.hasAuthority(RepoUserRole.ADMINISTRATOR.toString())) {
             LOGGER.debug("Removing ACL information from resources due to non-administrator access.");
             //exclude ACLs if not administrate or administrator permissions are set
@@ -381,7 +383,7 @@ public class DataResourceUtils {
         }
 
         return resource;
-    }
+    }*/
 
     /**
      * Remove ACLs from a list of data resources.
@@ -389,7 +391,7 @@ public class DataResourceUtils {
      * @param resources list of data resources.
      * @return list of data resources without acls.
      */
-    public static List<DataResource> filterResources(List<DataResource> resources) {
+    /*public static List<DataResource> filterResources(List<DataResource> resources) {
 
         if (!AuthenticationHelper.isAuthenticatedAsService() && !AuthenticationHelper.hasAuthority(RepoUserRole.ADMINISTRATOR.toString())) {
             LOGGER.debug("Removing ACL information from resources due to non-administrator access.");
@@ -403,7 +405,7 @@ public class DataResourceUtils {
         }
 
         return resources;
-    }
+    }*/
 
     public static Collection<? extends GrantedAuthority> getUserAuthorities(DataResource resource) {
         LOGGER.trace("Determining user grants from authorization context.");
