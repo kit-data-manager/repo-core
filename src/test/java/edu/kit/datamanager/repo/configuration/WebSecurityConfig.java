@@ -62,10 +62,9 @@ public class WebSecurityConfig {
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     return http.authorizeHttpRequests(authorize
             -> authorize
-                    .requestMatchers(EndpointRequest.toAnyEndpoint()).hasAnyRole("ADMIN", "ACTUATOR")
+                    .requestMatchers(EndpointRequest.toAnyEndpoint()).hasAnyRole("ADMIN", "ACTUATOR", "ADMINISTRATOR")
                     .requestMatchers("/**").permitAll()
-                    .anyRequest().authenticated()
-    )
+                    .anyRequest().authenticated())
             .sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
             .addFilterAfter(keycloaktokenFilterBean.get(), BasicAuthenticationFilter.class)
