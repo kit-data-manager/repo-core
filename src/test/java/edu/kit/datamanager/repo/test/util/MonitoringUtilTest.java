@@ -95,8 +95,22 @@ public class MonitoringUtilTest {
     Assert.assertEquals(0, noOfUniqueUsers);
     MonitoringConfiguration monitoringConfiguration = new MonitoringConfiguration();
     monitoringConfiguration.setEnabled(true);
+    MonitoringUtil.setMonitoringConfiguration(monitoringConfiguration);
     MonitoringUtil.setIpMonitoringDao(null);
     noOfUniqueUsers = MonitoringUtil.getNoOfUniqueUsers();
     Assert.assertEquals(0, noOfUniqueUsers);
+  }
+
+  @Test
+  public void testGetNoOfRegisteredUsers() {
+    MonitoringUtil.setMonitoringConfiguration(null);
+    long noOfRegisteredUsers = MonitoringUtil.getNoOfRegisteredUsers();
+    Assert.assertEquals(0, noOfRegisteredUsers);
+    MonitoringConfiguration monitoringConfiguration = new MonitoringConfiguration();
+    monitoringConfiguration.setEnabled(true);
+    MonitoringUtil.setMonitoringConfiguration(monitoringConfiguration);
+    MonitoringUtil.setAclEntryDao(null);
+    noOfRegisteredUsers = MonitoringUtil.getNoOfRegisteredUsers();
+    Assert.assertEquals(0, noOfRegisteredUsers);
   }
 }

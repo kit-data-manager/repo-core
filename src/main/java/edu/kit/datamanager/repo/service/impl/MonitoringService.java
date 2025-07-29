@@ -16,6 +16,7 @@
 package edu.kit.datamanager.repo.service.impl;
 
 import edu.kit.datamanager.repo.configuration.MonitoringConfiguration;
+import edu.kit.datamanager.repo.dao.IAclEntryDao;
 import edu.kit.datamanager.repo.dao.IIpMonitoringDao;
 import edu.kit.datamanager.repo.util.MonitoringUtil;
 import io.micrometer.core.instrument.Counter;
@@ -46,18 +47,7 @@ public class MonitoringService implements HandlerInterceptor, WebMvcConfigurer {
    * Counter for the number of requests served.
    */
   private final Counter counter;
-  /**
-   * MeterRegistry for registering metrics.
-   */
-  MeterRegistry meterRegistry;
-  /**
-   * Configuration for monitoring.
-   */
-  private MonitoringConfiguration monitoringConfiguration;
-  /**
-   * DAO for IP monitoring.
-   */
-  private IIpMonitoringDao ipMonitoringDao;
+
   /**
    * Constructor for MonitoringService.
    * Initializes the MonitoringUtil with the provided configuration and DAO.
@@ -65,20 +55,23 @@ public class MonitoringService implements HandlerInterceptor, WebMvcConfigurer {
   @Autowired
   public MonitoringService(MeterRegistry meterRegistry,
                            MonitoringConfiguration monitoringConfiguration,
-                           IIpMonitoringDao ipMonitoringDao) {
+                           IIpMonitoringDao ipMonitoringDao,
+                           IAclEntryDao aclEntryDao) {
     LOGGER.info("MonitoringUtil initialized with configuration: {}", monitoringConfiguration);
     MonitoringUtil.setMonitoringConfiguration(monitoringConfiguration);
     MonitoringUtil.setIpMonitoringDao(ipMonitoringDao);
+    MonitoringUtil.setAclEntryDao(aclEntryDao);
 
     LOGGER.trace("Initializing MonitoringService with service name: {}", MonitoringUtil.getServiceName());
     // Register a gauge for the number of unique users
     String prefixMetrics = MonitoringUtil.getServiceName();
     Gauge.builder( prefixMetrics + "_unique_users", MonitoringUtil::getNoOfUniqueUsers).register(meterRegistry);
+    Gauge.builder( prefixMetrics + "_registered_users", MonitoringUtil::getNoOfRegisteredUsers).register(meterRegistry);
     counter = Counter.builder(prefixMetrics + "_requests_served").register(meterRegistry);
   }
 
   @Override
-  public boolean preHandle(HttpServletRequest request, @Nullable HttpServletResponse response, @Nullable Object handler) throws Exception {
+  public boolean preHandle(HttpServletRequest request, @Nullable HttpServletResponse response, @Nullable Object handler) {
     LOGGER.trace("PreHandleInterceptor: preHandle called for request: {}", request.getRequestURI());
     if (MonitoringUtil.isMonitoringEnabled()) {
       String forwardedFor = request.getHeader("X-Forwarded-For");

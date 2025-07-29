@@ -17,6 +17,7 @@ package edu.kit.datamanager.repo.util;
 
 import edu.kit.datamanager.repo.configuration.MonitoringConfiguration;
 import edu.kit.datamanager.repo.dao.IIpMonitoringDao;
+import edu.kit.datamanager.repo.dao.IAclEntryDao;
 import edu.kit.datamanager.repo.domain.IpMonitoring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +44,10 @@ public class MonitoringUtil {
    * Instance holding the repository for the IP monitoring.
    */
   private static IIpMonitoringDao ipMonitoringDao;
-
+  /**
+   * Instance holding the repository for the ACL entries.
+   */
+  private static IAclEntryDao aclEntryDao;
   /**
    * Sets the monitoring configuration.
    *
@@ -63,17 +67,25 @@ public class MonitoringUtil {
   }
 
   /**
+   * Sets the repository for the ACL entries.
+   *
+   * @param aclEntryDao the aclEntryDao to set
+   */
+  public static void setAclEntryDao(IAclEntryDao aclEntryDao) {
+    MonitoringUtil.aclEntryDao = aclEntryDao;
+  }
+
+  /**
    * Get the name of the service.
    *
    * @return the name of the service
    */
   public static String getServiceName() {
-    String serviceName = null;
+    String serviceName = "DefaultServiceName";
     if (monitoringConfiguration != null) {
       serviceName = monitoringConfiguration.getServiceName();
     } else {
-      LOG.warn("Monitoring configuration is not set. Returning default service name.");
-      serviceName = "DefaultServiceName";
+      LOG.warn("Monitoring configuration is not set. Returning default service name: '{}'.", serviceName);
     }
     return serviceName;
   }
@@ -87,6 +99,17 @@ public class MonitoringUtil {
       noOfUniqueUsers = ipMonitoringDao.count();
     }
     return noOfUniqueUsers;
+  }
+
+  /**
+   * Returns the number of registered users in total.
+   */
+  public static long getNoOfRegisteredUsers() {
+    long noOfRegisteredUsers = 0;
+    if (isMonitoringEnabled() && aclEntryDao != null) {
+      noOfRegisteredUsers = aclEntryDao.countRegisteredSids();
+    }
+    return noOfRegisteredUsers;
   }
 
   /**

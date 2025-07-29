@@ -152,9 +152,10 @@ public class IIpMonitoringDaoTest {
   }
 
   private void prepareDataBase(int noOfEntries) {
-    IpMonitoring ipMonitoring = new IpMonitoring();
+    IpMonitoring ipMonitoring;
     monitoringDao.deleteAll();
     for (int i = 0; i < noOfEntries; i++) {
+      ipMonitoring = new IpMonitoring();
       ipMonitoring.setIpHash(ips[i % ips.length]);
       ipMonitoring.setLastVisit(nowMinusDays(i));
       monitoringDao.save(ipMonitoring);
