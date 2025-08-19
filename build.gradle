@@ -40,9 +40,11 @@ ext {
 description = "Core module for data repositories based on metadata model of datacite."
 group = 'edu.kit.datamanager'
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
- 
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
 jar {
     archiveBaseName = 'repo-core'
     archiveVersion = System.getenv('version')
