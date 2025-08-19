@@ -34,7 +34,7 @@ ext {
     // versions of dependencies
     springBootVersion = '3.5.4'
     springDocVersion  = '2.8.9'
-    javersVersion     = '7.8.0'
+    javersVersion     = '7.8.4'
 }
 
 description = "Core module for data repositories based on metadata model of datacite."
