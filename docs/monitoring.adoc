@@ -6,6 +6,7 @@ The following properties are monitored by repo-core:
 
 1. No of unique users in a given time span (noOfDaysToKeep)
 2. No of accesses to the REST-API since the last restart
+3. No of registered users
 
 === Prerequisites
 Before you begin, ensure that you have the following prerequisites:
