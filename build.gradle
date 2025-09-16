@@ -34,7 +34,7 @@ ext {
     // versions of dependencies
     springBootVersion = '3.5.5'
     springDocVersion  = '2.8.13'
-    javersVersion     = '7.8.4'
+    javersVersion     = '7.8.6'
 }
 
 description = "Core module for data repositories based on metadata model of datacite."
@@ -71,7 +71,7 @@ if (project.hasProperty('release')) {
 
 dependencies {
     // Spring
-    implementation 'org.springframework:spring-messaging:6.2.10'
+    implementation 'org.springframework:spring-messaging:6.2.11'
     // Spring Boot
     implementation "org.springframework.boot:spring-boot-starter-data-rest"
     implementation "org.springframework.boot:spring-boot-starter-amqp"
@@ -79,7 +79,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.boot:spring-boot-starter-actuator"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
-    implementation 'org.springframework.data:spring-data-elasticsearch:5.5.3'
+    implementation 'org.springframework.data:spring-data-elasticsearch:5.5.4'
 
    
     // springdoc
@@ -93,10 +93,10 @@ dependencies {
     // includes commons-lang3
     implementation "org.apache.commons:commons-text:1.14.0"
     implementation 'org.apache.httpcomponents:httpclient:4.5.14'
-    implementation "org.apache.tika:tika-core:3.2.2"
+    implementation "org.apache.tika:tika-core:3.2.3"
     // javers
     implementation "org.javers:javers-spring-boot-starter-sql:${javersVersion}"
-    implementation "com.google.code.gson:gson:2.13.1"
+    implementation "com.google.code.gson:gson:2.13.2"
 
     // Database
     implementation "com.h2database:h2:2.3.232"
@@ -110,7 +110,7 @@ dependencies {
 
     //implementation "com.monitorjbl:spring-json-view:1.0.1"
 
-    implementation "de.codecentric:spring-boot-admin-starter-client:3.5.2"
+    implementation "de.codecentric:spring-boot-admin-starter-client:3.5.3"
     // log4j core
     implementation "org.apache.logging.log4j:log4j-core"
     implementation "ch.qos.logback:logback-classic"
