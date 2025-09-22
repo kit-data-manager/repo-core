@@ -47,11 +47,7 @@ import edu.kit.datamanager.util.ControllerUtils;
 import edu.kit.datamanager.util.PatchUtil;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -64,6 +60,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -545,7 +547,29 @@ public class ContentInformationService implements IContentInformationService {
         LOGGER.trace("Obtaining health information.");
         boolean repositoryPathAvailable = true;
         URL basePath = applicationProperties.getBasepath();
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+
+        Future<Boolean> future = executor.submit(() -> {
+            File mount = new File(basePath.toURI());
+            return mount.exists() && mount.isDirectory() && mount.canRead() && mount.list() != null;
+        });
+
         try {
+            LOGGER.trace("Checking repository path at {}.", basePath);
+            Boolean accessible = future.get(5, TimeUnit.SECONDS);
+            LOGGER.trace("Repository path is " + (accessible ? "accessible" : "not accessible"));
+            repositoryPathAvailable = accessible;
+        } catch (TimeoutException e) {
+            LOGGER.error("Timeout while checking repository path.");
+            repositoryPathAvailable = false;
+        } catch (Exception e) {
+            LOGGER.error("Error while checking repository path.", e);
+            repositoryPathAvailable = false;
+        } finally {
+            executor.shutdownNow();
+        }
+
+        /*try {
             Path basePathAsPath = Paths.get(basePath.toURI());
             Path probe = Paths.get(basePathAsPath.toString(), "probe.txt");
             try {
@@ -563,7 +587,7 @@ public class ContentInformationService implements IContentInformationService {
         } catch (URISyntaxException ex) {
             LOGGER.error("Invalid base path uri of " + basePath + ".", ex);
             repositoryPathAvailable = false;
-        }
+        }*/
         if (repositoryPathAvailable) {
             return Health.up().withDetail("ContentInformation", dao.count()).build();
         } else {
