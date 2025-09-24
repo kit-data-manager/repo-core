@@ -476,15 +476,15 @@ in the database.
 In contrast to deleting entire resource, deleting single content elements is permanent. If you send a DELETE request to a data URL of a resource, the associated file and all metadata associated with the particular 
 element are deleted. This operation is not reversible and you should double check before deleting a content element.
 
-= Messaging and Event Message Handling
+== Messaging and Event Message Handling
 
-== Introduction
+=== Introduction
 
 For a data repository creating a resource and uploading data is only the simplest workflow. In many cases, additional steps have to be performed in order to obtain all required information, to validate an upload or 
 to monitor what happens. For this purpose, KIT Data Manager offers a feature called 'messaging' emitting small messages after certain operations have succeeded. The following chapters describe how these messages 
 are look like, when they are emitted and how to deal with them in order to react on certain repository events.
 
-== Message Types and Format
+=== Message Types and Format
 
 There are different kinds of messages grouped by category. Depending on its category, a message may contain additional properties or not. The following table shows all currently available message categories and the 
 condition under which a message with a certain category is sent.
@@ -513,7 +513,7 @@ You will find all default elements mentioned above as well as the 'metadata' ele
 the operation they are related to has successfully finished, jut before returning the result to the user. Therefor, a Message Queue service called RabbitMQ is used, which has to be installed in addition to the database 
 and the repository microservice itself in order to be able to exchange messages.
 
-== Messaging Service Configuration
+=== Messaging Service Configuration
 
 In order to make use of the messaging feature, a RabbitMQ instance must be running, preferably locally for security reasons. Please refer to the RabbitMQ web page (https://www.rabbitmq.com/) on how to install and 
 operate such an instance. From the repository perspective, all relevant settings are part of the default configuration file 'application.properties'. These properties, their function and values/defaults are listed 
@@ -532,7 +532,7 @@ in the following table. Typically, no additional repository-specific configurati
 |repo.schedule.rate|The schedule rate in milliseconds at which the repository checks for new messages.|A numeric amount of milliseconds [1000]
 |============================================================================================================================
 
-== Adding a Message Handler
+=== Adding a Message Handler
 
 There are multiple possibilities to consume messages from a server supporting the Advanced Message Queuing Protocol (AMQP) like RabbitMQ. In this documentation, we'll describe how to do this using the built-in messaging support. 
 Therefore, it's beneficial if you already have some programming experiences, preferably in Java. 
@@ -568,22 +568,22 @@ Thus, if we in our sample handler wouldn't return 'REJECTED', our status would i
 After implementing a custom message handler you have to build a jar file and place it, together with all required dependencies, in the extensions folder of your KIT DM 2.0 installation. If your handler needs any configuration, 
 it is recommended to place it in the current working directory at service startup, which is typically the folder where 'base-repo.jar' is located.
 
-= Audit Information and Versioning of Metadata Resources
+== Audit Information and Versioning of Metadata Resources
 
-== Introduction
+=== Introduction
 
 Not only in living data repositories metadata (and sometimes also data) are subject of change, either by a user or in the course of curation activities. For validation and documentation purposes it can be desirable 
 to keep track of these changes, either for monitoring or to be able to rollback unwanted changes at a later point in time. Therefor, KIT Data Manager offers support for capturing audit information and versioning of 
 metadata documents. It uses the JaVers library (https://javers.org/) to collect changes between two versions of one document and stores this information in a relational database. With the collected changes
 JaVers is capable of creating so called 'Shadows' of a document, which are representing a version at a specific point in time. 
 
-== Audit Information and Versioning Configuration
+=== Audit Information and Versioning Configuration
 
 Enabling or disabling the audit and versioning feature can be done easily by setting the value of the property 'repo.audit.enabled' inside 'application.properties' either 'true' or 'false'. All audit information is stored
 in the same database configured for the repository, therefore, no additional configuration is needed. If the feature was not enabled, yet, you can enable it at any time to start capturing audit information beginning with 
 the next restart of the repository service. You may also disable the feature again, e.g. temporarily to avoid capturing information, as the primary version of a resource is stored at the repository. 
 
-== Working with Versions and Audit Information
+=== Working with Versions and Audit Information
 
 Audit and versioning support are seamlessly integrated into the internal workflows and you can benefit from it easily. If you go back to the example of how to <<ChapterGetResource,get a Data Resource>> you'll find in the response
 header the property 'Resource-Version' with a value of 1. If you scroll down to the second GET operation performed after updating the resource, you'll see that 'Resource-Version' has been increased to 2. Additionally, a version number
@@ -621,9 +621,11 @@ include::{snippets}/get-current-resource-version/http-response.adoc[]
 
 As mentioned at the beginning, versioning is supported for metadata resources, e.g. data resources and content information. There is currently no support for versioning of the actual content.
 
-== Remarks on Working with Versions
+=== Remarks on Working with Versions
 
 While working with versions you should keep some particularities in mind. Access to version is only possible for single resources. There is e.g. no way to obtain all resources in version 2 from the server.
 If a specific version of a resource is returned, the obtained ETag also relates to this specific version. Therefore, you should NOT use this ETag for any update operation as the operation will fail with response 
 code 412 (PRECONDITION FAILED). Consequently, it is also NOT allowed to modify a format version of a resource. If you want to rollback to a previous version, you should obtain the resource and submit a PUT request
 of the entire document which will result in a new version equal to the previous state unless there were changes you are not allowed to apply (anymore), e.g. if permissions have changed. 
+
+include::monitoring.adoc[]

@@ -1,0 +1,88 @@
+== Monitoring for Your Application
+
+=== Introduction
+This document outlines the steps to enable monitoring for your application using the provided configuration.
+The following properties are monitored by repo-core:
+
+1. No of unique users in a given time span (noOfDaysToKeep)
+2. No of accesses to the REST-API since the last restart
+3. No of registered users
+
+=== Prerequisites
+Before you begin, ensure that you have the following prerequisites:
+
+* A running instance of the application you want to monitor.
+* Access to the application's configuration file (e.g., YAML or properties file).
+* The necessary permissions to modify the configuration file.
+* Authorization to (re)start the application after modifying the configuration.
+
+=== Description of the Configuration
+The configuration settings provided in this document are designed to enable monitoring for your application.
+Here’s a brief description of each setting:
+
+* `repo.monitoring.enabled`: A boolean flag to enable or disable monitoring. Set to `true` to enable.
+* `repo.monitoring.serviceName`: The name of your service for monitoring purposes. If not specified, it defaults to `repo_service`.
+* `repo.monitoring.noOfDaysToKeep`: The number of days to retain monitoring data of the unique users. The default value is 28 days, but you can adjust this based on your requirements.
+
+=== Configuration Steps
+1. Open the configuration file for your application. This file is typically located in the application's root directory or a designated configuration directory.
+2. Add or modify the following configuration settings to enable monitoring:
+
+Example '.yaml':
+``` yaml
+repo:
+  monitoring:
+    enabled: true
+    serviceName: NAME_OF_YOUR_SERVICE (default: repo_service)
+    noOfDaysToKeep: 28 (default: 28)
+```
+Example '.properties':
+``` properties
+repo.monitoring.enabled=true
+repo.monitoring.serviceName=NAME_OF_YOUR_SERVICE (default: repo_service)
+repo.monitoring.noOfDaysToKeep=28 (default: 28)
+```
+
+3. Save the changes to the configuration file.
+4. Restart your application to apply the new configuration settings.
+
+=== Verification
+After restarting your application, verify that monitoring is enabled by checking the following:
+
+* Look for logs indicating that the monitoring service has started successfully.
+* Access the '/actuator/prometheus' endpoint to ensure that metrics are being collected.
+
+Example command to check the endpoint:
+``` bash
+curl http://HOSTNAME_OF_YOUR_SERVICE:PORT_OF_YOUR_SERVICE/CONTEXT_PATH(if configured)/actuator/prometheus | grep -v "#" | grep NAME_OF_YOUR_SERVICE
+```
+
+=== Troubleshooting
+If you encounter issues while enabling monitoring, consider the following troubleshooting steps:
+
+* Ensure that the acutator endpoints are enabled in your application.
+If actuator endpoints are not enabled, you can do so by adding the following to your configuration:
+``` yaml
+management:
+  endpoints:
+    web:
+      exposure:
+        include: 'prometheus[,other_endpoints_if_needed]'
+```
+``` properties
+management.endpoints.web.exposure.include=prometheus[,other_endpoints_if_needed]
+```
+* Ensure that the configuration file is correctly formatted and saved.
+* Verify that the application has been restarted after modifying the configuration file.
+* Check for any syntax errors in the configuration file.
+* Check the application logs for any errors related to the monitoring service.
+* Verify that the application has the necessary dependencies for monitoring (e.g., Spring Boot Actuator).
+
+=== Additional Resources
+For more information on monitoring and metrics collection, refer to the following resources:
+
+* [Spring Boot Actuator Documentation](https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html)
+* [Prometheus Documentation](https://prometheus.io/docs/introduction/overview/)
+* [Grafana Documentation](https://grafana.com/docs/grafana/latest/)
+
+
