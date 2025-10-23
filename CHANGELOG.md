@@ -16,6 +16,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+## [1.2.6] - 2025-10-23
+
+### Added
+* Added optional repository monitoring with Prometheus metrics (unique users, registered users, requests served) and scheduled cleanup.
+* Added monitoring guide and updated docs structure; includes configuration and verification steps.
+* Added unit and integration tests covering monitoring, metrics, cleanup and related DAOs.
+
+### Security
+* Updated CI actions and Java setup, bumped plugins/dependencies, upgraded Gradle to 9.1 and simplified wrapper invocation.
 
 ## [1.2.5] - 2025-01-24
 
@@ -361,7 +370,8 @@ Extracted from the 'base-repo' project.
 ### Removed
 - none
 
-[Unreleased]: https://github.com/kit-data-manager/repo-core/compare/v1.2.5...HEAD
+[Unreleased]: https://github.com/kit-data-manager/repo-core/compare/v1.2.6...HEAD
+[1.2.6]: https://github.com/kit-data-manager/repo-core/compare/v1.2.5...v1.2.6
 [1.2.5]: https://github.com/kit-data-manager/repo-core/compare/v1.2.4...1.2.5
 [1.2.4]: https://github.com/kit-data-manager/repo-core/compare/v1.2.3...1.2.4
 [1.2.3]: https://github.com/kit-data-manager/repo-core/compare/v1.2.2...v1.2.3
