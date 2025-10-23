@@ -19,23 +19,16 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import edu.kit.datamanager.repo.configuration.ApplicationProperties;
-import edu.kit.datamanager.repo.configuration.DateBasedStorageProperties;
-import edu.kit.datamanager.repo.configuration.IdBasedStorageProperties;
-import edu.kit.datamanager.repo.configuration.RepoBaseConfiguration;
-import edu.kit.datamanager.repo.configuration.StorageServiceProperties;
+import edu.kit.datamanager.repo.configuration.*;
 import edu.kit.datamanager.repo.dao.IAllIdentifiersDao;
 import edu.kit.datamanager.repo.dao.IDataResourceDao;
 import edu.kit.datamanager.repo.domain.ContentInformation;
 import edu.kit.datamanager.repo.domain.DataResource;
 import edu.kit.datamanager.repo.service.IContentInformationService;
-import edu.kit.datamanager.repo.service.impl.DataResourceService;
+import edu.kit.datamanager.repo.service.impl.*;
 import edu.kit.datamanager.repo.service.IDataResourceService;
 import edu.kit.datamanager.repo.service.IRepoStorageService;
 import edu.kit.datamanager.repo.service.IRepoVersioningService;
-import edu.kit.datamanager.repo.service.impl.ContentInformationAuditService;
-import edu.kit.datamanager.repo.service.impl.ContentInformationService;
-import edu.kit.datamanager.repo.service.impl.DataResourceAuditService;
 import edu.kit.datamanager.security.filter.KeycloakJwtProperties;
 import edu.kit.datamanager.security.filter.KeycloakTokenFilter;
 import edu.kit.datamanager.security.filter.KeycloakTokenValidator;
@@ -82,7 +75,8 @@ public class Application {
   private IRepoVersioningService[] versioningServices;
   @Autowired
   private IRepoStorageService[] storageServices;
-
+  //@Autowired
+  //private PreHandleInterceptor preHandleInterceptor;
   @Autowired
   private IAllIdentifiersDao allIdentifiersDao;
 
