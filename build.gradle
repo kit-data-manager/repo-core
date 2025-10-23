@@ -32,7 +32,7 @@ plugins {
 
 ext {
     // versions of dependencies
-    springBootVersion = '3.5.6'
+    springBootVersion = '3.5.7'
     springDocVersion  = '2.8.13'
     javersVersion     = '7.9.0'
 }
