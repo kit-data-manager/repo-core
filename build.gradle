@@ -15,7 +15,7 @@
  */
 plugins { 
     id "io.freefair.lombok" version "9.1.0"
-    id "io.freefair.maven-publish-java" version "9.0.0"
+    id "io.freefair.maven-publish-java" version "9.1.0"
     id "io.spring.dependency-management" version "1.1.7" 
     //id "com.github.kt3k.coveralls" version "2.8.1" 
     id "org.owasp.dependencycheck" version "12.1.8"
@@ -88,7 +88,7 @@ dependencies {
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-api:${springDocVersion}"
     // apache
     implementation "commons-configuration:commons-configuration:1.10"
-    implementation "commons-io:commons-io:2.20.0"
+    implementation "commons-io:commons-io:2.21.0"
     implementation "org.apache.commons:commons-collections4:4.5.0"
     // includes commons-lang3
     implementation "org.apache.commons:commons-text:1.14.0"
