@@ -28,6 +28,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -66,11 +68,11 @@ public class WebSecurityConfig {
                     .requestMatchers(EndpointRequest.toAnyEndpoint()).hasAnyRole("ADMIN", "ACTUATOR", "ADMINISTRATOR")
                     .requestMatchers("/**").permitAll()
                     .anyRequest().authenticated())
-            .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+            .sessionManagement(sessionManagementCustomizer -> sessionManagementCustomizer
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterAfter(keycloaktokenFilterBean.get(), BasicAuthenticationFilter.class)
             .addFilterAfter(new PublicAuthenticationFilter(applicationProperties.getJwtSecret()), BasicAuthenticationFilter.class)
-            .csrf().disable()
+            .csrf(AbstractHttpConfigurer::disable)
             .build();
   }
 
