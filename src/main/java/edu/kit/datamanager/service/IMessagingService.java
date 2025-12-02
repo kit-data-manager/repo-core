@@ -16,7 +16,7 @@
 package edu.kit.datamanager.service;
 
 import edu.kit.datamanager.entities.messaging.IAMQPSubmittable;
-import org.springframework.boot.actuate.health.HealthIndicator;
+import org.springframework.boot.health.contributor.HealthIndicator;
 
 /**
  *

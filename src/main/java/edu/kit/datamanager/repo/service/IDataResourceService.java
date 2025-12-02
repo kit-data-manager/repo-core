@@ -24,7 +24,7 @@ import edu.kit.datamanager.service.IGenericService;
 import edu.kit.datamanager.service.IServiceAuditSupport;
 import java.time.Instant;
 import java.util.List;
-import org.springframework.boot.actuate.health.HealthIndicator;
+import org.springframework.boot.health.contributor.HealthIndicator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
