@@ -94,7 +94,7 @@ public class HttpContentProvider implements IContentProvider{
         headers.add("Content-Location", uriString);
       }
       response.setStatus(returnedStatus.value());
-      Set<String> headerKeys = headers.keySet();
+      Set<String> headerKeys = headers.headerNames();
       headerKeys.forEach((headerKey) -> {
         headers.get(headerKey).forEach((value) -> {
           response.addHeader(headerKey, value);

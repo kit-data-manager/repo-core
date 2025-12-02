@@ -351,7 +351,7 @@ public class ContentInformationService implements IContentInformationService {
                     LOGGER.info("No content provider found for URI {}. Returning URI in Content-Location header.", uri);
                     HttpHeaders headers = new HttpHeaders();
                     headers.add("Content-Location", uri.toString());
-                    Set<String> headerKeys = headers.keySet();
+                    Set<String> headerKeys = headers.headerNames();
                     headerKeys.forEach((headerKey) -> {
                         headers.get(headerKey).forEach((value) -> {
                             response.addHeader(headerKey, value);
