@@ -15,7 +15,7 @@
  */
 package edu.kit.datamanager.repo.dao;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JsonProcessingException;
 import edu.kit.datamanager.repo.domain.AMQPMessage;
 import java.util.List;
 import java.util.Optional;

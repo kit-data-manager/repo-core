@@ -15,7 +15,7 @@
  */
 package edu.kit.datamanager.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JsonProcessingException;
 import edu.kit.datamanager.entities.messaging.IAMQPSubmittable;
 import edu.kit.datamanager.service.IMessagingService;
 import org.slf4j.Logger;

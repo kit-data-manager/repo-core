@@ -15,7 +15,7 @@
  */
 package edu.kit.datamanager.repo.domain;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JsonProcessingException;
 import edu.kit.datamanager.entities.messaging.IAMQPSubmittable;
 import java.io.Serializable;
 import jakarta.persistence.Basic;
