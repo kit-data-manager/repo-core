@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.boot.actuate.health.Health;
+import org.springframework.boot.health.contributor.Health;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.GrantedAuthority;
