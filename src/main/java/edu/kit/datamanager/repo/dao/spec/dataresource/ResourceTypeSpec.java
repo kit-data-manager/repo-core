@@ -38,7 +38,7 @@ public class ResourceTypeSpec{
   }
 
   public static Specification<DataResource> toSpecification(final ResourceType resourceType){
-    Specification<DataResource> newSpec = Specification.where(null);
+    Specification<DataResource> newSpec = Specification.unrestricted();
     if(resourceType == null || (resourceType.getTypeGeneral() == null && resourceType.getValue() == null)){
       return newSpec;
     }

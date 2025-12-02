@@ -34,7 +34,7 @@ public class PrimaryIdentifierSpec{
   }
 
   public static Specification<DataResource> toSpecification(final String... primaryIdentifier){
-    Specification<DataResource> newSpec = Specification.where(null);
+    Specification<DataResource> newSpec = Specification.unrestricted();
     if(primaryIdentifier == null || primaryIdentifier.length == 0){
       return newSpec;
     }

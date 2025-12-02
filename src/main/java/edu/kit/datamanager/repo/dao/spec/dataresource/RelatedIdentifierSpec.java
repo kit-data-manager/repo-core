@@ -65,7 +65,7 @@ public class RelatedIdentifierSpec {
    * @return specification
    */
   public static Specification<DataResource> toSpecification(final RelatedIdentifier.RELATION_TYPES relationType, final String... identifierValues) {
-    Specification<DataResource> newSpec = Specification.where(null);
+    Specification<DataResource> newSpec = Specification.unrestricted();
     if ((identifierValues == null || identifierValues.length == 0) && (relationType == null)) {
       return newSpec;
     }

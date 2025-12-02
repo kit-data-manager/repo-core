@@ -41,7 +41,7 @@ public class PermissionSpecification{
   }
 
   public static Specification<DataResource> toSpecification(final List<String> sids, final PERMISSION permission){
-    Specification<DataResource> newSpec = Specification.where(null);
+    Specification<DataResource> newSpec = Specification.unrestricted();
     if(sids == null || sids.isEmpty() || permission == null){
       return newSpec;
     }

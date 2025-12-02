@@ -35,7 +35,7 @@ public class StateSpecification{
   }
 
   public static Specification<DataResource> toSpecification(List<DataResource.State> states){
-    Specification<DataResource> newSpec = Specification.where(null);
+    Specification<DataResource> newSpec = Specification.unrestricted();
     if(states == null || states.isEmpty()){
       return newSpec;
     }

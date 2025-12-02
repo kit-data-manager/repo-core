@@ -35,7 +35,7 @@ public class ContentInformationTagSpecification{
   }
 
   public static Specification<ContentInformation> toSpecification(final String... tags){
-    Specification<ContentInformation> newSpec = Specification.where(null);
+    Specification<ContentInformation> newSpec = Specification.<ContentInformation>unrestricted();
     if(tags == null || tags.length == 0){
       return newSpec;
     }

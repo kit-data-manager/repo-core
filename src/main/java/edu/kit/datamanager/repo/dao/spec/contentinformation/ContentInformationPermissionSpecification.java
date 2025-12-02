@@ -42,7 +42,7 @@ public class ContentInformationPermissionSpecification{
   }
 
   public static Specification<ContentInformation> toSpecification(final String parentId, final List<String> sids, final PERMISSION permission){
-    Specification<ContentInformation> newSpec = Specification.where(null);
+    Specification<ContentInformation> newSpec = Specification.unrestricted();
     if(sids == null || sids.isEmpty() || permission == null){
       return newSpec;
     }

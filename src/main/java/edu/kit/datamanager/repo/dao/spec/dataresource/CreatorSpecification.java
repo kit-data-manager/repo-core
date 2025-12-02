@@ -45,7 +45,7 @@ public class CreatorSpecification{
   }
 
   public static Specification<DataResource> toSpecification(final Set<Agent> creators){
-    Specification<DataResource> newSpec = Specification.where(null);
+    Specification<DataResource> newSpec = Specification.unrestricted();
 
     if(creators == null || creators.isEmpty()){
       LOGGER.trace("No creators found in example. Returning empty specification.");
@@ -55,7 +55,7 @@ public class CreatorSpecification{
     LOGGER.trace("Including {} creator(s) from example.", creators.size());
     return (Root<DataResource> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
       query.distinct(true);
-      Specification<DataResource> creatorSpec = Specification.where(null);
+      Specification<DataResource> creatorSpec = Specification.unrestricted();
       Join<DataResource, Agent> altJoin = root.join("creators", JoinType.INNER);
       List<Predicate> creatorPredicates = new ArrayList<>();
 

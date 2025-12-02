@@ -39,7 +39,7 @@ public class ContentInformationMetadataSpecification{
   }
 
   public static Specification<ContentInformation> toSpecification(final Map<String, String> metadata){
-    Specification<ContentInformation> newSpec = Specification.where(null);
+    Specification<ContentInformation> newSpec = Specification.unrestricted();
     if(metadata == null || metadata.isEmpty()){
       return newSpec;
     }

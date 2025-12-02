@@ -35,7 +35,7 @@ public class LastUpdateSpecification{
   }
 
   public static Specification<DataResource> toSpecification(Instant lastUpdateFrom, Instant lastUpdateUntil){
-    Specification<DataResource> newSpec = Specification.where(null);
+    Specification<DataResource> newSpec = Specification.unrestricted();
     if(lastUpdateFrom == null && lastUpdateUntil == null){
       return newSpec;
     }

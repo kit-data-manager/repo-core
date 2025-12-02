@@ -37,7 +37,7 @@ public class TitleSpec {
   }
 
   public static Specification<DataResource> toSpecification(final String... identifierValues) {
-    Specification<DataResource> newSpec = Specification.where(null);
+    Specification<DataResource> newSpec = Specification.unrestricted();
     if (identifierValues == null || identifierValues.length == 0) {
       return newSpec;
     }
