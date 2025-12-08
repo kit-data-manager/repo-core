@@ -15,7 +15,6 @@
  */
 package edu.kit.datamanager.repo.test.integration;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import edu.kit.datamanager.repo.dao.IDataResourceDao;
 import edu.kit.datamanager.repo.dao.spec.dataresource.RelatedIdentifierSpec;
 import edu.kit.datamanager.repo.domain.DataResource;
@@ -39,6 +38,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.test.context.web.ServletTestExecutionListener;
+import tools.jackson.core.JacksonException;
 
 /**
  * Test specifications for related identifiers. These can be filtered by
@@ -73,7 +73,7 @@ public class RelatedIdentifierSpecificationTest {
   private static final RelatedIdentifier.RELATION_TYPES RELATION_TYPE_3 = RelatedIdentifier.RELATION_TYPES.IS_DERIVED_FROM;
 
   @Before
-  public void setUp() throws JsonProcessingException {
+  public void setUp() throws JacksonException {
     dataResourceDao.deleteAll();
     
     createTestResource("hasMetadataResource1", RELATION_TYPE_1, RELATED_RESOURCE_1);

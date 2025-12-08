@@ -15,7 +15,6 @@
  */
 package edu.kit.datamanager.repo.test;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import edu.kit.datamanager.entities.Identifier;
 import edu.kit.datamanager.entities.PERMISSION;
 import edu.kit.datamanager.entities.RepoUserRole;
@@ -59,6 +58,7 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import tools.jackson.core.JacksonException;
 
 /**
  *
@@ -258,7 +258,7 @@ public class DataResourceServiceTest {
     
     @Test
     @Ignore
-    public void testCreateResourceWithWithFullAuthentication() throws JsonProcessingException {
+    public void testCreateResourceWithWithFullAuthentication() throws JacksonException {
         mockJwtUserAuthentication();
         DataResource resource = createResourceWithDoi("testDoi6", "My Resource", "SimpleResource");
         resource = service.create(resource, "tester", "test", "user");
@@ -320,7 +320,7 @@ public class DataResourceServiceTest {
         return resource;
     }
 
-    private void mockJwtUserAuthentication() throws JsonProcessingException {
+    private void mockJwtUserAuthentication() throws JacksonException {
         
         JwtAuthenticationToken userToken = edu.kit.datamanager.util.JwtBuilder.
                 createUserToken("tester", RepoUserRole.ADMINISTRATOR).

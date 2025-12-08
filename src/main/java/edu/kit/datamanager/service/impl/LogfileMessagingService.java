@@ -15,12 +15,12 @@
  */
 package edu.kit.datamanager.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import edu.kit.datamanager.entities.messaging.IAMQPSubmittable;
 import edu.kit.datamanager.service.IMessagingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.health.contributor.Health;
+import tools.jackson.core.JacksonException;
 
 /**
  *
@@ -34,7 +34,7 @@ public class LogfileMessagingService implements IMessagingService {
     public void send(IAMQPSubmittable msg) {
         try {
             logger.debug("Received message for route {} with content {}.", msg.getRoutingKey(), msg.toJson());
-        } catch (JsonProcessingException ex) {
+        } catch (JacksonException ex) {
             logger.error("Failed to extract message information from message for route " + msg.getRoutingKey(), ex);
         }
     }

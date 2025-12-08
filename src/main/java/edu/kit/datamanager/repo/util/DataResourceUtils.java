@@ -15,9 +15,8 @@
  */
 package edu.kit.datamanager.repo.util;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.fge.jsonpatch.JsonPatch;
+import tools.jackson.databind.ObjectMapper;
+import edu.kit.datamanager.util.json.JsonPatch;
 import edu.kit.datamanager.controller.hateoas.event.PaginatedResultsRetrievedEvent;
 import edu.kit.datamanager.entities.Identifier;
 import edu.kit.datamanager.entities.PERMISSION;
@@ -58,6 +57,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.util.UriComponentsBuilder;
+import tools.jackson.core.JacksonException;
 
 /**
  *
@@ -651,7 +651,7 @@ public class DataResourceUtils {
       String jsonString = mapper.writeValueAsString(dataresource);
       LOGGER.trace("dataresource: {}", jsonString);
       returnValue = mapper.readValue(jsonString, DataResource.class);
-    } catch (JsonProcessingException ex) {
+    } catch (JacksonException ex) {
       LOGGER.error("Error mapping dataresource!");
       returnValue = dataresource;
     }
@@ -670,7 +670,7 @@ public class DataResourceUtils {
       String jsonString = mapper.writeValueAsString(dataresource);
       LOGGER.trace("dataresource: {}", jsonString);
       returnValue = mapper.readValue(jsonString, edu.kit.datamanager.entities.repo.DataResource.class);
-    } catch (JsonProcessingException ex) {
+    } catch (JacksonException ex) {
       LOGGER.error("Error mapping dataresource!");
     }
     return returnValue;

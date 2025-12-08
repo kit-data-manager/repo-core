@@ -15,7 +15,6 @@
  */
 package edu.kit.datamanager.repo.test.integration;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import edu.kit.datamanager.repo.configuration.ApplicationProperties;
 import edu.kit.datamanager.repo.dao.IAllIdentifiersDao;
 import edu.kit.datamanager.repo.domain.AllIdentifiers;
@@ -40,6 +39,7 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.test.context.web.ServletTestExecutionListener;
 import org.springframework.test.web.servlet.MockMvc;
+import tools.jackson.core.JacksonException;
 
 /**
  *
@@ -68,7 +68,7 @@ public class AllIdentifiersTest {
   private AllIdentifiers one, two, three, four, five, six;
 
   @Before
-  public void setUp() throws JsonProcessingException {
+  public void setUp() throws JacksonException {
     AllIdentifiers id = createIdentifier("first", "resource", DataResource.State.GONE);
     one = identifiersDao.save(id);
     id = createIdentifier("second", "resource", DataResource.State.GONE);

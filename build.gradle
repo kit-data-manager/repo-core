@@ -103,10 +103,12 @@ dependencies {
     implementation "com.h2database:h2:2.4.240"
     implementation "org.postgresql:postgresql:42.7.8"
     // XML
-    implementation "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.20.1"
-    implementation "com.fasterxml.jackson.module:jackson-module-afterburner:2.20.1"
-    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.20.1"
-    implementation "com.fasterxml.jackson.datatype:jackson-datatype-joda:2.20.1"
+    implementation "com.fasterxml.jackson.core:jackson-annotations:2.20"
+    implementation "tools.jackson.core:jackson-core:3.0.0"
+    implementation "tools.jackson.core:jackson-databind:3.0.0"
+    implementation "tools.jackson.module:jackson-module-afterburner:3.0.0"
+    implementation "tools.jackson:jackson-bom:3.0.0"
+//    implementation "com.fasterxml.jackson.datatype:jackson-datatype-joda:2.20.1"
 
     //implementation "com.monitorjbl:spring-json-view:1.0.1"
 

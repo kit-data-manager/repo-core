@@ -15,7 +15,6 @@
  */
 package edu.kit.datamanager.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import edu.kit.datamanager.configuration.RabbitMQConfiguration;
 import edu.kit.datamanager.entities.messaging.IAMQPSubmittable;
 import edu.kit.datamanager.repo.dao.IAMQPMessageDao;
@@ -32,6 +31,7 @@ import org.springframework.boot.health.contributor.Health;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import tools.jackson.core.JacksonException;
 
 /**
  *
@@ -64,7 +64,7 @@ public class RabbitMQMessagingService implements IMessagingService {
                 logger.trace("Message sent.");
                 messagePreservationRequired = false;
                 checkAndSendPreservedMessages();
-            } catch (JsonProcessingException ex) {
+            } catch (JacksonException ex) {
                 logger.error("Failed to send message " + msg + ". Unable to serialize message to JSON.", ex);
                 messagePreservationRequired = false;
             } catch (AmqpConnectException amqpce) {

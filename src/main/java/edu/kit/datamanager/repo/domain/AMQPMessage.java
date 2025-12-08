@@ -15,7 +15,6 @@
  */
 package edu.kit.datamanager.repo.domain;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import edu.kit.datamanager.entities.messaging.IAMQPSubmittable;
 import java.io.Serializable;
 import jakarta.persistence.Basic;
@@ -25,6 +24,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Data;
+import tools.jackson.core.JacksonException;
 
 /**
  * Very simple AMQP message entity holding the target exchange and routingKey as
@@ -60,7 +60,7 @@ public class AMQPMessage implements IAMQPSubmittable, Serializable {
     }
 
     @Override
-    public String toJson() throws JsonProcessingException {
+    public String toJson() throws JacksonException {
         //no fancy stuff here, only return the message which was already serialized by the original IAMQPSubmittable
         return message;
     }

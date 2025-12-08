@@ -15,7 +15,6 @@
  */
 package edu.kit.datamanager.repo.test;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import edu.kit.datamanager.entities.Identifier;
 import edu.kit.datamanager.entities.PERMISSION;
 import edu.kit.datamanager.entities.RepoServiceRole;
@@ -35,6 +34,7 @@ import org.junit.Test;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import tools.jackson.core.JacksonException;
 
 /**
  *
@@ -254,7 +254,7 @@ public class DataResourceUtilsTest {
     }
 
     @Test
-    public void testPermissionCheckAsServiceUser() throws JsonProcessingException {
+    public void testPermissionCheckAsServiceUser() throws JacksonException {
         DataResource res = DataResource.factoryNewDataResource();
         res.getAcls().add(new AclEntry("tester", PERMISSION.WRITE));
 
@@ -297,7 +297,7 @@ public class DataResourceUtilsTest {
     }
 
     @Test
-    public void testPermissionCheckAsTemporaryUser() throws JsonProcessingException {
+    public void testPermissionCheckAsTemporaryUser() throws JacksonException {
         DataResource res1 = DataResource.factoryNewDataResource("res1");
         res1.getAcls().add(new AclEntry("tester", PERMISSION.WRITE));
         DataResource res2 = DataResource.factoryNewDataResource("res2");
@@ -377,14 +377,14 @@ public class DataResourceUtilsTest {
 
     }
 
-    private JwtAuthenticationToken mockJwtServiceAuthentication(RepoServiceRole role) throws JsonProcessingException {
+    private JwtAuthenticationToken mockJwtServiceAuthentication(RepoServiceRole role) throws JacksonException {
         JwtAuthenticationToken serviceToken = JwtBuilder.createServiceToken("metadata_extractor", role).
                 addSimpleClaim("groupid", "USERS").
                 getJwtAuthenticationToken(DataResourceControllerTest.KEYCLOAK_SECRET);
         return serviceToken;
     }
 
-    private JwtAuthenticationToken mockJwtTemporaryAuthentication(ScopedPermission[] perms) throws JsonProcessingException {
+    private JwtAuthenticationToken mockJwtTemporaryAuthentication(ScopedPermission[] perms) throws JacksonException {
         JwtAuthenticationToken temporaryToken = JwtBuilder.createTemporaryToken("test@mail.org", perms).
                 getJwtAuthenticationToken(DataResourceControllerTest.KEYCLOAK_SECRET);
         return temporaryToken;

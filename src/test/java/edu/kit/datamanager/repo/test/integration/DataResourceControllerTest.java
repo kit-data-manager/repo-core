@@ -16,9 +16,8 @@
 package edu.kit.datamanager.repo.test.integration;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import edu.kit.datamanager.entities.Identifier;
 import edu.kit.datamanager.entities.PERMISSION;
@@ -98,6 +97,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import tools.jackson.core.JacksonException;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -152,7 +153,7 @@ public class DataResourceControllerTest {
     private static Set<Path> allTempFiles = new HashSet<>();
 
     @Before
-    public void setUp() throws JsonProcessingException {
+    public void setUp() throws JacksonException {
         contentInformationAuditService = repositoryConfig.getContentInformationAuditService();
         contentInformationDao.deleteAll();
         dataResourceDao.deleteAll();
