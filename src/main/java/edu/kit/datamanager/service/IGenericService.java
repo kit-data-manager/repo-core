@@ -15,7 +15,7 @@
  */
 package edu.kit.datamanager.service;
 
-import com.github.fge.jsonpatch.JsonPatch;
+import edu.kit.datamanager.util.json.JsonPatch;
 import edu.kit.datamanager.exceptions.PatchApplicationException;
 import edu.kit.datamanager.exceptions.ResourceNotFoundException;
 import edu.kit.datamanager.exceptions.UpdateForbiddenException;

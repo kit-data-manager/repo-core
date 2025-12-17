@@ -15,7 +15,7 @@
  */
 package edu.kit.datamanager.repo.web;
 
-import com.github.fge.jsonpatch.JsonPatch;
+import edu.kit.datamanager.util.json.JsonPatch;
 import edu.kit.datamanager.entities.PERMISSION;
 import edu.kit.datamanager.entities.RepoUserRole;
 import edu.kit.datamanager.exceptions.BadArgumentException;

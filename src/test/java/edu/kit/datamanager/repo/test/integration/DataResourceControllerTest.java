@@ -98,6 +98,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -1740,11 +1741,12 @@ public class DataResourceControllerTest {
     }
 
     private ObjectMapper createObjectMapper() {
-        return Jackson2ObjectMapperBuilder.json()
-                .serializationInclusion(JsonInclude.Include.NON_EMPTY) // Don’t include null values
-                .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS) //ISODate
-                .modules(new JavaTimeModule())
-                .build();
+      return JsonMapper.builder().build();
+    //    return Jackson2ObjectMapperBuilder.json()
+    //            .serializationInclusion(JsonInclude.Include.NON_EMPTY) // Don’t include null values
+    //            .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS) //ISODate
+    //            .modules(new JavaTimeModule())
+    //            .build();
     }
 
     /**

@@ -96,7 +96,10 @@ dependencies {
     implementation 'org.apache.httpcomponents:httpclient:4.5.14'
     implementation "org.apache.tika:tika-core:3.2.3"
     // javers
-    implementation "org.javers:javers-spring-boot-starter-sql:${javersVersion}"
+    //implementation "org.javers:javers-spring-boot-starter-sql:${javersVersion}"
+    implementation("org.javers:javers-core:${javersVersion}")
+    implementation("org.javers:javers-persistence-sql:${javersVersion}")
+    implementation("org.javers:javers-spring-jpa:${javersVersion}")
     implementation "com.google.code.gson:gson:2.13.2"
 
     // Database
@@ -119,7 +122,6 @@ dependencies {
 
     implementation "edu.kit.datamanager:service-base:2.0.0-SNAPSHOT"
 
-    implementation "com.github.java-json-tools:json-patch:1.13"
     implementation "com.github.dozermapper:dozer-core:7.0.0"
 
     // monitoring

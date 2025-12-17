@@ -52,6 +52,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  *
@@ -105,11 +106,12 @@ public class Application {
 
   @Bean(name = "OBJECT_MAPPER_BEAN")
   public ObjectMapper jsonObjectMapper() {
-    return Jackson2ObjectMapperBuilder.json()
-            .serializationInclusion(JsonInclude.Include.NON_EMPTY) // Don’t include null values
-            .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS) //ISODate
-            .modules(new JavaTimeModule())
-            .build();
+    return JsonMapper.builder().build();
+    //    return Jackson2ObjectMapperBuilder.json()
+    //            .serializationInclusion(JsonInclude.Include.NON_EMPTY) // Don’t include null values
+    //            .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS) //ISODate
+    //            .modules(new JavaTimeModule())
+    //            .build();
   }
 
 //  @Bean

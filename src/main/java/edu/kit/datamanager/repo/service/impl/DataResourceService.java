@@ -15,7 +15,7 @@
  */
 package edu.kit.datamanager.repo.service.impl;
 
-import com.github.fge.jsonpatch.JsonPatch;
+import edu.kit.datamanager.util.json.JsonPatch;
 import edu.kit.datamanager.entities.Identifier;
 import edu.kit.datamanager.entities.PERMISSION;
 import edu.kit.datamanager.entities.messaging.DataResourceMessage;
