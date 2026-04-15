@@ -16,6 +16,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+## [1.2.7] - 2026-04-15
+
+### Fixed
+- Fixed bug while hashing ip for monitoring.
+
+### Security
+- Update actions/checkout action to v6
+- Update actions/setup-java action to v5.2.0
+- Update dependency com.fasterxml.jackson.datatype:jackson-datatype-joda to v2.21.2
+- Update dependency com.fasterxml.jackson.datatype:jackson-datatype-jsr310 to v2.21.2
+- Update dependency com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider to v2.21.2
+- Update dependency com.fasterxml.jackson.module:jackson-module-afterburner to v2.21.2
+- Update dependency commons-io:commons-io to v2.21.0
+- Update dependency de.codecentric:spring-boot-admin-starter-client to v3.5.8
+- Update dependency gradle to v9.2.1
+- Update dependency io.micronaut.micrometer:micronaut-micrometer-registry-prometheus to v5.13.2
+- Update dependency org.apache.commons:commons-text to v1.15.0
+- Update dependency org.postgresql:postgresql to v42.7.10
+- Update dependency org.springframework.boot:spring-boot-dependencies to v3.5.13
+- Update dependency org.springframework.boot:spring-boot-starter-actuator to v3.5.13
+- Update dependency org.springframework.data:spring-data-elasticsearch to v5.5.10
+- Update dependency org.springframework.restdocs:spring-restdocs-mockmvc to v4
+- Update dependency org.springframework:spring-messaging to v7.0.6
+- Update plugin io.freefair.lombok to v9.1.0
+- Update plugin io.freefair.maven-publish-java to v9.1.0
+- Update plugin org.owasp.dependencycheck to v12.1.9
+- Update springDocVersion to v2.8.17
+
 ## [1.2.6] - 2025-10-23
 
 ### Added
@@ -370,7 +398,8 @@ Extracted from the 'base-repo' project.
 ### Removed
 - none
 
-[Unreleased]: https://github.com/kit-data-manager/repo-core/compare/v1.2.6...HEAD
+[Unreleased]: https://github.com/kit-data-manager/repo-core/compare/v1.2.7...HEAD
+[1.2.7]: https://github.com/kit-data-manager/repo-core/compare/v1.2.6...v1.2.7
 [1.2.6]: https://github.com/kit-data-manager/repo-core/compare/v1.2.5...v1.2.6
 [1.2.5]: https://github.com/kit-data-manager/repo-core/compare/v1.2.4...1.2.5
 [1.2.4]: https://github.com/kit-data-manager/repo-core/compare/v1.2.3...1.2.4

@@ -128,8 +128,14 @@ public class MonitoringUtil {
       String ipHash = ip;
       try {
         MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-        messageDigest.update(ip.getBytes(StandardCharsets.UTF_8));
-        ipHash = new String(messageDigest.digest(), StandardCharsets.UTF_8);
+        byte[] hashBytes = messageDigest.digest(ip.getBytes(StandardCharsets.UTF_8));
+
+        StringBuilder hex = new StringBuilder(hashBytes.length * 2);
+        for (byte b : hashBytes) {
+          hex.append(String.format("%02x", b));
+        }
+
+        ipHash = hex.toString();
       } catch (NoSuchAlgorithmException nsae) {
         LOG.error("Error hashing IP address: ", nsae);
       }
