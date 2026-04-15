@@ -121,7 +121,6 @@ dependencies {
 
     // monitoring
     implementation 'io.micronaut.micrometer:micronaut-micrometer-registry-prometheus:5.13.2'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator:3.5.13'
 
     testImplementation "junit:junit:4.13.2"
     testImplementation "org.springframework:spring-test"
