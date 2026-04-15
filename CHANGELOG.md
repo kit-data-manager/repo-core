@@ -24,10 +24,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - Update actions/checkout action to v6
 - Update actions/setup-java action to v5.2.0
-- Update dependency com.fasterxml.jackson.datatype:jackson-datatype-joda to v2.20.1
+- Update dependency com.fasterxml.jackson.datatype:jackson-datatype-joda to v2.21.2
 - Update dependency com.fasterxml.jackson.datatype:jackson-datatype-jsr310 to v2.21.2
-- Update dependency com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider to v2.20.1
-- Update dependency com.fasterxml.jackson.module:jackson-module-afterburner to v2.20.1
+- Update dependency com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider to v2.21.2
+- Update dependency com.fasterxml.jackson.module:jackson-module-afterburner to v2.21.2
 - Update dependency commons-io:commons-io to v2.21.0
 - Update dependency de.codecentric:spring-boot-admin-starter-client to v3.5.8
 - Update dependency gradle to v9.2.1
@@ -42,7 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update plugin io.freefair.lombok to v9.1.0
 - Update plugin io.freefair.maven-publish-java to v9.1.0
 - Update plugin org.owasp.dependencycheck to v12.1.9
-- Update springDocVersion to v2.8.14
+- Update springDocVersion to v2.8.17
 
 ## [1.2.6] - 2025-10-23
 
