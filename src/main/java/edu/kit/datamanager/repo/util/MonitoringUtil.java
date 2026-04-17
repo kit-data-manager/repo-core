@@ -144,7 +144,11 @@ public class MonitoringUtil {
         IpMonitoring ipMonitoring = new IpMonitoring();
         ipMonitoring.setIpHash(ipHash);
         ipMonitoring.setLastVisit(Instant.now().truncatedTo(ChronoUnit.DAYS));
-        ipMonitoringDao.save(ipMonitoring);
+        try {
+          ipMonitoringDao.save(ipMonitoring);
+        } catch (Exception ex) {
+          LOG.error("Error registering IP address '" + ip + "' as hash '" + ipHash + "'.", ex);
+        }
       }
     }
   }
