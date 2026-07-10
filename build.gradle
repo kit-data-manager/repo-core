@@ -64,9 +64,26 @@ configurations {
     all*.exclude module : 'spring-boot-starter-logging'
 }
 
-if (project.hasProperty('release')) {
-    apply from: 'gradle/profile-deploy.gradle'
-    apply from: 'gradle/profile-release.gradle'
+// The build profile can be specified via command line using -PbuildProfile=<profile>
+// For example: ./gradlew build -PbuildProfile=release
+// Default build profile is "default" if not specified
+// Available profiles:
+// - "default" This is useful for building a production ready jar file and executing all tests.
+// - "release" Before releasing all tests will be executed.
+//             If successful, the release task will be executed to create a new release version and tag it in git.
+// - "deploy"  Deploy library with sources and javadoc to Maven repository
+//              All tests will be executed.
+def buildProfile = project.findProperty("buildProfile") ?: "default"
+
+def profileFile = file("$rootDir/gradle/profile-${buildProfile}.gradle")
+
+// The release task should only be executed with the "release" profile, which is defined in gradle/profile-release.gradle
+// Throw exception if the release task is executed with a different profile
+gradle.taskGraph.whenReady { graph ->
+    if (graph.allTasks.any { it.name == "release" } &&
+            findProperty("buildProfile") != "release") {
+        throw new GradleException("Task 'release' is only available with '-PbuildProfile=release'!" )
+    }
 }
 
 dependencies {
@@ -216,3 +233,10 @@ jar {
   dependsOn jacocoTestReport
 }
 
+// Apply profile-specific build configuration at the end of this build script
+// to ensure that all settings are available.
+if (profileFile.exists()) {
+    apply from: profileFile
+} else {
+    throw new GradleException("Profile-file missing: $profileFile")
+}
