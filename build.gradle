@@ -88,7 +88,7 @@ gradle.taskGraph.whenReady { graph ->
 
 dependencies {
     // Spring
-    implementation 'org.springframework:spring-messaging:7.0.8'
+    implementation 'org.springframework:spring-messaging:7.0.10'
     // Spring Boot
     implementation "org.springframework.boot:spring-boot-starter-data-rest"
     implementation "org.springframework.boot:spring-boot-starter-amqp"
