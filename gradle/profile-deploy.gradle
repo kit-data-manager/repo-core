@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+println 'Using \'deploy\' profile for building ' + project.getName()
+
 ////////////////////////////////////////////////////////////////////////////////
 //for java plugin
 //see https://docs.gradle.org/current/userguide/java_plugin.html
@@ -23,23 +25,6 @@ java {
     withJavadocJar()
     //package Sources as part of publication
     withSourcesJar()
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//for plugin net.researchgate.release 
-//see https://github.com/researchgate/gradle-release
-////////////////////////////////////////////////////////////////////////////////
-release {
-    //define template for tagging, e.g. v1.0.0
-    tagTemplate = 'v${version}'
-    //set source file of version property
-    versionPropertyFile = 'gradle.properties'
-    //set possible properties which may contain the version
-    versionProperties = ['version', 'mainversion']
-    git {
-        //branch from where to release (default: main)
-        requireBranch.set('main')
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
